@@ -1,4 +1,4 @@
-# Exporta v3_dano a TFLite, verifica equivalencia y evalúa la tubería completa (detector v2 -> recorte -> segmentador)
+# Exporta el modelo de zona dañada a TFLite, verifica equivalencia y evalúa la tubería completa (detector v2 -> recorte -> segmentador)
 import os, sys, json, glob, cv2, numpy as np, tensorflow as tf
 from segcommon import S, PAD, load_split, crop
 
@@ -9,10 +9,10 @@ model = tf.keras.models.load_model(f'{RUNS}/{RUN}/best.keras', compile=False)
 
 # ---------- exportación ----------
 conv = tf.lite.TFLiteConverter.from_keras_model(model)
-fp32 = conv.convert(); open(f'{OUT}/eggs_dano_v3_fp32.tflite', 'wb').write(fp32)
+fp32 = conv.convert(); open(f'{OUT}/eggs_{RUN}_fp32.tflite', 'wb').write(fp32)
 conv = tf.lite.TFLiteConverter.from_keras_model(model)
 conv.optimizations = [tf.lite.Optimize.DEFAULT]; conv.target_spec.supported_types = [tf.float16]
-fp16 = conv.convert(); open(f'{OUT}/eggs_dano_v3_fp16.tflite', 'wb').write(fp16)
+fp16 = conv.convert(); open(f'{OUT}/eggs_{RUN}_fp16.tflite', 'wb').write(fp16)
 
 def interp(buf):
     it = tf.lite.Interpreter(model_content=buf); it.allocate_tensors(); return it

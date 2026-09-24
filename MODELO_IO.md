@@ -2,6 +2,8 @@
 
 Guía para integrar el detector en la app React Native / Expo con `react-native-vision-camera` + `react-native-fast-tflite`.
 
+> **Dos modelos.** `v2` (detector) es **obligatorio**: encuentra los huevos y los clasifica como rajados o sanos. Está documentado primero. `dano_v1` (zona dañada) es un **extra opcional**: va **después** de `v2`, solo sobre los huevos rajados, y **no lo reemplaza**. Está documentado en la sección [Modelo 2](#modelo-2-zona-dañada-y-gravedad-dano_v1). Integren primero `v2` solo y, cuando funcione, añadan `dano_v1`.
+
 Modelo: **`v2`** (YOLOv8n). Los archivos están en Google Drive, en `MyDrive/eggs_v2/exports/v2/`, y en la carpeta [`modelo/`](modelo/) de este repo. Los datos de la verificación están en [`resultados/v2/resumen.json`](resultados/v2/resumen.json).
 
 ## ⚠️ Development build, no Expo Go
@@ -200,9 +202,9 @@ El mAP50 mide sobre todo si acierta la clase, y es prácticamente igual en los t
 
 ---
 
-# Modelo 2: zona dañada y gravedad (`v3_dano`)
+# Modelo 2: zona dañada y gravedad (`dano_v1`)
 
-Es un segundo modelo, **opcional**, que se usa **junto con `v2`**. `v2` encuentra cada huevo y dice si está rajado. `v3_dano` recibe el **recorte de un huevo** y devuelve dos máscaras: la silueta del huevo y la **zona dañada**. Con ellas la app puede:
+Es un segundo modelo, **opcional**, que se usa **junto con `v2` y después de él**. No es una versión nueva de `v2` ni lo sustituye: la app sigue ejecutando `v2` en cada frame. `v2` encuentra cada huevo y dice si está rajado. `dano_v1` recibe el **recorte de un huevo** y devuelve dos máscaras: la silueta del huevo y la **zona dañada**. Con ellas la app puede:
 
 - **pintar dónde está el daño** encima del huevo, en el video;
 - calcular la **gravedad**: el % de la cáscara que está dañada (leve / media / grave).
@@ -213,10 +215,10 @@ Es un segundo modelo, **opcional**, que se usa **junto con `v2`**. `v2` encuentr
 
 | archivo | tamaño | cuándo usarlo |
 |---|---|---|
-| `eggs_dano_v3_fp16.tflite` | 4,9 MB | **Recomendado.** Da los mismos resultados que FP32 con la mitad de tamaño. Con delegado GPU / Core ML. |
-| `eggs_dano_v3_fp32.tflite` | 9,6 MB | Referencia. Útil si el delegado da problemas con FP16. |
+| `eggs_dano_v1_fp16.tflite` | 4,9 MB | **Recomendado.** Da los mismos resultados que FP32 con la mitad de tamaño. Con delegado GPU / Core ML. |
+| `eggs_dano_v1_fp32.tflite` | 9,6 MB | Referencia. Útil si el delegado da problemas con FP16. |
 
-Misma entrada y salida en los dos. En Drive: `MyDrive/eggs_v2/exports/v3_dano/`.
+Misma entrada y salida en los dos. En Drive están en `MyDrive/eggs_v2/exports/v3_dano/` con los nombres `eggs_dano_v3_*`: es el nombre original del run, antes de renombrarlo a `dano_v1`. Son los mismos archivos.
 
 ## Flujo
 
@@ -224,7 +226,7 @@ Misma entrada y salida en los dos. En Drive: `MyDrive/eggs_v2/exports/v3_dano/`.
 frame ──► v2 (cuadrado 640×640) ──► cajas + Crack/Intact
                                          │  solo huevos Crack
                                          ▼
-          recorte del huevo en el FRAME COMPLETO (caja + 10 %) ──► 192×192 ──► v3_dano ──► máscaras
+          recorte del huevo en el FRAME COMPLETO (caja + 10 %) ──► 192×192 ──► dano_v1 ──► máscaras
 ```
 
 Recortar del **frame completo**, no del cuadrado de 640, aprovecha la resolución de la cámara, y así las grietas finas se ven mejor.
@@ -278,7 +280,7 @@ Continúa el ejemplo de `v2`: `eggs` son las detecciones ya pasadas por NMS, con
 
 ```ts
 const S = 192;
-const damageTflite = useTensorflowModel(require('../assets/eggs_dano_v3_fp16.tflite'), 'android-gpu'); // iOS: 'core-ml'
+const damageTflite = useTensorflowModel(require('../assets/eggs_dano_v1_fp16.tflite'), 'android-gpu'); // iOS: 'core-ml'
 const damageModel = damageTflite.state === 'loaded' ? damageTflite.model : undefined;
 
 // dentro del frame processor, después de obtener `eggs`:
@@ -339,7 +341,7 @@ Datos: 35 huevos rajados y 30 sanos de **test**, que el modelo no vio al entrena
 | Huevos rajados con daño detectado (> 3 %) | 35 / 35 |
 | Huevos sanos con daño detectado (> 3 %) | 0 / 30 |
 
-`.tflite` frente a Keras: FP32 da exactamente lo mismo (diferencia < 1e-4). FP16 difiere hasta 0.23 en algún píxel suelto, pero las métricas son iguales (IoU de daño 0.641 frente a 0.641). Detalle por huevo en [`resultados/v3_dano/resumen.json`](resultados/v3_dano/resumen.json).
+`.tflite` frente a Keras: FP32 da exactamente lo mismo (diferencia < 1e-4). FP16 difiere hasta 0.23 en algún píxel suelto, pero las métricas son iguales (IoU de daño 0.641 frente a 0.641). Detalle por huevo en [`resultados/dano_v1/resumen.json`](resultados/dano_v1/resumen.json).
 
 La gravedad predicha suele quedar **por debajo** de la anotada. Las zonas anotadas se marcaron sobre una rejilla de 10×10 y son algo más amplias que el daño real, así que el modelo es más ajustado que la etiqueta.
 
