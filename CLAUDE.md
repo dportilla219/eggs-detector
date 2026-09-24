@@ -18,6 +18,12 @@
 - Desbalance: hay **~3,5× más Crack que Intact**.
 - Sesgo de dominio: todas las imágenes de **Intact** son del mismo montaje (fondo gris, base negra, 224×224). Riesgo de que el modelo aprenda el fondo en vez del huevo; tenerlo en cuenta en aumentos de datos y en la evaluación.
 
+- Fuente de cada imagen: los nombres que empiezan por `ec_egg` son del montaje. Train: Crack montaje 343, Crack otras fuentes 1767, Intact montaje 614, **Intact de otras fuentes 0**. Es decir, fondo = clase: el atajo es real y `v1` lo tiene disponible. `eggs_v2.ipynb` lo ataca con imágenes sintéticas (intercambio de huevos entre fondos).
+
+## Notas técnicas
+- Ultralytics 8.4: `best.pt` se elige solo por mAP50-95. El formato `tflite` se reemplazó por `litert` (litert-torch, solo Linux/macOS), que por defecto exporta la entrada en **NCHW**. `eggs_v2.ipynb` intercepta `torch2litert` para exportar en **NHWC** `[1,640,640,3]` (lo que da vision-camera-resize-plugin). Salida `[1,6,8400]`: cx,cy,w,h normalizados 0–1 + 2 scores con sigmoide, sin NMS.
+- VS Code no recarga un `.ipynb` modificado en disco si está abierto y lo sobrescribe al guardar: tras editar un notebook, cerrar y volver a abrir la pestaña.
+
 ## Preferencias de trabajo
 - Explicar **en español** y **brevemente** qué hace cada celda.
 - **No borrar ni sobrescribir** resultados anteriores: usar siempre **nombres de run nuevos** (nunca `exist_ok=True` sobre un run existente).
