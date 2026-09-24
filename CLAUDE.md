@@ -25,6 +25,14 @@
 - Ultralytics 8.4: `best.pt` se elige solo por mAP50-95. El formato `tflite` se reemplazó por `litert` (litert-torch, solo Linux/macOS), que por defecto exporta la entrada en **NCHW**. `eggs_v2.ipynb` intercepta `torch2litert` para exportar en **NHWC** `[1,640,640,3]` (lo que da vision-camera-resize-plugin). Salida `[1,6,8400]`: cx,cy,w,h normalizados 0–1 + 2 scores con sigmoide, sin NMS.
 - VS Code no recarga un `.ipynb` modificado en disco si está abierto y lo sobrescribe al guardar: tras editar un notebook, cerrar y volver a abrir la pestaña.
 
+## Estado actual (2026-09-24)
+- **Modelo entregado: `v2`** (fine-tune de `v1` con imágenes sintéticas, 60 épocas). Pesos en Drive: `runs/v2/weights/best.pt`. Exportado en `exports/v2/` y en `modelo/` del repo: `eggs_v2_fp32.tflite` (recomendado) y `eggs_v2_int8.tflite`. Umbral 0.5.
+- Métricas: test original mAP50-95 0.970 (Crack) / 0.970 (Intact). Huevo sano fuera del montaje (sintético): `v1` 0.68 → `v2` 0.99. Punto débil: Crack del montaje, 0.85 (grietas poco visibles a 224 px). Detalle en `resultados/v2/resumen.json`.
+- Los `.tflite` se verificaron localmente con la decodificación de `MODELO_IO.md` (18/18 correctos).
+- Documentación para el equipo de la app: `MODELO_IO.md` y la sección "Guía para el equipo de la app" del README (pasos del development build y prompt de contexto para su IA).
+- **Pendiente:** validación con video real en la app. Si falla, recoger esos frames para entrenar un `v3` (el siguiente run debe llamarse `v3`).
+- La cuota gratis de GPU de Colab se agota tras ~3,5 h. Evaluar y exportar funciona en un runtime de CPU (`eggs_v2.ipynb` celdas 5 y 7–10).
+
 ## Preferencias de trabajo
 - Explicar **en español** y **brevemente** qué hace cada celda.
 - **No borrar ni sobrescribir** resultados anteriores: usar siempre **nombres de run nuevos** (nunca `exist_ok=True` sobre un run existente).
