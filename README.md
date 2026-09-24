@@ -23,6 +23,160 @@ Modelo de detección para clasificar huevos en **video en vivo** (frame a frame)
 
 **¿Qué modelo usar?** Empezar con FP32 + GPU y medir los FPS en un celular de gama media. Con 15 o más inferencias por segundo alcanza. Si va lento o el delegado falla en algún dispositivo, cambiar a INT8: basta con cambiar el nombre del archivo.
 
+---
+
+## Guía para el equipo de la app
+
+### Por qué no se puede usar Expo Go
+
+Expo Go es una app ya compilada que solo trae los módulos nativos que Expo decidió incluir. Para analizar video en vivo con un modelo hacen falta tres librerías **nativas** que Expo Go no trae:
+
+| librería | para qué |
+|---|---|
+| `react-native-vision-camera` | acceder a cada frame de la cámara en tiempo real (`expo-camera` no da los frames) |
+| `vision-camera-resize-plugin` | recortar y escalar el frame a 640×640 RGB |
+| `react-native-fast-tflite` | ejecutar el `.tflite` en el celular (GPU / Core ML) |
+
+Si abren el proyecto en Expo Go, la app falla al cargar la cámara o el modelo. La solución es un **development build**: su propia versión de "Expo Go" con estas librerías incluidas. Se instala una vez en el celular y después se trabaja **igual que con Expo Go**: `npx expo start`, escanear el QR y los cambios se recargan solos. Solo hay que volver a generar la app si se agrega otra librería nativa.
+
+El modelo corre **dentro del celular**. No hace falta backend para la detección; el backend solo sirve si quieren guardar historial o resultados.
+
+### Requisitos
+- Node LTS y un proyecto Expo (SDK reciente).
+- **Android:** un celular Android real con *depuración USB*, y Android Studio (para `expo run:android`) **o** una cuenta de Expo (para compilar en la nube con EAS).
+- **iOS:** un iPhone real (el simulador no tiene cámara) y una Mac con Xcode **o** EAS Build. Instalar en un iPhone físico con EAS requiere una cuenta de Apple Developer.
+
+### Pasos
+
+**1. Copiar el modelo al proyecto de la app**
+
+Copiar [`modelo/eggs_v2_fp32.tflite`](modelo/) (y opcionalmente `eggs_v2_int8.tflite`) a `assets/models/` del proyecto de la app.
+
+**2. Instalar las librerías**
+```bash
+npx expo install expo-dev-client react-native-vision-camera react-native-worklets-core vision-camera-resize-plugin react-native-fast-tflite
+```
+
+**3. Configurar Babel** (`babel.config.js`). Los frame processors se ejecutan como *worklets*:
+```js
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [['react-native-worklets-core/plugin']],
+  };
+};
+```
+
+**4. Permitir archivos `.tflite` en Metro** (`metro.config.js`; si no existe, crearlo con `npx expo customize metro.config.js`):
+```js
+const { getDefaultConfig } = require('expo/metro-config');
+const config = getDefaultConfig(__dirname);
+config.resolver.assetExts.push('tflite');
+module.exports = config;
+```
+
+**5. Activar los plugins en `app.json`**:
+```json
+{
+  "expo": {
+    "plugins": [
+      ["react-native-vision-camera", { "cameraPermissionText": "Se usa la cámara para revisar los huevos." }],
+      ["react-native-fast-tflite", { "enableCoreMLDelegate": true, "enableAndroidGpuLibraries": true }]
+    ]
+  }
+}
+```
+Las opciones exactas de cada plugin pueden cambiar entre versiones; revísenlas en el README de cada librería.
+
+**6. Generar e instalar el development build** (una sola vez y cada vez que agreguen otra librería nativa):
+```bash
+# Opción local (celular conectado por USB)
+npx expo prebuild
+npx expo run:android            # o: npx expo run:ios --device
+
+# Opción en la nube, sin Android Studio / Xcode
+npm i -g eas-cli && eas login
+eas build --profile development --platform android   # instala el APK que genera
+```
+
+**7. Trabajar día a día**
+```bash
+npx expo start --dev-client
+```
+Abrir la app instalada en el paso 6 (no Expo Go) y escanear el QR.
+
+**8. Implementar la detección**
+
+El código completo del frame processor (recorte, redimensionado, inferencia, decodificación y NMS) está en [MODELO_IO.md → Ejemplo](MODELO_IO.md#ejemplo-frame-processor). Además:
+- Pedir el permiso con `useCameraPermission()` y mostrar `<Camera device={...} isActive frameProcessor={...} />`.
+- Limitar la inferencia a ~10–15 por segundo con `runAtTargetFps`.
+- Para actualizar la interfaz desde el frame processor, pasar los resultados al hilo de JS con `Worklets.createRunOnJS(...)` de `react-native-worklets-core`.
+- Suavizar el resultado: decidir "rajado / sano" por mayoría en los últimos 5–10 frames, no con un solo frame.
+
+**9. Comprobar que funciona**
+- [ ] La app abre la cámara en el development build (no en Expo Go).
+- [ ] Con un huevo centrado, el mejor candidato tiene `cx ≈ cy ≈ 0.5` y confianza > 0.5.
+- [ ] Un huevo sano sale `Intact` y uno rajado sale `Crack`.
+- [ ] Medir los FPS reales. Si bajan de ~10, probar el modelo INT8 o bajar `runAtTargetFps`.
+
+### Problemas frecuentes
+| síntoma | causa probable |
+|---|---|
+| La app se cierra o dice que falta un módulo nativo | Se abrió en Expo Go, o no se regeneró el build tras instalar librerías. |
+| `Unable to resolve module ...tflite` | Falta `assetExts.push('tflite')` en `metro.config.js` (hay que reiniciar Metro). |
+| Cajas desplazadas o todo sale de una clase | El frame no llega como RGB 0–1 (se pasó BGR o 0–255) o no se recortó un cuadrado. |
+| Error del delegado GPU en algún Android | Usar el delegado por defecto (CPU) con `eggs_v2_int8.tflite`. |
+| Va lento | INT8, `runAtTargetFps(10, ...)`, y no dibujar en cada frame. |
+
+### Prompt de contexto para su asistente de IA
+
+Copien esto al inicio de la conversación con la IA que usen (Claude, ChatGPT, Copilot…) para que tenga el contexto correcto:
+
+```text
+Estoy integrando un modelo de visión por computadora en una app React Native con Expo (Android e iOS).
+
+OBJETIVO
+- Detectar huevos en VIDEO EN VIVO desde la cámara (frame a frame, sin tomar fotos) y
+  clasificarlos como 0 = Crack (rajado) o 1 = Intact (sano).
+- La inferencia corre EN EL CELULAR. No hay backend para la detección.
+
+RESTRICCIONES (no las cambies)
+- NO se usa Expo Go: usamos un Expo development build (expo-dev-client), porque las
+  librerías son nativas. No me propongas soluciones que requieran Expo Go ni expo-camera
+  para la detección.
+- Librerías: react-native-vision-camera (frame processors), react-native-worklets-core,
+  vision-camera-resize-plugin y react-native-fast-tflite.
+- El modelo ya está entrenado y exportado; no hay que reentrenarlo ni convertirlo.
+
+MODELO (YOLOv8n exportado a TFLite)
+- Archivo: assets/models/eggs_v2_fp32.tflite (recomendado, delegado 'android-gpu' en
+  Android y 'core-ml' en iOS). Alternativa: eggs_v2_int8.tflite (CPU), misma entrada y salida.
+- Entrada: 1 tensor float32 de forma [1, 640, 640, 3], NHWC, RGB, valores 0..1.
+  Se obtiene recortando un CUADRADO centrado del frame y escalándolo a 640x640 con
+  vision-camera-resize-plugin: { crop, scale: {width: 640, height: 640}, pixelFormat: 'rgb', dataType: 'float32' }.
+- Salida: 1 tensor float32 [1, 6, 8400] (Float32Array plano de 6*8400).
+  El valor c del candidato i está en out[c * 8400 + i]:
+    c=0 cx, c=1 cy, c=2 w, c=3 h  -> caja normalizada 0..1 respecto al cuadrado de 640
+    c=4 score Crack, c=5 score Intact -> ya son probabilidades 0..1 (sigmoide aplicada)
+  NO incluye NMS.
+- Decodificación: para cada i, clase = argmax(score Crack, score Intact), conf = ese score;
+  descartar conf < 0.5; NMS agnóstico a la clase con IoU 0.5; convertir la caja a píxeles
+  del cuadrado recortado (x = crop.x + cx * lado, etc.).
+- Recomendaciones: runAtTargetFps ~10-15; pasar resultados al hilo JS con
+  Worklets.createRunOnJS; decidir la clase por mayoría en los últimos 5-10 frames.
+
+REFERENCIA
+- La documentación completa y un ejemplo de frame processor están en MODELO_IO.md del
+  repositorio del modelo: https://github.com/dportilla219/eggs-detector
+
+Antes de escribir código, verifica en la documentación oficial las APIs exactas de las
+versiones que tengo instaladas (vision-camera v4+, fast-tflite, resize-plugin), porque
+cambian entre versiones.
+
+Lo que necesito ahora es: <describir la tarea>
+```
+
 ## Resultados
 | | v1 | v2 |
 |---|---|---|
