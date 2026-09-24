@@ -1,0 +1,22 @@
+# Dataset (vive en Google Drive: /content/drive/MyDrive/eggs_v2)
+*.zip
+eggs_v2/
+datasets/
+*.cache
+
+# Pesos y resultados de entrenamiento (viven en Drive: eggs_v2/runs)
+runs/
+*.pt
+*.onnx
+*_saved_model/
+
+# Python / Jupyter
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
