@@ -1,0 +1,87 @@
+{
+  "modelo": "v2",
+  "clases": {
+    "0": "Crack",
+    "1": "Intact"
+  },
+  "conf_recomendado": 0.52,
+  "entrada": {
+    "shape": [
+      1,
+      640,
+      640,
+      3
+    ],
+    "dtype": "float32",
+    "layout": "NHWC RGB 0..1"
+  },
+  "salida": {
+    "shape": [
+      1,
+      6,
+      8400
+    ],
+    "dtype": "float32",
+    "filas": [
+      "cx",
+      "cy",
+      "w",
+      "h",
+      "score_Crack",
+      "score_Intact"
+    ]
+  },
+  "archivos_MB": {
+    "fp32": 12.27,
+    "int8": 3.34
+  },
+  "verificacion": {
+    "pt": {
+      "mAP50": 0.9933,
+      "mAP50-95": 0.9856,
+      "mAP50-95 Crack": 0.9858,
+      "mAP50-95 Intact": 0.9855,
+      "ms/img (GPU)": 169.6797
+    },
+    "fp32": {
+      "mAP50": 0.9935,
+      "mAP50-95": 0.9692,
+      "mAP50-95 Crack": 0.9616,
+      "mAP50-95 Intact": 0.9767,
+      "ms/img (Colab CPU)": 213.8497
+    },
+    "int8": {
+      "mAP50": 0.987,
+      "mAP50-95": 0.837,
+      "mAP50-95 Crack": 0.8259,
+      "mAP50-95 Intact": 0.8481,
+      "ms/img (Colab CPU)": 199.8111
+    }
+  },
+  "test_original_por_clase": {
+    "P": {
+      "Crack": 0.9897,
+      "Intact": 0.9318
+    },
+    "R": {
+      "Crack": 0.9584,
+      "Intact": 0.9762
+    },
+    "mAP50": {
+      "Crack": 0.981,
+      "Intact": 0.9878
+    },
+    "mAP50-95": {
+      "Crack": 0.9702,
+      "Intact": 0.9697
+    }
+  },
+  "acierto_por_grupo": {
+    "A: Intact fuera del montaje": 0.994,
+    "B: Crack en el montaje": 1.0,
+    "P: fondo procedural": 0.98,
+    "orig: Crack montaje": 0.851,
+    "orig: Crack otras fuentes": 0.98,
+    "orig: Intact montaje": 0.976
+  }
+}

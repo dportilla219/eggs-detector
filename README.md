@@ -8,14 +8,14 @@ Modelo de detección para clasificar huevos en **video en vivo** (frame a frame)
 | 1 | `Intact` | huevo sano |
 
 ## Entregable
-- `.tflite` (FP32 e INT8) con entrada NHWC `[1, 640, 640, 3]` y salida `[1, 6, 8400]`. Se guardan en `MyDrive/eggs_v2/exports/<run>/`.
+- [`modelo/eggs_v2_fp32.tflite`](modelo/) (12,3 MB, recomendado) y `eggs_v2_int8.tflite` (3,3 MB), con entrada NHWC `[1, 640, 640, 3]` y salida `[1, 6, 8400]`. También están en `MyDrive/eggs_v2/exports/v2/`.
 - **[MODELO_IO.md](MODELO_IO.md)**: entrada, salida, decodificación y ejemplo de integración para la app.
 
 ## Historial de modelos
 | run | resumen |
 |---|---|
 | `v1` | YOLOv8n, 91 épocas. Test: mAP50 0.982 / mAP50-95 0.960. **Problema:** todas las fotos Intact son de un mismo montaje y todas las de otras fuentes son Crack, así que el modelo puede decidir por el fondo. |
-| `v2` | Fine-tune de `v1` con imágenes sintéticas (huevos intercambiados entre fondos) para que el fondo no delate la clase. Sin copias `_dup`. |
+| `v2` ✅ | Fine-tune de `v1` con imágenes sintéticas (huevos intercambiados entre fondos) y sin copias `_dup`. Test original: mAP50-95 0.970 en ambas clases. Huevos sanos fuera del montaje: acierto 0.68 → **0.99**. **Es el modelo entregado.** |
 
 ## Contenido
 - `eggs_train.ipynb`: preparación del dataset, entrenamiento y evaluación de `v1`.
@@ -30,7 +30,7 @@ Modelo de detección para clasificar huevos en **video en vivo** (frame a frame)
   8. Errores del modelo elegido.
   9. Export a LiteRT/TFLite con entrada NHWC (FP32 + INT8).
   10. Verificación `.pt` vs `.tflite` y `resumen.json` para la app.
-- `resultados/`: métricas por época de cada run (`results.csv`).
+- `resultados/`: métricas por época (`v1/results.csv`) y verificación del modelo entregado (`v2/resumen.json`).
 
 ## Datos y resultados
 No se suben al repo. Viven en Google Drive:

@@ -2,14 +2,14 @@
 
 Guía para integrar el detector en la app React Native / Expo con `react-native-vision-camera` + `react-native-fast-tflite`.
 
-> **Pendiente de completar:** el modelo definitivo, el tamaño de los archivos, las métricas y el umbral salen de `resumen.json` al terminar `eggs_v2.ipynb`. Los valores marcados con ⏳ se actualizan entonces. El formato de entrada/salida descrito aquí no cambia.
+Modelo: **`v2`** (YOLOv8n). Los archivos están en Google Drive, en `MyDrive/eggs_v2/exports/v2/`, y en la carpeta [`modelo/`](modelo/) de este repo. Los datos de la verificación están en [`resultados/v2/resumen.json`](resultados/v2/resumen.json).
 
 ## Archivos
 
 | archivo | tamaño | cuándo usarlo |
 |---|---|---|
-| `eggs_<modelo>_fp32.tflite` | ⏳ ~12 MB | Recomendado. Con delegado GPU (Android) o Core ML (iOS), que lo ejecutan en FP16. |
-| `eggs_<modelo>_int8.tflite` | ⏳ ~3–4 MB | Si el GPU delegate no está disponible o se necesita menos tamaño. Corre en CPU. |
+| `eggs_v2_fp32.tflite` | 12,3 MB | **Recomendado.** Con delegado GPU (Android) o Core ML (iOS), que lo ejecutan en FP16. Da los mismos resultados que el modelo original. |
+| `eggs_v2_int8.tflite` | 3,3 MB | Alternativa ligera para CPU. Clasifica casi igual, pero sus cajas son algo menos precisas (ver *Rendimiento*). |
 
 Ambos tienen **la misma entrada y salida**. Se pueden cambiar sin tocar el código de decodificación.
 
@@ -53,7 +53,7 @@ Son 8400 candidatos (80×80 + 40×40 + 20×20 celdas). En el `Float32Array` plan
 ## Decodificación
 
 1. Para cada candidato `i`, la clase es la de mayor score (fila 4 o 5) y la confianza es ese score.
-2. Se descartan los candidatos con confianza `< CONF` (**⏳ 0.5**, recomendado por la curva F1).
+2. Se descartan los candidatos con confianza `< CONF` (**0.5**; la curva F1 da 0.52 y el rendimiento es casi igual en un rango amplio, 0.1–0.9).
 3. NMS **agnóstico a la clase** con IoU 0.5: ordenar por confianza y descartar las cajas que solapen más de 0.5 con una ya aceptada, sin importar su clase. Así un mismo huevo no sale a la vez como Crack e Intact.
 4. Convertir a píxeles del cuadrado recortado: `x1 = (cx - w/2) * lado`, `y1 = (cy - h/2) * lado`, etc. Después sumar el offset del recorte para llevarlas al frame.
 
@@ -65,7 +65,7 @@ import { useResizePlugin } from 'vision-camera-resize-plugin';
 import { useTensorflowModel } from 'react-native-fast-tflite';
 
 const N = 8400;
-const CONF = 0.5; // ⏳ confirmar con resumen.json
+const CONF = 0.5;
 const IOU = 0.5;
 
 function iou(a: number[], b: number[]) {
@@ -78,7 +78,7 @@ function iou(a: number[], b: number[]) {
 }
 
 export function useEggDetector() {
-  const tflite = useTensorflowModel(require('../assets/eggs_model_fp32.tflite'), 'android-gpu'); // iOS: 'core-ml'
+  const tflite = useTensorflowModel(require('../assets/eggs_v2_fp32.tflite'), 'android-gpu'); // iOS: 'core-ml'
   const model = tflite.state === 'loaded' ? tflite.model : undefined;
   const { resize } = useResizePlugin();
 
@@ -131,7 +131,37 @@ config.resolver.assetExts.push('tflite');
 
 ## Rendimiento medido
 
-⏳ Se completa con `resumen.json`: métricas por clase en test, acierto sobre fondos distintos al del entrenamiento y comparación `.pt` vs `.tflite`.
+**Test original** (382 fotos reales que el modelo no vio al entrenar):
+
+| clase | precisión | recall | mAP50 | mAP50-95 |
+|---|---|---|---|---|
+| Crack | 0.990 | 0.958 | 0.981 | 0.970 |
+| Intact | 0.932 | 0.976 | 0.988 | 0.970 |
+
+**Acierto por imagen** con conf 0.5. Las imágenes sintéticas son huevos del test recortados y pegados sobre otros fondos, para comprobar que el modelo mira el huevo y no el fondo:
+
+| grupo | acierto |
+|---|---|
+| Huevo sano fuera del montaje de entrenamiento (sintético) | 0.99 |
+| Huevo rajado dentro del montaje (sintético) | 1.00 |
+| Huevos sobre fondos variados (sintético) | 0.98 |
+| Huevo rajado, fotos reales de otras fuentes | 0.98 |
+| Huevo sano, fotos reales del montaje | 0.98 |
+| Huevo rajado, fotos reales del montaje | 0.85 |
+
+El grupo más débil son las fotos del montaje donde la grieta casi no se ve (del otro lado o muy fina a 224 px). En video, al girar el huevo, conviene que la grieta quede a la vista de la cámara.
+
+**`.tflite` frente al modelo original** (test original + sintéticas, 918 imágenes):
+
+| archivo | mAP50 | mAP50-95 |
+|---|---|---|
+| modelo original `.pt` | 0.993 | 0.986 |
+| `eggs_v2_fp32.tflite` | 0.994 | 0.969 |
+| `eggs_v2_int8.tflite` | 0.987 | 0.837 |
+
+El mAP50 mide sobre todo si acierta la clase, y es prácticamente igual en los tres. El mAP50-95 mide lo ajustada que queda la caja: FP32 está muy cerca y INT8 es más aproximado. Para decir "rajado / sano" los dos sirven.
+
+**Velocidad:** en la CPU de Colab (x86) ambos tardan ~200 ms por imagen, pero no es representativo. En el teléfono, con el delegado GPU o Core ML, se espera bastante menos, e INT8 es más rápido que FP32 en CPU ARM. Hay que medirlo en el dispositivo real.
 
 ## Limitaciones conocidas
 
