@@ -4,7 +4,9 @@ Guía para integrar el detector en la app React Native / Expo con `react-native-
 
 Modelo: **`v2`** (YOLOv8n). Los archivos están en Google Drive, en `MyDrive/eggs_v2/exports/v2/`, y en la carpeta [`modelo/`](modelo/) de este repo. Los datos de la verificación están en [`resultados/v2/resumen.json`](resultados/v2/resumen.json).
 
-## ⚠️ No funciona en Expo Go
+## ⚠️ Development build, no Expo Go
+
+Decisión del equipo: la app se ejecuta en un **Expo development build**.
 
 `react-native-vision-camera`, `react-native-fast-tflite` y `vision-camera-resize-plugin` son **módulos nativos**. Expo Go no los incluye, así que la app fallará al abrir la cámara o cargar el modelo. Esto no depende del modelo: pasa con cualquier `.tflite`.
 

@@ -6,6 +6,7 @@
 
 ## Alcance y entregable
 - Mi parte es **solo el modelo**. Mis compañeros lo integran en una app **React Native / Expo** (Android e iOS) con `react-native-vision-camera` + `react-native-fast-tflite`.
+- **La app corre en un Expo development build (`expo-dev-client`), no en Expo Go.** vision-camera y fast-tflite son módulos nativos que Expo Go no incluye. Se consideró ejecutar en Expo Go (WebView + ONNX Runtime Web, o un servidor) y el equipo eligió el development build.
 - Entregable final: un **`.tflite` ligero** (apto para tiempo real en el móvil) + **documentación de entrada/salida** (tamaño y formato de entrada, normalización, dtype, forma del tensor de salida y cómo decodificarlo: cajas, scores, clases, NMS).
 
 ## Entorno
