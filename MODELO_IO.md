@@ -197,3 +197,154 @@ El mAP50 mide sobre todo si acierta la clase, y es prácticamente igual en los t
 
 - Todas las fotos reales de huevos sanos vienen de un único montaje (fondo gris, base negra). Para compensarlo se entrenó con imágenes sintéticas (huevos recortados sobre otros fondos), pero **el modelo no se ha validado aún con video real** en otros fondos e iluminaciones. Conviene probarlo pronto y, si falla, guardar esos frames para reentrenar.
 - Entrenado sobre todo con un huevo por imagen. Con varios huevos juntos (por ejemplo en un cartón) puede rendir peor.
+
+---
+
+# Modelo 2: zona dañada y gravedad (`v3_dano`)
+
+Es un segundo modelo, **opcional**, que se usa **junto con `v2`**. `v2` encuentra cada huevo y dice si está rajado. `v3_dano` recibe el **recorte de un huevo** y devuelve dos máscaras: la silueta del huevo y la **zona dañada**. Con ellas la app puede:
+
+- **pintar dónde está el daño** encima del huevo, en el video;
+- calcular la **gravedad**: el % de la cáscara que está dañada (leve / media / grave).
+
+`v2` no cambia: su entrada, su salida y su código siguen igual.
+
+## Archivos
+
+| archivo | tamaño | cuándo usarlo |
+|---|---|---|
+| `eggs_dano_v3_fp16.tflite` | 4,9 MB | **Recomendado.** Da los mismos resultados que FP32 con la mitad de tamaño. Con delegado GPU / Core ML. |
+| `eggs_dano_v3_fp32.tflite` | 9,6 MB | Referencia. Útil si el delegado da problemas con FP16. |
+
+Misma entrada y salida en los dos. En Drive: `MyDrive/eggs_v2/exports/v3_dano/`.
+
+## Flujo
+
+```
+frame ──► v2 (cuadrado 640×640) ──► cajas + Crack/Intact
+                                         │  solo huevos Crack
+                                         ▼
+          recorte del huevo en el FRAME COMPLETO (caja + 10 %) ──► 192×192 ──► v3_dano ──► máscaras
+```
+
+Recortar del **frame completo**, no del cuadrado de 640, aprovecha la resolución de la cámara, y así las grietas finas se ven mejor.
+
+## Entrada
+
+| | |
+|---|---|
+| forma | `[1, 192, 192, 3]` (NHWC) |
+| tipo | `float32` |
+| color | **RGB**, rango `0.0 – 1.0` (igual que `v2`) |
+
+**Cómo se hace el recorte** (tiene que ser igual al del entrenamiento):
+1. Tomar la caja de `v2` en píxeles del frame: `x1, y1, x2, y2`, con ancho `w` y alto `h`.
+2. Expandirla un **10 %**: 5 % por cada lado, en ancho y en alto.
+   `x1' = x1 − 0.05·w`, `x2' = x2 + 0.05·w`, `y1' = y1 − 0.05·h`, `y2' = y2 + 0.05·h`.
+3. Recortar al borde del frame si se sale.
+4. **Estirar** ese rectángulo a 192×192. Sin mantener la proporción: el modelo se entrenó con el recorte estirado.
+
+## Salida
+
+| | |
+|---|---|
+| forma | `[1, 192, 192, 2]` |
+| tipo | `float32`, probabilidades `0–1` (sigmoide aplicada) |
+
+En el `Float32Array` plano, el píxel `(x, y)` del canal `c` está en `out[(y * 192 + x) * 2 + c]`:
+
+| canal `c` | contenido |
+|---|---|
+| 0 | silueta del **huevo** |
+| 1 | **zona dañada** |
+
+Un píxel es huevo o daño si su valor es `> 0.5`.
+
+**Gravedad:** `daño / huevo`, contando solo los píxeles de daño que están **dentro** de la silueta.
+
+| gravedad | % dañado (según el modelo) |
+|---|---|
+| leve | < 15 % |
+| media | 15 – 35 % |
+| grave | ≥ 35 % |
+
+Los umbrales están pensados para la escala que da el modelo, que tiende a quedarse **por debajo** de la anotación (ver *Rendimiento*). Se pueden ajustar.
+
+**Dibujar:** pinten solo el canal de daño. El canal de huevo puede dejar manchas pequeñas en el fondo del recorte, así que no dibujen su contorno. Para llevar la máscara al frame, el píxel `(x, y)` del recorte corresponde a `(rx + x · rw/192, ry + y · rh/192)`, donde `rx, ry, rw, rh` es el rectángulo recortado en el paso 3.
+
+## Ejemplo (frame processor)
+
+Continúa el ejemplo de `v2`: `eggs` son las detecciones ya pasadas por NMS, con la caja normalizada al cuadrado `crop` de lado `side`.
+
+```ts
+const S = 192;
+const damageTflite = useTensorflowModel(require('../assets/eggs_dano_v3_fp16.tflite'), 'android-gpu'); // iOS: 'core-ml'
+const damageModel = damageTflite.state === 'loaded' ? damageTflite.model : undefined;
+
+// dentro del frame processor, después de obtener `eggs`:
+for (const egg of eggs) {
+  if (egg.cls !== 0 || damageModel == null) continue;          // solo huevos Crack
+  // caja en píxeles del frame
+  const x1 = crop.x + egg.box[0] * side, y1 = crop.y + egg.box[1] * side;
+  const x2 = crop.x + egg.box[2] * side, y2 = crop.y + egg.box[3] * side;
+  const w = x2 - x1, h = y2 - y1;
+  // +10 % (5 % por lado), recortado al frame
+  const rx = Math.max(0, x1 - 0.05 * w), ry = Math.max(0, y1 - 0.05 * h);
+  const rw = Math.min(frame.width, x2 + 0.05 * w) - rx, rh = Math.min(frame.height, y2 + 0.05 * h) - ry;
+
+  const input = resize(frame, {
+    crop: { x: rx, y: ry, width: rw, height: rh },
+    scale: { width: S, height: S },          // estirado, sin mantener proporción
+    pixelFormat: 'rgb',
+    dataType: 'float32',
+  });
+  const out = damageModel.runSync([input])[0] as Float32Array;
+
+  let eggPx = 0, dmgPx = 0;
+  const mask = new Uint8Array(48 * 48);      // máscara reducida para dibujar en el hilo JS
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      const i = (y * S + x) * 2;
+      if (out[i] > 0.5) {
+        eggPx++;
+        if (out[i + 1] > 0.5) {
+          dmgPx++;
+          mask[(y >> 2) * 48 + (x >> 2)] = 1;
+        }
+      }
+    }
+  }
+  const severity = eggPx > 0 ? dmgPx / eggPx : 0;           // 0..1
+  const level = severity < 0.15 ? 'leve' : severity < 0.35 ? 'media' : 'grave';
+  // enviar { rect: [rx, ry, rw, rh], mask, severity, level } al hilo JS y dibujar
+  // cada celda de `mask` como un rectángulo semitransparente de rw/48 × rh/48
+}
+```
+
+## Recomendaciones
+
+- **Solo sobre huevos Crack** y a menor frecuencia que el detector: 3–5 veces por segundo por huevo es suficiente. La máscara se puede reutilizar entre frames mientras la caja no se mueva mucho.
+- **Suavizar la gravedad:** mostrar la media de los últimos 5–10 valores, igual que la clase.
+- **Grietas del otro lado:** el modelo solo ve la cara que mira a la cámara. Girar el huevo cambia la gravedad; conviene mostrar el máximo observado mientras el huevo esté a la vista.
+
+## Rendimiento medido
+
+Datos: 35 huevos rajados y 30 sanos de **test**, que el modelo no vio al entrenar. **Tubería completa**: `v2` detecta la caja (encontró los 65 huevos, IoU medio de caja 0.88), se recorta como en la app y se segmenta.
+
+| métrica | valor |
+|---|---|
+| IoU de la silueta del huevo | 0.90 |
+| IoU de la zona dañada (huevos rajados) | 0.64 |
+| Error medio de la gravedad | ±9,6 puntos de % |
+| Huevos rajados con daño detectado (> 3 %) | 35 / 35 |
+| Huevos sanos con daño detectado (> 3 %) | 0 / 30 |
+
+`.tflite` frente a Keras: FP32 da exactamente lo mismo (diferencia < 1e-4). FP16 difiere hasta 0.23 en algún píxel suelto, pero las métricas son iguales (IoU de daño 0.641 frente a 0.641). Detalle por huevo en [`resultados/v3_dano/resumen.json`](resultados/v3_dano/resumen.json).
+
+La gravedad predicha suele quedar **por debajo** de la anotada. Las zonas anotadas se marcaron sobre una rejilla de 10×10 y son algo más amplias que el daño real, así que el modelo es más ajustado que la etiqueta.
+
+## Limitaciones
+
+- La **zona dañada** es una región, no el trazo exacto de la grieta. Así se anotó: 420 huevos rajados: 351 de train, 34 de valid y 35 de test, sobre una rejilla de 10×10 por huevo.
+- Las fotos del **montaje** (224 px) no se anotaron, porque la grieta casi nunca se distingue. En huevos de ese montaje el modelo puede marcar poco o ningún daño.
+- Los negativos son huevos sanos del montaje. **No se ha validado con video real.** Es lo primero que hay que probar en la app.

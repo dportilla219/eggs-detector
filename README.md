@@ -10,15 +10,19 @@ Modelo de detección para clasificar huevos en **video en vivo** (frame a frame)
 ## Estado
 **Modelo entregado: `v2`.** Exportado a TFLite, verificado contra el modelo original y probado localmente con la decodificación documentada. Falta validarlo con video real en la app.
 
+**Extra: `v3_dano`.** Es un segundo modelo, opcional, que recibe el recorte de cada huevo rajado y devuelve la **zona dañada**. Con ella la app pinta dónde está el daño y calcula la **gravedad** (leve / media / grave). En test, con las cajas de `v2`, el IoU de la zona es 0.64 y el error de la gravedad ±9,6 puntos; marca daño en 35/35 rajados y en 0/30 sanos.
+
 ## Entregable
 | archivo | tamaño | uso |
 |---|---|---|
 | [`modelo/eggs_v2_fp32.tflite`](modelo/) | 12,3 MB | **Recomendado.** Delegado GPU: `'android-gpu'` en Android, `'core-ml'` en iOS. |
 | [`modelo/eggs_v2_int8.tflite`](modelo/) | 3,3 MB | Alternativa si el delegado GPU falla o el modelo tiene que correr en CPU. Misma entrada y salida. |
+| [`modelo/eggs_dano_v3_fp16.tflite`](modelo/) | 4,9 MB | Extra opcional: zona dañada y gravedad de cada huevo Crack. Entrada `[1,192,192,3]` (recorte del huevo); salida `[1,192,192,2]` (huevo, daño). |
+| [`modelo/eggs_dano_v3_fp32.tflite`](modelo/) | 9,6 MB | Lo mismo en FP32 (referencia). |
 
 - Entrada NHWC `[1, 640, 640, 3]` float32 RGB 0–1. Salida `[1, 6, 8400]`: `cx, cy, w, h` normalizados + score de Crack e Intact. Sin NMS. Umbral recomendado: **0.5**.
 - ⚠️ **Se usa un Expo development build (`expo-dev-client`), no Expo Go**: la cámara y TFLite son módulos nativos que Expo Go no incluye. Los pasos están en MODELO_IO.md.
-- **[MODELO_IO.md](MODELO_IO.md)**: entrada, salida, decodificación, código de ejemplo para el frame processor y recomendaciones para video en vivo.
+- **[MODELO_IO.md](MODELO_IO.md)**: entrada, salida, decodificación, código de ejemplo para el frame processor y recomendaciones para video en vivo. Al final está la sección del modelo de zona dañada: recorte, máscaras, gravedad y su propio ejemplo.
 - Copia de los modelos en Google Drive: `MyDrive/eggs_v2/exports/v2/`.
 
 **¿Qué modelo usar?** Empezar con FP32 + GPU y medir los FPS en un celular de gama media. Con 15 o más inferencias por segundo alcanza. Si va lento o el delegado falla en algún dispositivo, cambiar a INT8: basta con cambiar el nombre del archivo.
@@ -166,6 +170,16 @@ MODELO (YOLOv8n exportado a TFLite)
 - Recomendaciones: runAtTargetFps ~10-15; pasar resultados al hilo JS con
   Worklets.createRunOnJS; decidir la clase por mayoría en los últimos 5-10 frames.
 
+MODELO 2 OPCIONAL: ZONA DAÑADA (eggs_dano_v3_fp16.tflite)
+- Solo para huevos clasificados Crack. Entrada float32 [1, 192, 192, 3] NHWC RGB 0..1:
+  la caja del huevo en píxeles del FRAME COMPLETO, expandida 5 % por lado (ancho y alto),
+  recortada al frame y ESTIRADA a 192x192 (resize-plugin: crop + scale, sin mantener proporción).
+- Salida float32 [1, 192, 192, 2]; píxel (x,y) canal c en out[(y*192+x)*2+c].
+  c=0 silueta del huevo, c=1 zona dañada; > 0.5 = sí.
+- Gravedad = píxeles (daño y huevo) / píxeles huevo. Leve < 0.15, media < 0.35, grave >= 0.35.
+- Dibujar solo el canal de daño (no el contorno del huevo) sobre el rectángulo recortado.
+- Ejecutarlo 3-5 veces por segundo por huevo y suavizar la gravedad en 5-10 valores.
+
 REFERENCIA
 - La documentación completa y un ejemplo de frame processor están en MODELO_IO.md del
   repositorio del modelo: https://github.com/dportilla219/eggs-detector
@@ -194,6 +208,7 @@ Las filas "sintético" miden el acierto por imagen con conf 0.5. `.tflite` frent
 |---|---|
 | `v1` | YOLOv8n desde `yolov8n.pt`, 91 épocas (parada por `patience`). **Problema:** todas las fotos Intact son de un mismo montaje y todas las de otras fuentes son Crack, así que el modelo aprendió en parte a decidir por el fondo. Clasificaba como Crack 1 de cada 3 huevos sanos fuera del montaje. |
 | `v2` ✅ | Fine-tune de `v1`, 60 épocas, con ~2.600 imágenes sintéticas (huevos intercambiados entre fondos) y sin las copias `_dup`. Quita el atajo del fondo sin empeorar el test original. |
+| `v3_dano` ✅ | Segundo modelo (MobileNetV2-0.5 + U-Net, 80 épocas) que segmenta la silueta y la zona dañada en el recorte de cada huevo. Anotaciones propias: 420 huevos rajados marcados sobre una rejilla 10×10 y siluetas con SAM 2.1. No sustituye a `v2`: va detrás de él. |
 
 ## Contenido
 - `modelo/`: los `.tflite` entregados.
@@ -210,7 +225,9 @@ Las filas "sintético" miden el acierto por imagen con conf 0.5. `.tflite` frent
   8. Errores del modelo elegido.
   9. Export a LiteRT/TFLite con entrada NHWC (FP32 + INT8).
   10. Verificación `.pt` vs `.tflite` y `resumen.json`.
-- `resultados/`: métricas por época de `v1` (`v1/results.csv`) y verificación del modelo entregado (`v2/resumen.json`).
+- `eggs_v3_dano.ipynb`: modelo de zona dañada, ejecutado de arriba abajo en Colab con GPU. Genera el dataset de recortes con SAM y las anotaciones, lo revisa visualmente, entrena `v3_dano`, exporta a TFLite (FP32 + FP16) y evalúa la tubería completa `v2` → recorte → `v3_dano`.
+- `dano/`: scripts que usa ese notebook y las anotaciones (`dano/anotaciones/`). Cada línea de `ann_*.txt` indica las celdas dañadas de un huevo, por ejemplo `12: B3-5 C4`.
+- `resultados/`: métricas por época de `v1` (`v1/results.csv`), verificación del modelo entregado (`v2/resumen.json`) y evaluación del modelo de zona dañada (`v3_dano/resumen.json`, `v3_dano/ejemplos_test.jpg`).
 
 ## Datos y resultados en Drive
 No se suben al repo:
@@ -227,4 +244,5 @@ No se suben al repo:
 
 ## Próximos pasos
 - Probar el modelo con video real en la app: otros fondos, iluminación, huevo en la mano, varios huevos juntos.
-- Guardar los frames donde falle. Son los datos para un posible `v3`: fotos reales de huevos sanos fuera del montaje y grietas vistas desde varios ángulos.
+- Guardar los frames donde falle. Son los datos para una siguiente versión del detector: fotos reales de huevos sanos fuera del montaje y grietas vistas desde varios ángulos.
+- Zona dañada: comprobar en video que la gravedad no salta entre frames y ajustar los umbrales leve / media / grave con huevos reales.
