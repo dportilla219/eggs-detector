@@ -4,6 +4,34 @@ Guía para integrar el detector en la app React Native / Expo con `react-native-
 
 Modelo: **`v2`** (YOLOv8n). Los archivos están en Google Drive, en `MyDrive/eggs_v2/exports/v2/`, y en la carpeta [`modelo/`](modelo/) de este repo. Los datos de la verificación están en [`resultados/v2/resumen.json`](resultados/v2/resumen.json).
 
+## ⚠️ No funciona en Expo Go
+
+`react-native-vision-camera`, `react-native-fast-tflite` y `vision-camera-resize-plugin` son **módulos nativos**. Expo Go no los incluye, así que la app fallará al abrir la cámara o cargar el modelo. Esto no depende del modelo: pasa con cualquier `.tflite`.
+
+Hay que usar un **development build**, que se instala en el celular y se usa casi igual que Expo Go, con recarga en caliente:
+
+```bash
+npx expo install expo-dev-client react-native-vision-camera react-native-worklets-core vision-camera-resize-plugin react-native-fast-tflite
+npx expo prebuild
+npx expo run:android      # o: npx expo run:ios
+# sin Android Studio / Xcode: eas build --profile development
+```
+
+En `app.json`, activar los plugins. Revisen las opciones exactas en el README de cada librería para la versión que instalen:
+
+```json
+{
+  "expo": {
+    "plugins": [
+      ["react-native-vision-camera", { "cameraPermissionText": "Se usa la cámara para revisar los huevos." }],
+      ["react-native-fast-tflite", { "enableCoreMLDelegate": true, "enableAndroidGpuLibraries": true }]
+    ]
+  }
+}
+```
+
+El modelo corre **en el celular**. No hace falta un backend para la inferencia; el backend solo se necesita si quieren guardar resultados o historial.
+
 ## Archivos
 
 | archivo | tamaño | cuándo usarlo |

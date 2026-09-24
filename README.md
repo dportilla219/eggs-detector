@@ -17,6 +17,7 @@ Modelo de detección para clasificar huevos en **video en vivo** (frame a frame)
 | [`modelo/eggs_v2_int8.tflite`](modelo/) | 3,3 MB | Alternativa si el delegado GPU falla o el modelo tiene que correr en CPU. Misma entrada y salida. |
 
 - Entrada NHWC `[1, 640, 640, 3]` float32 RGB 0–1. Salida `[1, 6, 8400]`: `cx, cy, w, h` normalizados + score de Crack e Intact. Sin NMS. Umbral recomendado: **0.5**.
+- ⚠️ **No funciona en Expo Go**: la cámara y TFLite son módulos nativos, así que hace falta un *development build* (`expo-dev-client`). Los pasos están en MODELO_IO.md.
 - **[MODELO_IO.md](MODELO_IO.md)**: entrada, salida, decodificación, código de ejemplo para el frame processor y recomendaciones para video en vivo.
 - Copia de los modelos en Google Drive: `MyDrive/eggs_v2/exports/v2/`.
 
