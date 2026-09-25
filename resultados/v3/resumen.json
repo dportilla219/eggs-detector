@@ -1,0 +1,161 @@
+{
+  "modelo": "v3",
+  "clases": {
+    "0": "Crack",
+    "1": "Intact"
+  },
+  "conf_recomendado": 0.5,
+  "entrada": {
+    "shape": [
+      1,
+      640,
+      640,
+      3
+    ],
+    "dtype": "float32",
+    "layout": "NHWC RGB 0..1"
+  },
+  "salida": {
+    "shape": [
+      1,
+      6,
+      8400
+    ],
+    "dtype": "float32",
+    "filas": [
+      "cx",
+      "cy",
+      "w",
+      "h",
+      "score_Crack",
+      "score_Intact"
+    ]
+  },
+  "archivos_MB": {
+    "fp32": 12.27,
+    "int8": 3.34
+  },
+  "verificacion": {
+    "pt": {
+      "mAP50": 0.9927,
+      "mAP50-95": 0.9854,
+      "mAP50-95 Crack": 0.9828,
+      "mAP50-95 Intact": 0.988,
+      "ms/img (GPU)": 3.8796
+    },
+    "fp32": {
+      "mAP50": 0.9933,
+      "mAP50-95": 0.9712,
+      "mAP50-95 Crack": 0.9627,
+      "mAP50-95 Intact": 0.9797,
+      "ms/img (CPU)": 144.102
+    },
+    "int8": {
+      "mAP50": 0.9878,
+      "mAP50-95": 0.8338,
+      "mAP50-95 Crack": 0.8256,
+      "mAP50-95 Intact": 0.8421,
+      "ms/img (CPU)": 150.8823
+    }
+  },
+  "test_original_por_clase": {
+    "P": {
+      "Crack": 0.9872,
+      "Intact": 0.9228
+    },
+    "R": {
+      "Crack": 0.9635,
+      "Intact": 0.996
+    },
+    "mAP50": {
+      "Crack": 0.9809,
+      "Intact": 0.9865
+    },
+    "mAP50-95": {
+      "Crack": 0.969,
+      "Intact": 0.9738
+    }
+  },
+  "pesos": "best.pt",
+  "acierto_por_grupo": {
+    "A: Intact fuera del montaje": 1.0,
+    "B: Crack en el montaje": 1.0,
+    "P: fondo procedural": 0.98,
+    "orig: Crack montaje": 0.851,
+    "orig: Crack otras fuentes": 0.984,
+    "orig: Intact montaje": 0.976,
+    "real: Crack fotos públicas": 0.232,
+    "real: Intact fotos públicas": 0.9
+  },
+  "comparacion_v2": {
+    "acierto_por_grupo_v2": {
+      "A: Intact fuera del montaje": 0.994,
+      "B: Crack en el montaje": 1.0,
+      "P: fondo procedural": 0.98,
+      "orig: Crack montaje": 0.851,
+      "orig: Crack otras fuentes": 0.98,
+      "orig: Intact montaje": 0.976,
+      "real: Crack fotos públicas": 0.524,
+      "real: Intact fotos públicas": 0.0
+    },
+    "test_original_por_clase_v2": {
+      "P": {
+        "Crack": 0.9897,
+        "Intact": 0.9318
+      },
+      "R": {
+        "Crack": 0.9584,
+        "Intact": 0.9762
+      },
+      "mAP50": {
+        "Crack": 0.981,
+        "Intact": 0.9878
+      },
+      "mAP50-95": {
+        "Crack": 0.9702,
+        "Intact": 0.9697
+      }
+    }
+  },
+  "commons": {
+    "v2": {
+      "acierto": 0.0446,
+      "n": 112,
+      "por_clase": {
+        "Crack": 0.7143,
+        "Intact": 0.0
+      }
+    },
+    "v3": {
+      "acierto": 0.9018,
+      "n": 112,
+      "por_clase": {
+        "Crack": 0.0,
+        "Intact": 0.9619
+      }
+    },
+    "v3_ultima": {
+      "acierto": 0.9196,
+      "n": 112,
+      "por_clase": {
+        "Crack": 0.4286,
+        "Intact": 0.9524
+      }
+    }
+  },
+  "fotos_publicas": {
+    "aceptadas": {
+      "pub Intact": 270,
+      "pub Crack": 548,
+      "wtr Intact": 45
+    },
+    "totales": {
+      "pub Intact": 273,
+      "pub Crack": 695,
+      "wtr Intact": 51
+    },
+    "conf_min": 0.25,
+    "rel_ok": 0.5,
+    "rel_duda": 0.3
+  }
+}

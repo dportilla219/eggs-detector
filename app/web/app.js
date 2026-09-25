@@ -697,7 +697,7 @@ function renderModelTab() {
   $('#modelCards').innerHTML = `
     <div class="card model-card"><h3>1 · Detector <code>${esc(App.det)}</code> (obligatorio)</h3>
       <p class="small muted">${esNuevo
-        ? 'YOLOv8n, fine-tune de v2 con fotos reales de huevos sanos y rajados de otras fuentes (dataset público y Wikimedia Commons, cajas puestas con Grounding DINO). Encuentra cada huevo y lo clasifica.'
+        ? 'YOLOv8n. Además del dataset original y las sintéticas de v2, se entrenó con fotos reales de huevos sanos y rajados de otras fuentes (dataset público y Wikimedia Commons, cajas puestas con Grounding DINO). Encuentra cada huevo y lo clasifica.'
         : 'YOLOv8n, fine-tune con ~2.600 imágenes sintéticas para que no aprenda el fondo. Encuentra cada huevo y lo clasifica.'}</p>
       <dl class="kv"><dt>Archivo</dt><dd><code>${esc(d.file)}</code> · ${mb(d.bytes)}</dd>
       <dt>Entrada</dt><dd>[${d.input}] float32 · RGB 0–1</dd><dt>Salida</dt><dd>[${d.output}] · cx, cy, w, h, score Crack, score Intact</dd>
@@ -720,7 +720,9 @@ function renderModelTab() {
       const g2 = R.comparacion_v2.acierto_por_grupo_v2 || {}, g3 = R.acierto_por_grupo || {};
       const filas = [...new Set([...Object.keys(g2), ...Object.keys(g3)])].sort()
         .map((k) => `<tr><td>${esc(k)}</td><td class="num">${f(g2[k])}</td><td class="num"><b>${f(g3[k])}</b></td></tr>`).join('');
-      const c = R.commons || {};
+      const c0 = R.commons || {};
+      // si se exportó last.pt, sus resultados están en "<det>_ultima"
+      const c = { ...c0, [App.det]: (R.pesos === 'last.pt' && c0[`${App.det}_ultima`]) || c0[App.det] };
       const com = ['Intact', 'Crack'].map((k) => `<tr><td>Commons · ${CLS_ES[k]}</td><td class="num">${f(c.v2?.por_clase?.[k])}</td><td class="num"><b>${f(c[App.det]?.por_clase?.[k])}</b></td></tr>`).join('');
       cmp = `<h4>${esc(App.det)} frente a v2 (acierto por foto, conf 0.5)</h4>
         <table><thead><tr><th>Grupo</th><th class="num">v2</th><th class="num">${esc(App.det)}</th></tr></thead><tbody>${filas}${com}</tbody></table>

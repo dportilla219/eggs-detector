@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <header class="top">
@@ -107,7 +107,7 @@
             <span><b>Arrastra una foto</b> o haz clic para elegirla</span>
             <span class="muted small">JPG / PNG, máx. 12 MB</span>
           </label>
-          <p class="hint small"><b>Ojo con las fotos propias:</b> todos los huevos sanos del entrenamiento se fotografiaron en un único montaje (fondo gris, base negra). Con otros fondos o con otra luz, el modelo tiende a marcar como rajados huevos que están sanos. Los rajados sí los detecta bien. Funciona mejor con el huevo centrado, sobre un fondo liso y oscuro, y con la grieta hacia la cámara.</p>
+          <p class="hint small"><b>Fotos propias:</b> el detector se entrenó con el dataset del curso y con fotos reales de huevos de otras fuentes. En fotos que no vio al entrenar acierta alrededor de 9 de cada 10 huevos, sanos y rajados. Funciona mejor con el huevo entero en la foto, buena luz y la grieta hacia la cámara; una grieta muy fina o de espaldas puede pasar como sano.</p>
           <div class="card-head mt"><h4>… o elige una del test</h4>
             <div class="seg" id="galFilter">
               <button data-f="all" class="active">Todas</button><button data-f="0">Rajados</button><button data-f="1">Sanos</button>
@@ -207,7 +207,7 @@
           <ul>
             <li><b>Responden preguntas distintas.</b> El detector (<span class="detname">v2</span>) dice <i>dónde</i> hay huevos y cuál está rajado (cajas); dano_v1 dice <i>qué parte</i> del huevo está dañada (máscara por píxel).</li>
             <li><b>Los datos no alcanzan para un modelo único.</b> Un YOLOv8-seg necesitaría la zona dañada marcada en los 2110 rajados de train; se anotaron a mano unos 420. Los que quedaran sin marcar le enseñarían lo contrario.</li>
-            <li><b>No se arriesga lo que ya funciona.</b> v2 (mAP50-95 0.97 en test) queda intacto; el extra se añade o se quita sin reentrenarlo.</li>
+            <li><b>No se arriesga lo que ya funciona.</b> El detector (mAP50-95 ≈ 0.96–0.97 en test) queda intacto; el extra se añade o se quita sin reentrenarlo.</li>
             <li><b>El segundo modelo ve mejor la grieta.</b> Recibe el huevo recortado de la imagen original, siempre a 192×192 y con toda la resolución disponible.</li>
             <li><b>Coste bajo.</b> dano_v1 pesa 4,9 MB y solo se ejecuta sobre los huevos que el detector marcó como rajados.</li>
           </ul>
@@ -226,6 +226,6 @@
     <a href="https://github.com/dportilla219/eggs-detector" target="_blank" rel="noopener">Repositorio</a>
   </footer>
 
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

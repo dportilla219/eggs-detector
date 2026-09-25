@@ -1,0 +1,2877 @@
+{
+ "elegido": "v4_ultima",
+ "pesos": "last.pt",
+ "criterio": {
+  "v4": {
+   "caida_mAP50_95_test_orig": -0.0013,
+   "peor_caida_grupo_orig": 0.0,
+   "mejora_fotos_reales_publicas": 0.4635,
+   "peor_clase_real": 0.744
+  },
+  "v4_ultima": {
+   "caida_mAP50_95_test_orig": 0.0076,
+   "peor_caida_grupo_orig": 0.0,
+   "mejora_fotos_reales_publicas": 0.578,
+   "peor_clase_real": 0.9
+  }
+ },
+ "test_original_por_clase": {
+  "v2": {
+   "P": {
+    "Crack": 0.9897,
+    "Intact": 0.9318
+   },
+   "R": {
+    "Crack": 0.9584,
+    "Intact": 0.9762
+   },
+   "mAP50": {
+    "Crack": 0.981,
+    "Intact": 0.9878
+   },
+   "mAP50-95": {
+    "Crack": 0.9702,
+    "Intact": 0.9697
+   }
+  },
+  "v3": {
+   "P": {
+    "Crack": 0.9872,
+    "Intact": 0.9228
+   },
+   "R": {
+    "Crack": 0.9635,
+    "Intact": 0.996
+   },
+   "mAP50": {
+    "Crack": 0.9809,
+    "Intact": 0.9865
+   },
+   "mAP50-95": {
+    "Crack": 0.969,
+    "Intact": 0.9738
+   }
+  },
+  "v4": {
+   "P": {
+    "Crack": 0.9937,
+    "Intact": 0.9494
+   },
+   "R": {
+    "Crack": 0.9635,
+    "Intact": 0.9881
+   },
+   "mAP50": {
+    "Crack": 0.9835,
+    "Intact": 0.9869
+   },
+   "mAP50-95": {
+    "Crack": 0.9726,
+    "Intact": 0.97
+   }
+  },
+  "v4_ultima": {
+   "P": {
+    "Crack": 0.9875,
+    "Intact": 0.9221
+   },
+   "R": {
+    "Crack": 0.9601,
+    "Intact": 1.0
+   },
+   "mAP50": {
+    "Crack": 0.9829,
+    "Intact": 0.9816
+   },
+   "mAP50-95": {
+    "Crack": 0.9637,
+    "Intact": 0.9611
+   }
+  }
+ },
+ "acierto_por_grupo": {
+  "v2": {
+   "A: Intact fuera del montaje": 0.994,
+   "B: Crack en el montaje": 1.0,
+   "P: fondo procedural": 0.98,
+   "orig: Crack montaje": 0.851,
+   "orig: Crack otras fuentes": 0.98,
+   "orig: Intact montaje": 0.976,
+   "real: Crack fotos públicas": 0.667,
+   "real: Intact fotos públicas": 0.0
+  },
+  "v3": {
+   "A: Intact fuera del montaje": 1.0,
+   "B: Crack en el montaje": 1.0,
+   "P: fondo procedural": 0.98,
+   "orig: Crack montaje": 0.851,
+   "orig: Crack otras fuentes": 0.984,
+   "orig: Intact montaje": 0.976,
+   "real: Crack fotos públicas": 0.564,
+   "real: Intact fotos públicas": 0.8
+  },
+  "v4": {
+   "A: Intact fuera del montaje": 0.994,
+   "B: Crack en el montaje": 1.0,
+   "P: fondo procedural": 0.97,
+   "orig: Crack montaje": 0.894,
+   "orig: Crack otras fuentes": 0.98,
+   "orig: Intact montaje": 0.988,
+   "real: Crack fotos públicas": 0.744,
+   "real: Intact fotos públicas": 0.85
+  },
+  "v4_ultima": {
+   "A: Intact fuera del montaje": 1.0,
+   "B: Crack en el montaje": 1.0,
+   "P: fondo procedural": 0.935,
+   "orig: Crack montaje": 0.851,
+   "orig: Crack otras fuentes": 0.98,
+   "orig: Intact montaje": 1.0,
+   "real: Crack fotos públicas": 0.923,
+   "real: Intact fotos públicas": 0.9
+  }
+ },
+ "commons": {
+  "v2": {
+   "acierto": 0.0446,
+   "n": 112,
+   "por_clase": {
+    "Crack": 0.7143,
+    "Intact": 0.0
+   },
+   "detalle": [
+    {
+     "titulo": "File:Cracked (85516059).jpeg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Day 017 - Photo365 - Eggs (16299675421).jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Which came first, the chicken or the egg - Flickr - katerha.jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown egg hatching.jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Huehnerei mit Sprung (fcm).jpg",
+     "clase": "Crack",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Cracked egg (30298255024).jpg",
+     "clase": "Crack",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Bowl of Eggs (Unsplash).jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08726jfFilipino foods fruits Bulacan landmarksfvf 46.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 17.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 18.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 21.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:09042jfCuisine Foods Philippines Baliuag Bulacanfvf 03.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:09042jfCuisine Foods Philippines Baliuag Bulacanfvf 05.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2 eggs.JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2 primeros huevos isa brown (6).JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2 primeros huevos isa brown.JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 12.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 15.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 19.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:AraucanaEgg vs Brown White.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:AT-Eierkennzeichnung.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:AZ provincia.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Bain d'eau chaude (3526896150).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Berlin frische Eier aus privater Haltung.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Blue Araucana egg.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Bring on your most eggscruciating puns! (6925079769).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Brown chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Brown chicken eggs (1).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Brown chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Brown egg.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Carton of eggs.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Chicken egg 2009-06-04.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Chicken eggs 21.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Chicken-Eggs 339411-480x360 (4900327148).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Chicken-Eggs 368816-480x360 (4900327050).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Deux oeufs bruns.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Different colored chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg (394351849).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg colours.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg food.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg on Table.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg on white background.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg perched uplon a wooden fence 2005.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg spiral egg cup.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg upright.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg W&A.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eggs (5219850239).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eggs (7177637421).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eggs (8501854880).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eggs - Home Grown (or laid) (7147848749).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eggs 3145g.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eggs 99 365 (3424917922).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eggs green brown on end.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Ei kennzeichnung.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eier (12163693795).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eier (6045563994).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eieren (7937424642).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eierkennzeichnung BMK.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:File by Alexander Baranov - (19411031842).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:First egg (7680068562).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Flickr - cyclonebill - Æg (1).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Françoise Foliot - Un oeuf de poule.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:FreeRangeEgg.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Fresh Eggs (Unsplash fBturNUtd8).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Giriraja eggs.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Hikari, Eggs rich in iodine.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Huevos de gallina de diferente tamaño.JPG",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Just lying there being pretty (4301382316).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:MonstereiXXXL.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Oeuf de poule.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Oeufs (17056124402).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Pastel de pollo - ingredientes (2).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Protein-rich Foods.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Respeggt eggs 2.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Respeggt eggs 3.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Six eggs views from the top on a white background.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Spanish eggs.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Spotted Brown Chicken Eggs (5719609727).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Standard egg sizes.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Three chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Tiny treasure, first egg (7680059460).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Tojás.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Акулиновка 26.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:001 2022 04 09 Ei.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-04-27 12 12 45 A single Medium Grade A Chicken Egg from Hillandale Farms in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-04-27 12 16 12 A single Medium Grade A Chicken Egg from Hillandale Farms in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-05-05 18 22 46 Six eggs in an open carton of a dozen Large Grade A Chicken Eggs from Egg-land's Best in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-05-05 19 30 03 A single Large Grade A Chicken Egg from Egg-land's Best in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2eggs.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:3 Egg white.JPG",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:3eggs.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Banana egg pancakes - ingredients (16842815337).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Blau Eier 05.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Chicken Egg - കോഴിമുട്ട 03.JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Chicken eggs 20101113.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:CodazziToyotaMorning1.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Egg (4245577202).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:First three egg day in eons (8529932306).jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Kipppunkt Ei.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Norfolk Grey egg (14827770651).jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Pair of organic green eggs.JPG",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Raw Egg.JPG",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Telur ayam kampung.JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:White chicken egg square.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:White chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Яйцо со страшной маркировкой.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:توأم حمام.JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:கோழி முட்டை.JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Senegal egg 10s06.JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Wood duck egg 2012.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    }
+   ]
+  },
+  "v3": {
+   "acierto": 0.9018,
+   "n": 112,
+   "por_clase": {
+    "Crack": 0.0,
+    "Intact": 0.9619
+   },
+   "detalle": [
+    {
+     "titulo": "File:Cracked (85516059).jpeg",
+     "clase": "Crack",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Day 017 - Photo365 - Eggs (16299675421).jpg",
+     "clase": "Crack",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Which came first, the chicken or the egg - Flickr - katerha.jpg",
+     "clase": "Crack",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Brown egg hatching.jpg",
+     "clase": "Crack",
+     "pred": "Intact",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Huehnerei mit Sprung (fcm).jpg",
+     "clase": "Crack",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Cracked egg (30298255024).jpg",
+     "clase": "Crack",
+     "pred": "Intact",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Bowl of Eggs (Unsplash).jpg",
+     "clase": "Crack",
+     "pred": "Intact",
+     "correcto": false
+    },
+    {
+     "titulo": "File:08726jfFilipino foods fruits Bulacan landmarksfvf 46.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 17.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 18.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 21.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:09042jfCuisine Foods Philippines Baliuag Bulacanfvf 03.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:09042jfCuisine Foods Philippines Baliuag Bulacanfvf 05.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 eggs.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 primeros huevos isa brown (6).JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 primeros huevos isa brown.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 12.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 15.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 19.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AraucanaEgg vs Brown White.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AT-Eierkennzeichnung.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AZ provincia.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Bain d'eau chaude (3526896150).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Berlin frische Eier aus privater Haltung.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Blue Araucana egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Bring on your most eggscruciating puns! (6925079769).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken eggs (1).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Carton of eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken egg 2009-06-04.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs 21.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken-Eggs 339411-480x360 (4900327148).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken-Eggs 368816-480x360 (4900327050).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Deux oeufs bruns.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Different colored chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg (394351849).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg colours.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg food.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg on Table.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg on white background.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg perched uplon a wooden fence 2005.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg spiral egg cup.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg upright.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg W&A.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (5219850239).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (7177637421).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (8501854880).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs - Home Grown (or laid) (7147848749).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs 3145g.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs 99 365 (3424917922).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs green brown on end.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Ei kennzeichnung.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eier (12163693795).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eier (6045563994).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eieren (7937424642).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eierkennzeichnung BMK.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:File by Alexander Baranov - (19411031842).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:First egg (7680068562).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Flickr - cyclonebill - Æg (1).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Françoise Foliot - Un oeuf de poule.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:FreeRangeEgg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Fresh Eggs (Unsplash fBturNUtd8).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Giriraja eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Hikari, Eggs rich in iodine.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Huevos de gallina de diferente tamaño.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Just lying there being pretty (4301382316).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:MonstereiXXXL.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Oeuf de poule.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Oeufs (17056124402).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Pastel de pollo - ingredientes (2).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Protein-rich Foods.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Respeggt eggs 2.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Respeggt eggs 3.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Six eggs views from the top on a white background.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Spanish eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Spotted Brown Chicken Eggs (5719609727).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Standard egg sizes.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Three chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Tiny treasure, first egg (7680059460).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Tojás.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Акулиновка 26.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:001 2022 04 09 Ei.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-04-27 12 12 45 A single Medium Grade A Chicken Egg from Hillandale Farms in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2020-04-27 12 16 12 A single Medium Grade A Chicken Egg from Hillandale Farms in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-05-05 18 22 46 Six eggs in an open carton of a dozen Large Grade A Chicken Eggs from Egg-land's Best in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2020-05-05 19 30 03 A single Large Grade A Chicken Egg from Egg-land's Best in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:3 Egg white.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:3eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Banana egg pancakes - ingredients (16842815337).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Blau Eier 05.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken Egg - കോഴിമുട്ട 03.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs 20101113.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:CodazziToyotaMorning1.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg (4245577202).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:First three egg day in eons (8529932306).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Kipppunkt Ei.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Norfolk Grey egg (14827770651).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Pair of organic green eggs.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Raw Egg.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Telur ayam kampung.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:White chicken egg square.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:White chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Яйцо со страшной маркировкой.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:توأم حمام.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:கோழி முட்டை.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Senegal egg 10s06.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Wood duck egg 2012.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    }
+   ]
+  },
+  "v4": {
+   "acierto": 0.9286,
+   "n": 112,
+   "por_clase": {
+    "Crack": 0.5714,
+    "Intact": 0.9524
+   },
+   "detalle": [
+    {
+     "titulo": "File:Cracked (85516059).jpeg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Day 017 - Photo365 - Eggs (16299675421).jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Which came first, the chicken or the egg - Flickr - katerha.jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown egg hatching.jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Huehnerei mit Sprung (fcm).jpg",
+     "clase": "Crack",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Cracked egg (30298255024).jpg",
+     "clase": "Crack",
+     "pred": "Intact",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Bowl of Eggs (Unsplash).jpg",
+     "clase": "Crack",
+     "pred": "Intact",
+     "correcto": false
+    },
+    {
+     "titulo": "File:08726jfFilipino foods fruits Bulacan landmarksfvf 46.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 17.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 18.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 21.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:09042jfCuisine Foods Philippines Baliuag Bulacanfvf 03.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:09042jfCuisine Foods Philippines Baliuag Bulacanfvf 05.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 eggs.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 primeros huevos isa brown (6).JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 primeros huevos isa brown.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 12.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 15.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 19.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AraucanaEgg vs Brown White.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AT-Eierkennzeichnung.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AZ provincia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Bain d'eau chaude (3526896150).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Berlin frische Eier aus privater Haltung.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Blue Araucana egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Bring on your most eggscruciating puns! (6925079769).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken eggs (1).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Carton of eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken egg 2009-06-04.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs 21.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken-Eggs 339411-480x360 (4900327148).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken-Eggs 368816-480x360 (4900327050).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Deux oeufs bruns.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Different colored chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg (394351849).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg colours.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg food.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg on Table.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg on white background.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg perched uplon a wooden fence 2005.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg spiral egg cup.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg upright.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg W&A.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (5219850239).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (7177637421).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (8501854880).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs - Home Grown (or laid) (7147848749).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs 3145g.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs 99 365 (3424917922).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs green brown on end.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Ei kennzeichnung.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eier (12163693795).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eier (6045563994).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eieren (7937424642).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eierkennzeichnung BMK.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:File by Alexander Baranov - (19411031842).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:First egg (7680068562).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Flickr - cyclonebill - Æg (1).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Françoise Foliot - Un oeuf de poule.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:FreeRangeEgg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Fresh Eggs (Unsplash fBturNUtd8).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Giriraja eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Hikari, Eggs rich in iodine.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Huevos de gallina de diferente tamaño.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Just lying there being pretty (4301382316).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:MonstereiXXXL.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Oeuf de poule.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Oeufs (17056124402).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Pastel de pollo - ingredientes (2).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Protein-rich Foods.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Respeggt eggs 2.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Respeggt eggs 3.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Six eggs views from the top on a white background.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Spanish eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Spotted Brown Chicken Eggs (5719609727).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Standard egg sizes.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Three chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Tiny treasure, first egg (7680059460).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Tojás.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Акулиновка 26.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:001 2022 04 09 Ei.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-04-27 12 12 45 A single Medium Grade A Chicken Egg from Hillandale Farms in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2020-04-27 12 16 12 A single Medium Grade A Chicken Egg from Hillandale Farms in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-05-05 18 22 46 Six eggs in an open carton of a dozen Large Grade A Chicken Eggs from Egg-land's Best in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2020-05-05 19 30 03 A single Large Grade A Chicken Egg from Egg-land's Best in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:3 Egg white.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:3eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Banana egg pancakes - ingredients (16842815337).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Blau Eier 05.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken Egg - കോഴിമുട്ട 03.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs 20101113.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:CodazziToyotaMorning1.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg (4245577202).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:First three egg day in eons (8529932306).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Kipppunkt Ei.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Norfolk Grey egg (14827770651).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Pair of organic green eggs.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Raw Egg.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Telur ayam kampung.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:White chicken egg square.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:White chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Яйцо со страшной маркировкой.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:توأم حمام.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:கோழி முட்டை.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Senegal egg 10s06.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Wood duck egg 2012.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    }
+   ]
+  },
+  "v4_ultima": {
+   "acierto": 0.9018,
+   "n": 112,
+   "por_clase": {
+    "Crack": 0.5714,
+    "Intact": 0.9238
+   },
+   "detalle": [
+    {
+     "titulo": "File:Cracked (85516059).jpeg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Day 017 - Photo365 - Eggs (16299675421).jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Which came first, the chicken or the egg - Flickr - katerha.jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown egg hatching.jpg",
+     "clase": "Crack",
+     "pred": "Intact",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Huehnerei mit Sprung (fcm).jpg",
+     "clase": "Crack",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Cracked egg (30298255024).jpg",
+     "clase": "Crack",
+     "pred": "Crack",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Bowl of Eggs (Unsplash).jpg",
+     "clase": "Crack",
+     "pred": "Intact",
+     "correcto": false
+    },
+    {
+     "titulo": "File:08726jfFilipino foods fruits Bulacan landmarksfvf 46.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 17.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 18.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:08800jfFilipino foods fruits Bulacan landmarksfvf 21.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:09042jfCuisine Foods Philippines Baliuag Bulacanfvf 03.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:09042jfCuisine Foods Philippines Baliuag Bulacanfvf 05.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 eggs.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 primeros huevos isa brown (6).JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2 primeros huevos isa brown.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 12.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 15.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:8451Poblacion, Baliuag, Bulacan 19.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AraucanaEgg vs Brown White.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AT-Eierkennzeichnung.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:AZ provincia.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Bain d'eau chaude (3526896150).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Berlin frische Eier aus privater Haltung.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Blue Araucana egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Bring on your most eggscruciating puns! (6925079769).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken eggs (1).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Brown egg.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Carton of eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken egg 2009-06-04.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs 21.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken-Eggs 339411-480x360 (4900327148).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken-Eggs 368816-480x360 (4900327050).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Deux oeufs bruns.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Different colored chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg (394351849).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg colours.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg food.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg on Table.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg on white background.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg perched uplon a wooden fence 2005.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg spiral egg cup.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg upright.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg W&A.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (5219850239).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (7177637421).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs (8501854880).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs - Home Grown (or laid) (7147848749).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs 3145g.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs 99 365 (3424917922).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eggs green brown on end.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Ei kennzeichnung.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Eier (12163693795).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eier (6045563994).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eieren (7937424642).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Eierkennzeichnung BMK.jpg",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:File by Alexander Baranov - (19411031842).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:First egg (7680068562).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Flickr - cyclonebill - Æg (1).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Françoise Foliot - Un oeuf de poule.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:FreeRangeEgg.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Fresh Eggs (Unsplash fBturNUtd8).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Giriraja eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Hikari, Eggs rich in iodine.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Huevos de gallina de diferente tamaño.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Just lying there being pretty (4301382316).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:MonstereiXXXL.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Oeuf de poule.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Oeufs (17056124402).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Pastel de pollo - ingredientes (2).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Protein-rich Foods.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Respeggt eggs 2.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Respeggt eggs 3.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Six eggs views from the top on a white background.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Spanish eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Spotted Brown Chicken Eggs (5719609727).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Standard egg sizes.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Three chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Tiny treasure, first egg (7680059460).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Tojás.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Акулиновка 26.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:001 2022 04 09 Ei.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:2020-04-27 12 12 45 A single Medium Grade A Chicken Egg from Hillandale Farms in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2020-04-27 12 16 12 A single Medium Grade A Chicken Egg from Hillandale Farms in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2020-05-05 18 22 46 Six eggs in an open carton of a dozen Large Grade A Chicken Eggs from Egg-land's Best in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2020-05-05 19 30 03 A single Large Grade A Chicken Egg from Egg-land's Best in the Franklin Farm section of Oak Hill, Fairfax County, Virginia.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:2eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:3 Egg white.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:3eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Banana egg pancakes - ingredients (16842815337).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Blau Eier 05.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken Egg - കോഴിമുട്ട 03.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs 20101113.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Chicken eggs.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:CodazziToyotaMorning1.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Egg (4245577202).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:First three egg day in eons (8529932306).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Kipppunkt Ei.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Norfolk Grey egg (14827770651).jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Pair of organic green eggs.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Raw Egg.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Telur ayam kampung.JPG",
+     "clase": "Intact",
+     "pred": "Crack",
+     "correcto": false
+    },
+    {
+     "titulo": "File:White chicken egg square.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:White chicken egg.jpg",
+     "clase": "Intact",
+     "pred": "Ninguno",
+     "correcto": false
+    },
+    {
+     "titulo": "File:Яйцо со страшной маркировкой.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:توأم حمام.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:கோழி முட்டை.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Senegal egg 10s06.JPG",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    },
+    {
+     "titulo": "File:Wood duck egg 2012.jpg",
+     "clase": "Intact",
+     "pred": "Intact",
+     "correcto": true
+    }
+   ]
+  }
+ },
+ "fotos_reales_por_subgrupo_y_split": {
+  "('IMG', 'Intact', 'train')": 120,
+  "('not_damaged', 'Intact', 'train')": 110,
+  "('not_damaged', 'Intact', 'valid')": 20,
+  "('not_damaged', 'Intact', 'test')": 20,
+  "('damaged', 'Crack', 'train')": 437,
+  "('damaged', 'Crack', 'valid')": 24,
+  "('damaged', 'Crack', 'test')": 24,
+  "('Egg_X', 'Crack', 'train')": 32,
+  "('Egg_X', 'Crack', 'valid')": 16,
+  "('Egg_X', 'Crack', 'test')": 15,
+  "('commons', 'Intact', 'train')": 45
+ }
+}

@@ -1,0 +1,170 @@
+{
+  "modelo": "v4",
+  "clases": {
+    "0": "Crack",
+    "1": "Intact"
+  },
+  "conf_recomendado": 0.5,
+  "entrada": {
+    "shape": [
+      1,
+      640,
+      640,
+      3
+    ],
+    "dtype": "float32",
+    "layout": "NHWC RGB 0..1"
+  },
+  "salida": {
+    "shape": [
+      1,
+      6,
+      8400
+    ],
+    "dtype": "float32",
+    "filas": [
+      "cx",
+      "cy",
+      "w",
+      "h",
+      "score_Crack",
+      "score_Intact"
+    ]
+  },
+  "archivos_MB": {
+    "fp32": 12.27,
+    "int8": 3.34
+  },
+  "verificacion": {
+    "pt": {
+      "mAP50": 0.9918,
+      "mAP50-95": 0.9802,
+      "mAP50-95 Crack": 0.978,
+      "mAP50-95 Intact": 0.9824,
+      "ms/img (GPU)": 3.4305
+    },
+    "fp32": {
+      "mAP50": 0.9906,
+      "mAP50-95": 0.9693,
+      "mAP50-95 Crack": 0.9621,
+      "mAP50-95 Intact": 0.9766,
+      "ms/img (CPU)": 149.5436
+    },
+    "int8": {
+      "mAP50": 0.985,
+      "mAP50-95": 0.8341,
+      "mAP50-95 Crack": 0.829,
+      "mAP50-95 Intact": 0.8392,
+      "ms/img (CPU)": 150.1599
+    }
+  },
+  "test_original_por_clase": {
+    "P": {
+      "Crack": 0.9875,
+      "Intact": 0.9221
+    },
+    "R": {
+      "Crack": 0.9601,
+      "Intact": 1.0
+    },
+    "mAP50": {
+      "Crack": 0.9829,
+      "Intact": 0.9816
+    },
+    "mAP50-95": {
+      "Crack": 0.9637,
+      "Intact": 0.9611
+    }
+  },
+  "pesos": "last.pt",
+  "acierto_por_grupo": {
+    "A: Intact fuera del montaje": 1.0,
+    "B: Crack en el montaje": 1.0,
+    "P: fondo procedural": 0.935,
+    "orig: Crack montaje": 0.851,
+    "orig: Crack otras fuentes": 0.98,
+    "orig: Intact montaje": 1.0,
+    "real: Crack fotos públicas": 0.923,
+    "real: Intact fotos públicas": 0.9
+  },
+  "comparacion_v2": {
+    "acierto_por_grupo_v2": {
+      "A: Intact fuera del montaje": 0.994,
+      "B: Crack en el montaje": 1.0,
+      "P: fondo procedural": 0.98,
+      "orig: Crack montaje": 0.851,
+      "orig: Crack otras fuentes": 0.98,
+      "orig: Intact montaje": 0.976,
+      "real: Crack fotos públicas": 0.667,
+      "real: Intact fotos públicas": 0.0
+    },
+    "test_original_por_clase_v2": {
+      "P": {
+        "Crack": 0.9897,
+        "Intact": 0.9318
+      },
+      "R": {
+        "Crack": 0.9584,
+        "Intact": 0.9762
+      },
+      "mAP50": {
+        "Crack": 0.981,
+        "Intact": 0.9878
+      },
+      "mAP50-95": {
+        "Crack": 0.9702,
+        "Intact": 0.9697
+      }
+    }
+  },
+  "commons": {
+    "v2": {
+      "acierto": 0.0446,
+      "n": 112,
+      "por_clase": {
+        "Crack": 0.7143,
+        "Intact": 0.0
+      }
+    },
+    "v3": {
+      "acierto": 0.9018,
+      "n": 112,
+      "por_clase": {
+        "Crack": 0.0,
+        "Intact": 0.9619
+      }
+    },
+    "v4": {
+      "acierto": 0.9286,
+      "n": 112,
+      "por_clase": {
+        "Crack": 0.5714,
+        "Intact": 0.9524
+      }
+    },
+    "v4_ultima": {
+      "acierto": 0.9018,
+      "n": 112,
+      "por_clase": {
+        "Crack": 0.5714,
+        "Intact": 0.9238
+      }
+    }
+  },
+  "fotos_publicas": {
+    "por_subgrupo_y_split": {
+      "('IMG', 'Intact', 'train')": 120,
+      "('not_damaged', 'Intact', 'train')": 110,
+      "('not_damaged', 'Intact', 'valid')": 20,
+      "('not_damaged', 'Intact', 'test')": 20,
+      "('damaged', 'Crack', 'train')": 437,
+      "('damaged', 'Crack', 'valid')": 24,
+      "('damaged', 'Crack', 'test')": 24,
+      "('Egg_X', 'Crack', 'train')": 32,
+      "('Egg_X', 'Crack', 'valid')": 16,
+      "('Egg_X', 'Crack', 'test')": 15,
+      "('commons', 'Intact', 'train')": 45
+    },
+    "cajas": "Grounding DINO (etiquetas de v3)"
+  }
+}

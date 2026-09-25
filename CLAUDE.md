@@ -25,7 +25,12 @@
 - Ultralytics 8.4: `best.pt` se elige solo por mAP50-95. El formato `tflite` se reemplazó por `litert` (litert-torch, solo Linux/macOS), que por defecto exporta la entrada en **NCHW**. `eggs_v2.ipynb` intercepta `torch2litert` para exportar en **NHWC** `[1,640,640,3]` (lo que da vision-camera-resize-plugin). Salida `[1,6,8400]`: cx,cy,w,h normalizados 0–1 + 2 scores con sigmoide, sin NMS.
 - VS Code no recarga un `.ipynb` modificado en disco si está abierto y lo sobrescribe al guardar: tras editar un notebook, cerrar y volver a abrir la pestaña.
 
-## Estado actual (2026-09-24)
+## Estado actual (2026-09-25)
+- **Detector entregado: `v4`** (`modelo/eggs_v4_fp32.tflite` e int8; misma entrada/salida que `v2`). Fine-tune de `v3` con fotos reales (dataset público Egg-Defect-Detection con cajas de Grounding DINO + fotos de Commons de huevos sanos), split intercalado por subgrupo. Se exportó `last.pt` (época 9). Fotos reales que no vio: rajados 36/39, sanos 18/20 (dataset público), sanos de Commons 97/105, rajados de Commons 3/7; test original 0.982 por imagen (v2 0.976). Detalle en `resultados/v4/` y en la tabla del README. En Drive: `runs/v4`, `exports/v4/`; `runs/v4_intento1_sin_pesos` es un intento cortado por una desconexión de Colab (sin pesos).
+- `v3` no se entregó (acertaba los sanos reales pero perdía los rajados de otra fuente). Resultados en `resultados/v3/`.
+- **App web** en `app/` (FastAPI + LiteRT en EC2, HTTPS con Caddy + sslip.io) con el detector `v4`; versión sin servidor con `app/web/local.js` + `app/deploy/build_static.py`. El siguiente detector se llama `v5`.
+
+## Estado anterior (2026-09-24)
 - **Modelo entregado: `v2`** (fine-tune de `v1` con imágenes sintéticas, 60 épocas). Pesos en Drive: `runs/v2/weights/best.pt`. Exportado en `exports/v2/` y en `modelo/` del repo: `eggs_v2_fp32.tflite` (recomendado) y `eggs_v2_int8.tflite`. Umbral 0.5.
 - Métricas: test original mAP50-95 0.970 (Crack) / 0.970 (Intact). Huevo sano fuera del montaje (sintético): `v1` 0.68 → `v2` 0.99. Punto débil: Crack del montaje, 0.85 (grietas poco visibles a 224 px). Detalle en `resultados/v2/resumen.json`.
 - Los `.tflite` se verificaron localmente con la decodificación de `MODELO_IO.md` (18/18 correctos).

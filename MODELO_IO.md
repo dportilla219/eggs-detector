@@ -4,6 +4,8 @@ Guía para integrar el detector en la app React Native / Expo con `react-native-
 
 > **Dos modelos.** `v2` (detector) es **obligatorio**: encuentra los huevos y los clasifica como rajados o sanos. Está documentado primero. `dano_v1` (zona dañada) es un **extra opcional**: va **después** de `v2`, solo sobre los huevos rajados, y **no lo reemplaza**. Está documentado en la sección [Modelo 2](#modelo-2-zona-dañada-y-gravedad-dano_v1). Integren primero `v2` solo y, cuando funcione, añadan `dano_v1`.
 
+> **Detector recomendado: `v4`** (`eggs_v4_fp32.tflite` / `eggs_v4_int8.tflite`). Tiene exactamente la misma entrada, salida, clases y decodificación que `v2`: todo lo de este documento vale igual cambiando el nombre del archivo. La diferencia es que `v4` también acierta con huevos fotografiados fuera del montaje del dataset (ver *Resultados* en el README). Verificación en [`resultados/v4/resumen.json`](resultados/v4/resumen.json).
+
 Modelo: **`v2`** (YOLOv8n). Los archivos están en Google Drive, en `MyDrive/eggs_v2/exports/v2/`, y en la carpeta [`modelo/`](modelo/) de este repo. Los datos de la verificación están en [`resultados/v2/resumen.json`](resultados/v2/resumen.json).
 
 ## ⚠️ Development build, no Expo Go
