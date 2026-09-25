@@ -17,9 +17,11 @@ sudo apt-get install -y -qq python3-venv caddy >/dev/null
 "$REPO/.venv/bin/pip" install -q --upgrade pip
 "$REPO/.venv/bin/pip" install -q -r "$REPO/app/requirements.txt"
 
-# Evaluación de la tubería completa sobre el test (la muestra la pestaña de métricas)
-if [ -d "$DATA/test/images" ] && [ ! -f "$DATA/eval_test.json" ]; then
-  (cd "$REPO/app/server" && "$REPO/.venv/bin/python" evaluate.py --split "$DATA/test" --out "$DATA/eval_test.json")
+# Evaluación de la tubería completa sobre el test (la muestra la pestaña de métricas).
+# Se repite si cambia el detector configurado en el servicio (p. ej. al pasar de v2 a v3).
+DET=$(sed -n 's/^Environment=EGGS_DET_FILE=//p' "$DEPLOY/eggs-detector.service")
+if [ -d "$DATA/test/images" ] && ! grep -qs "\"$DET\"" "$DATA/eval_test.json"; then
+  (cd "$REPO/app/server" && "$REPO/.venv/bin/python" evaluate.py --split "$DATA/test" --out "$DATA/eval_test.json" --det "$DET")
 fi
 
 # App (puerto 8000)
