@@ -608,8 +608,10 @@ const Live = {
     this.video.src = this.url;
     try {
       await this.video.play();
-    } catch {
-      $('#liveStats').textContent = 'Este navegador no puede reproducir ese video. Prueba con un MP4 (H.264).';
+    } catch (err) {
+      $('#liveStats').textContent = err?.name === 'AbortError' || document.hidden
+        ? 'El navegador pausó el video porque la página no estaba a la vista. Vuelve a esta pestaña y ábrelo de nuevo.'
+        : 'Este navegador no puede reproducir ese video. Prueba con un MP4 (H.264).';
       this.stop();
       return;
     }
@@ -618,10 +620,14 @@ const Live = {
 
   begin() {
     this.active = true; this.res = null; this.hist = []; this.n = 0; this.latSum = 0; this.t0 = performance.now();
+    this.snap = this.snap || document.createElement('canvas'); this.hasSnap = false;
     $('#livePlaceholder').hidden = true;
+    // Se dibuja el fotograma que se analizó, con su caja y su zona dañada: la respuesta llega ~0,3 s después,
+    // y sobre el video actual la mancha quedaría corrida si el huevo o la mano se mueven.
     const draw = () => {
       if (!this.active) return;
-      if (this.video.readyState >= 2) drawResult(this.canvas, this.video, this.res, { maxH: 480, mask: $('#liveMask').checked });
+      if (this.hasSnap) drawResult(this.canvas, this.snap, this.res, { maxH: 480, mask: $('#liveMask').checked });
+      else if (this.video.readyState >= 2) drawResult(this.canvas, this.video, null, { maxH: 480 });
       requestAnimationFrame(draw);
     };
     requestAnimationFrame(draw);
@@ -653,7 +659,12 @@ const Live = {
           res = await withMasks(res);
           if (!this.active || this.gen !== gen) break;
           this.n++; this.latSum += performance.now() - t;
-          if (seq > this.shown) { this.shown = seq; this.res = res; this.update(res); } // descarta respuestas atrasadas
+          if (seq > this.shown) { // descarta respuestas atrasadas
+            this.shown = seq;
+            this.snap.width = grab.width; this.snap.height = grab.height; // copia del fotograma analizado
+            this.snap.getContext('2d').drawImage(grab, 0, 0);
+            this.hasSnap = true; this.res = res; this.update(res);
+          }
         } catch (err) {
           $('#liveStats').textContent = `Error: ${err.message || err}`;
         }
