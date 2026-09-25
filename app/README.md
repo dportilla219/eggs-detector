@@ -2,7 +2,7 @@
 
 Despliegue de los modelos de este repositorio como aplicación web, con inferencia en el servidor.
 
-- **`v2`** (`modelo/eggs_v2_fp32.tflite`, YOLOv8n): encuentra cada huevo y lo clasifica como `Crack` o `Intact`.
+- **`v4`** (`modelo/eggs_v4_fp32.tflite`, YOLOv8n): encuentra cada huevo y lo clasifica como `Crack` o `Intact`. Es el detector que usa la app desde el 25/09/2026. A diferencia de `v2`, también acierta en fotos reales de otras fuentes: ver [Resultados](../README.md#resultados). `v2` sigue en `modelo/` y tiene la misma entrada y salida.
 - **`dano_v1`** (`modelo/eggs_dano_v1_fp16.tflite`, U-Net MobileNetV2): solo sobre los huevos `Crack`, marca la **zona dañada** y calcula la gravedad. Es el diferencial del proyecto.
 
 La app sigue al pie de la letra la entrada y la salida descritas en [`MODELO_IO.md`](../MODELO_IO.md). Solo cambia el preprocesado del detector: por defecto usa *letterbox* (la imagen completa con bandas grises, como en el entrenamiento de Ultralytics) en lugar del cuadrado centrado de la app móvil, para no recortar las fotos. El modo de cuadrado centrado se puede elegir en la interfaz.
@@ -17,7 +17,7 @@ No hace falta Expo Go ni instalar nada: se abre en el navegador. Si la instancia
 
 | pestaña | qué hace |
 |---|---|
-| **Banda transportadora** | Simula una línea de clasificación en tiempo real. Cada huevo (imagen del test real) pasa por la cámara, el servidor ejecuta `v2` y, si está rajado, `dano_v1`. Un desviador lo manda a su salida. Muestra el acierto frente a la etiqueta real, la matriz de confusión, la latencia y los huevos por minuto. |
+| **Banda transportadora** | Simula una línea de clasificación en tiempo real. Cada huevo (imagen del test real) pasa por la cámara, el detector (`v4`) lo clasifica y, si está rajado, `dano_v1` mide el daño. Un desviador lo manda a su salida. Muestra el acierto frente a la etiqueta real, la matriz de confusión, la latencia y los huevos por minuto. |
 | **Analizar imagen** | Subir una foto o elegir una del test. Dibuja las cajas y la zona dañada, y muestra los scores, la gravedad y el recorte de 192×192 que ve `dano_v1`. |
 | **Cámara / video** | Envía fotogramas de la cámara o de un archivo de video (~4 por segundo) y suaviza la decisión por mayoría en los últimos 7. |
 | **Modelo y métricas** | Arquitectura, métricas del equipo (`resultados/`), evaluación hecha por la propia app en el servidor y reglas de la banda. |
@@ -35,16 +35,16 @@ Un detector binario descartaría todos los rajados. Con la zona dañada, los que
 
 ## Evaluación en el servidor
 
-`server/evaluate.py` recorre el split de test (382 imágenes) con la tubería completa. En la instancia EC2 (2 vCPU, CPU) da:
+`server/evaluate.py` recorre el split de test original (382 imágenes) con la tubería completa, conf 0.5:
 
-| grupo | n | acierto |
-|---|---|---|
-| Crack del montaje | 47 | 0.851 |
-| Intact del montaje | 84 | 0.976 |
-| Crack de otras fuentes | 251 | 1.000 |
-| **Global** | **382** | **0.976** |
+| grupo | n | `v2` | `v4` |
+|---|---|---|---|
+| Crack del montaje | 47 | 0.851 | 0.851 |
+| Intact del montaje | 84 | 0.976 | **1.000** |
+| Crack de otras fuentes | 251 | 1.000 | 1.000 |
+| **Global** | **382** | **0.976** | **0.982** |
 
-Coincide con `resultados/v2/resumen.json`, lo que confirma que el preprocesado y la decodificación del servidor son correctos. Latencia: ~160 ms por imagen (p50) con los dos modelos.
+Las cifras de `v2` son las de la instancia EC2 y coinciden con `resultados/v2/resumen.json`, lo que confirma que el preprocesado y la decodificación del servidor son correctos. Latencia en la instancia (2 vCPU): ~160 ms por imagen (p50) con los dos modelos. `install.sh` vuelve a evaluar el test cuando cambia el detector del servicio, y la pestaña *Modelo y métricas* muestra el resultado.
 
 ## Estructura
 
@@ -52,15 +52,16 @@ Coincide con `resultados/v2/resumen.json`, lo que confirma que el preprocesado y
 app/
 ├── server/
 │   ├── main.py        API FastAPI + archivos estáticos
-│   ├── pipeline.py    v2 → NMS → recorte +10 % → dano_v1 → gravedad
+│   ├── pipeline.py    detector → NMS → recorte +10 % → dano_v1 → gravedad
 │   ├── routing.py     reglas de la banda
 │   ├── samples.py     catálogo de imágenes de test (split YOLO) con su etiqueta real
 │   └── evaluate.py    evaluación de la tubería completa
-├── web/               interfaz (HTML + CSS + JS, sin compilación)
+├── web/               interfaz (HTML + CSS + JS, sin compilación); local.js = la tubería en el navegador
 ├── deploy/
 │   ├── eggs-detector.service   servicio systemd (puerto 8000)
 │   ├── Caddyfile               HTTPS con certificado automático (Let's Encrypt + sslip.io)
 │   ├── caddy-host.sh           ajusta el nombre HTTPS si cambia la IP pública
+│   ├── build_static.py         arma la versión sin servidor
 │   └── install.sh              instalación en Ubuntu
 └── requirements.txt
 ```
@@ -118,7 +119,7 @@ Después hay que abrir en el grupo de seguridad los puertos **8000** (HTTP direc
 
 El dataset no se sube al repositorio, igual que en el resto del proyecto. Sin `EGGS_SAMPLES_DIR`, la app funciona igual, pero la banda y la galería quedan vacías.
 
-Para cambiar de detector (por ejemplo a `v3`) basta con cambiar `EGGS_DET_FILE` en `deploy/eggs-detector.service`: todos tienen la misma entrada y salida.
+Para cambiar de detector basta con cambiar `EGGS_DET_FILE` en `deploy/eggs-detector.service` (ahora `eggs_v4_fp32.tflite`; `eggs_v2_fp32.tflite` para volver a `v2`): todos tienen la misma entrada y salida.
 
 ### Después de reiniciar el laboratorio de AWS Academy
 

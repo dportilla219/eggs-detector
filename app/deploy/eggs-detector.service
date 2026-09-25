@@ -6,7 +6,7 @@ Wants=network-online.target
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/eggs-detector/app/server
-Environment=EGGS_DET_FILE=eggs_v2_fp32.tflite
+Environment=EGGS_DET_FILE=eggs_v4_fp32.tflite
 Environment=EGGS_SAMPLES_DIR=/home/ubuntu/eggs-data/test
 Environment=EGGS_EVAL_JSON=/home/ubuntu/eggs-data/eval_test.json
 Environment=PYTHONUNBUFFERED=1

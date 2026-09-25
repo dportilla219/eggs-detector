@@ -1,0 +1,173 @@
+{
+ "descripcion": "Acierto por foto con la tubería de la app (TFLite fp32 en CPU, conf 0.5, letterbox). pub_*: fotos públicas según el split de v4; commons: test independiente de Wikimedia Commons; orig_*: test original.",
+ "tabla": {
+  "commons Crack": {
+   "v2": [
+    3,
+    7
+   ],
+   "v3": [
+    0,
+    7
+   ],
+   "v4": [
+    3,
+    7
+   ]
+  },
+  "commons Intact": {
+   "v2": [
+    0,
+    105
+   ],
+   "v3": [
+    103,
+    105
+   ],
+   "v4": [
+    97,
+    105
+   ]
+  },
+  "orig_montaje Crack": {
+   "v2": [
+    40,
+    47
+   ],
+   "v3": [
+    40,
+    47
+   ],
+   "v4": [
+    40,
+    47
+   ]
+  },
+  "orig_montaje Intact": {
+   "v2": [
+    82,
+    84
+   ],
+   "v3": [
+    82,
+    84
+   ],
+   "v4": [
+    84,
+    84
+   ]
+  },
+  "orig_otras Crack": {
+   "v2": [
+    251,
+    251
+   ],
+   "v3": [
+    251,
+    251
+   ],
+   "v4": [
+    251,
+    251
+   ]
+  },
+  "pub_test Crack": {
+   "v2": [
+    31,
+    39
+   ],
+   "v3": [
+    24,
+    39
+   ],
+   "v4": [
+    36,
+    39
+   ]
+  },
+  "pub_test Intact": {
+   "v2": [
+    0,
+    20
+   ],
+   "v3": [
+    20,
+    20
+   ],
+   "v4": [
+    18,
+    20
+   ]
+  },
+  "pub_valid Crack": {
+   "v2": [
+    34,
+    40
+   ],
+   "v3": [
+    24,
+    40
+   ],
+   "v4": [
+    34,
+    40
+   ]
+  },
+  "pub_valid Intact": {
+   "v2": [
+    0,
+    20
+   ],
+   "v3": [
+    20,
+    20
+   ],
+   "v4": [
+    18,
+    20
+   ]
+  },
+  "sub Egg_X Crack": {
+   "v2": [
+    9,
+    15
+   ],
+   "v3": [
+    1,
+    15
+   ],
+   "v4": [
+    12,
+    15
+   ]
+  },
+  "sub damaged Crack": {
+   "v2": [
+    22,
+    24
+   ],
+   "v3": [
+    23,
+    24
+   ],
+   "v4": [
+    24,
+    24
+   ]
+  },
+  "sub not_damaged Intact": {
+   "v2": [
+    0,
+    20
+   ],
+   "v3": [
+    20,
+    20
+   ],
+   "v4": [
+    18,
+    20
+   ]
+  }
+ }
+}
