@@ -211,7 +211,9 @@ const Belt = {
     const W = this.stage.clientWidth;
     if (!W) return;
     const binW = Math.min(170, W * 0.155);
-    const fx = { empaque: 0.43, industria: 0.60, descarte: 0.77, revision: 0.915 };
+    // en pantallas angostas (celular) las salidas se reparten a igual distancia para que no se monten
+    const fx = W < 500 ? { empaque: 0.42, industria: 0.58, descarte: 0.74, revision: 0.90 }
+      : { empaque: 0.43, industria: 0.60, descarte: 0.77, revision: 0.915 };
     this.geom = { W, startX: 44, camX: Math.max(130, W * 0.2), binX: {}, binW };
     for (const k of ROUTE_KEYS) {
       const x = Math.round(W * fx[k]);

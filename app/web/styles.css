@@ -288,5 +288,7 @@ pre.code { background: var(--surface-2); padding: 10px 12px; border-radius: 8px;
   main { padding-top: 12px; }
   .stage { height: 300px; }
   .bin .rule { display: none; }
+  .bin { padding: 4px 1px 6px; }
+  .bin .name { font-size: .55rem; line-height: 1.15; overflow-wrap: anywhere; }
   .kpis { grid-template-columns: 1fr 1fr; }
 }
