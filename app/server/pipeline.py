@@ -60,6 +60,19 @@ def _iou(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     return np.where(union > 0, inter / np.maximum(union, 1e-9), 0.0)
 
 
+def to_rgb(img: Image.Image) -> Image.Image:
+    """Cualquier imagen que abra Pillow -> RGB 8 bits, derecha según su EXIF."""
+    img = ImageOps.exif_transpose(img)
+    if img.mode in ("I", "I;16", "I;16B", "I;16L", "I;16N", "F"):  # PNG/TIFF de 16 bits o flotante
+        a = np.asarray(img, dtype=np.float32)
+        lo, hi = np.percentile(a, 0.5), np.percentile(a, 99.5)
+        img = Image.fromarray(np.clip((a - lo) / max(hi - lo, 1e-6) * 255, 0, 255).astype(np.uint8), "L")
+    if img.mode in ("RGBA", "LA", "PA") or (img.mode == "P" and "transparency" in img.info):
+        rgba = img.convert("RGBA")  # la transparencia se rellena de blanco, no de negro
+        img = Image.alpha_composite(Image.new("RGBA", rgba.size, (255, 255, 255, 255)), rgba)
+    return img.convert("RGB")
+
+
 def severity_level(sev: float) -> str:
     for limit, name in LEVELS:
         if sev < limit:
@@ -76,6 +89,14 @@ class EggPipeline:
         self.seg = _load(os.path.join(model_dir, seg_file), threads)
         self._lock = threading.Lock()  # los intérpretes TFLite no son thread-safe
         self._check_io()
+        self._warmup()
+
+    def _warmup(self) -> None:
+        """Una inferencia en vacío al arrancar: así la primera petición real no paga la inicialización."""
+        self.det.set_tensor(self._det_in, np.zeros((1, DET_SIZE, DET_SIZE, 3), np.float32))
+        self.det.invoke()
+        self.seg.set_tensor(self._seg_in, np.zeros((1, SEG_SIZE, SEG_SIZE, 3), np.float32))
+        self.seg.invoke()
 
     def _check_io(self) -> None:
         di, do = self.det.get_input_details()[0], self.det.get_output_details()[0]
@@ -181,7 +202,7 @@ class EggPipeline:
     # ---------------------------------------------------------------- API
     def predict(self, img: Image.Image, conf: float = CONF, mode: str = "letterbox",
                 with_damage: bool = True) -> dict:
-        img = ImageOps.exif_transpose(img).convert("RGB")
+        img = to_rgb(img)
         W, H = img.size
         t0 = time.perf_counter()
         x, lb, square = self._det_input(img, mode)

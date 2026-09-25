@@ -21,14 +21,33 @@ const LEVEL_ES = { leve: 'leve', media: 'media', grave: 'grave' };
 
 const App = { info: null, samples: [], routes: {} };
 
-async function api(path, opts) {
-  const r = await fetch(path, opts);
+async function api(path, opts = {}, timeoutMs = 45000) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), timeoutMs);
+  let r;
+  try {
+    r = await fetch(path, { ...opts, signal: ctl.signal });
+  } catch (err) {
+    throw new Error(err.name === 'AbortError' ? 'El servidor tardó demasiado en responder.' : 'No hay conexión con el servidor.');
+  } finally {
+    clearTimeout(timer);
+  }
   if (!r.ok) {
-    let msg = r.statusText;
-    try { msg = (await r.json()).detail || msg; } catch { /* sin cuerpo JSON */ }
+    let msg = { 413: 'La imagen es demasiado grande (máx. 15 MB).', 502: 'El servidor se está reiniciando, intenta en unos segundos.', 503: 'El servidor está ocupado, intenta en unos segundos.' }[r.status] || r.statusText;
+    try {
+      const d = (await r.json()).detail;
+      msg = Array.isArray(d) ? d.map((x) => x.msg).join('; ') : d || msg;
+    } catch { /* sin cuerpo JSON */ }
     throw new Error(msg || `HTTP ${r.status}`);
   }
   return r.json();
+}
+
+/* Versión HTTPS de la app (la cámara en vivo solo funciona en páginas seguras). */
+function httpsUrl() {
+  const h = location.hostname;
+  const host = /^\d+\.\d+\.\d+\.\d+$/.test(h) ? `${h.replace(/\./g, '-')}.sslip.io` : h;
+  return `https://${host}/#vivo`;
 }
 
 const imgCache = new Map();
@@ -396,6 +415,7 @@ const Belt = {
 const Analyze = {
   last: null, // { kind: 'file'|'sample', file|id, img, res }
   filter: 'all',
+  seq: 0, // solo se muestra la respuesta de la última petición
 
   init() {
     const input = $('#fileInput'), drop = $('#drop');
@@ -432,7 +452,8 @@ const Analyze = {
      El navegador ya aplica la orientación EXIF al dibujar, así que la imagen enviada sale derecha. */
   async prepare(file) {
     const url = URL.createObjectURL(file);
-    const img = await loadImage(url);
+    let img;
+    try { img = await loadImage(url); } catch (err) { URL.revokeObjectURL(url); throw err; }
     const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
     if (k === 1 && file.size < 2.5e6) return { blob: file, img, url };
     const c = document.createElement('canvas');
@@ -444,21 +465,26 @@ const Analyze = {
 
   async runFile(file) {
     const { conf, mode } = this.params();
+    const seq = ++this.seq;
     if (this.last?.url) URL.revokeObjectURL(this.last.url);
     $('#anaMeta').textContent = 'Subiendo…';
-    let prep;
-    try { prep = await this.prepare(file); } catch {
-      $('#anaSummary').innerHTML = '<p class="bad-txt">El navegador no pudo abrir esa imagen (¿formato HEIC?). Prueba con JPG o PNG.</p>';
-      $('#anaMeta').textContent = '';
-      return;
-    }
-    const fd = new FormData(); fd.append('file', prep.blob, 'foto.jpg'); fd.append('conf', conf); fd.append('mode', mode);
-    await this.show(api('/api/predict', { method: 'POST', body: fd }), Promise.resolve(prep.img), { kind: 'file', file, url: prep.url });
+    // Si el navegador no sabe abrir el archivo (p. ej. HEIC en Chrome), se envía tal cual
+    // y el servidor devuelve la imagen convertida para poder dibujarla.
+    let prep = null;
+    try { prep = await this.prepare(file); } catch { prep = null; }
+    const fd = new FormData();
+    fd.append('file', prep ? prep.blob : file, prep ? 'foto.jpg' : (file.name || 'foto'));
+    fd.append('conf', conf); fd.append('mode', mode);
+    if (!prep) fd.append('return_image', 'true');
+    const resP = api('/api/predict', { method: 'POST', body: fd });
+    const imgP = prep ? Promise.resolve(prep.img) : resP.then((r) => loadImage(r.image));
+    await this.show(resP, imgP, { kind: 'file', file, url: prep?.url }, seq);
   },
 
   async runSample(id) {
     const { conf, mode } = this.params();
-    await this.show(api(`/api/samples/${id}/predict?conf=${conf}&mode=${mode}`, { method: 'POST' }), loadImage(`/api/samples/${id}/image`), { kind: 'sample', id });
+    const seq = ++this.seq;
+    await this.show(api(`/api/samples/${id}/predict?conf=${conf}&mode=${mode}`, { method: 'POST' }), loadImage(`/api/samples/${id}/image`), { kind: 'sample', id }, seq);
   },
 
   rerun() {
@@ -466,16 +492,18 @@ const Analyze = {
     if (this.last.kind === 'file') this.runFile(this.last.file); else this.runSample(this.last.id);
   },
 
-  async show(resP, imgP, src) {
+  async show(resP, imgP, src, seq) {
     $('#anaMeta').textContent = 'Analizando…';
     try {
       const [res, img] = await Promise.all([resP.then(withMasks), imgP]);
+      if (seq !== this.seq) return; // llegó una petición más nueva
       this.last = { ...src, img, res };
       $('#anaPlaceholder').hidden = true;
       this.redraw();
       this.renderDetails();
       if (window.innerWidth < 900) $('#anaCanvas').closest('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
+      if (seq !== this.seq) return;
       $('#anaMeta').textContent = '';
       $('#anaSummary').innerHTML = `<p class="bad-txt">No se pudo analizar: ${esc(err.message || err)}</p>`;
     }
@@ -528,20 +556,30 @@ const Live = {
     $('#camStart').onclick = () => this.startCamera();
     $('#videoInput').onchange = (e) => { const f = e.target.files[0]; if (f) this.startVideo(f); e.target.value = ''; };
     $('#liveStop').onclick = () => this.stop();
-    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) $('#secureNotice').hidden = false;
+    $('#httpsLink').href = httpsUrl();
+    this.secure = window.isSecureContext && !!navigator.mediaDevices?.getUserMedia;
+    if (!this.secure) $('#secureNotice').hidden = false;
   },
 
   async startCamera() {
     this.stop();
-    try {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } }, audio: false });
-    } catch (err) {
+    if (!this.secure) {
       $('#secureNotice').hidden = false;
-      $('#liveStats').textContent = `No se pudo abrir la cámara: ${err.message || err}`;
+      $('#liveStats').textContent = 'En esta dirección (HTTP) el navegador bloquea la cámara: usa la versión HTTPS.';
       return;
     }
-    this.video.srcObject = this.stream;
-    await this.video.play();
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } }, audio: false });
+      this.video.srcObject = this.stream;
+      await this.video.play();
+    } catch (err) {
+      const why = err.name === 'NotAllowedError' ? 'no se dio permiso para usar la cámara'
+        : err.name === 'NotFoundError' ? 'este dispositivo no tiene cámara'
+          : err.name === 'NotReadableError' ? 'otra aplicación está usando la cámara' : (err.message || err);
+      $('#liveStats').textContent = `No se pudo abrir la cámara: ${why}.`;
+      this.stop();
+      return;
+    }
     this.begin();
   },
 
@@ -550,7 +588,13 @@ const Live = {
     this.url = URL.createObjectURL(file);
     this.video.srcObject = null;
     this.video.src = this.url;
-    await this.video.play();
+    try {
+      await this.video.play();
+    } catch {
+      $('#liveStats').textContent = 'Este navegador no puede reproducir ese video. Prueba con un MP4 (H.264).';
+      this.stop();
+      return;
+    }
     this.begin();
   },
 
@@ -625,6 +669,7 @@ function renderModelTab() {
   const i = App.info;
   const mb = (b) => `${(b / 1e6).toFixed(1)} MB`;
   const d = i.models.detector, g = i.models.damage;
+  $('#footDet').textContent = d.file; $('#footSeg').textContent = g.file;
   $('#modelCards').innerHTML = `
     <div class="card model-card"><h3>1 · Detector <code>v2</code> (obligatorio)</h3>
       <p class="small muted">YOLOv8n, fine-tune con ~2.600 imágenes sintéticas para que no aprenda el fondo. Encuentra cada huevo y lo clasifica.</p>
@@ -704,22 +749,30 @@ async function boot() {
   $$('.host').forEach((e) => { e.textContent = location.hostname; });
   $$('.origin').forEach((e) => { e.textContent = location.origin; });
   initTabs();
-  try {
-    const [info, samples] = await Promise.all([api('/api/info'), api('/api/samples')]);
-    App.info = info; App.samples = samples; App.routes = info.routes;
-    $('#status').classList.add('ok');
-    $('#statusText').textContent = `Modelos cargados · ${samples.length} imágenes de test`;
-  } catch (err) {
-    $('#status').classList.add('err');
-    $('#statusText').textContent = 'Sin conexión con la API';
-    console.error(err);
-    return;
+  // Si el servidor no responde al abrir la página (p. ej. se está reiniciando), reintenta solo.
+  for (;;) {
+    try {
+      const [info, samples] = await Promise.all([api('/api/info', {}, 15000), api('/api/samples', {}, 15000)]);
+      App.info = info; App.samples = samples; App.routes = info.routes;
+      break;
+    } catch (err) {
+      setStatus(false, 'Sin conexión con el servidor, reintentando…');
+      await new Promise((r) => setTimeout(r, 5000));
+    }
   }
+  setStatus(true);
   Belt.init();
   Analyze.init();
   Analyze.renderGallery();
   Live.init();
   renderModelTab();
+  setInterval(() => api('/api/health', {}, 10000).then(() => setStatus(true)).catch(() => setStatus(false, 'Sin conexión con el servidor')), 30000);
+}
+
+function setStatus(ok, msg) {
+  $('#status').classList.toggle('ok', ok);
+  $('#status').classList.toggle('err', !ok);
+  $('#statusText').textContent = ok ? `Modelos cargados · ${App.samples.length} imágenes de test` : msg;
 }
 
 boot();

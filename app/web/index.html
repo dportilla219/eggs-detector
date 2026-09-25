@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   <header class="top">
@@ -155,8 +155,9 @@
         <span class="muted small" id="liveStats"></span>
       </div>
       <div class="notice" id="secureNotice" hidden>
-        <b>La cámara necesita HTTPS.</b> Los navegadores solo permiten la cámara en páginas seguras (HTTPS o <code>localhost</code>). Puedes usar <b>Abrir video…</b>, que funciona sin permisos, o abrir un túnel y entrar por <code>http://localhost:8000</code>:
-        <pre>ssh -i llave.pem -L 8000:localhost:8000 ubuntu@<span class="host"></span></pre>
+        <b>La cámara en vivo necesita HTTPS.</b> Los navegadores solo permiten la cámara en páginas seguras. Abre la versión segura de esta misma app:
+        <a class="btn primary small-btn" id="httpsLink" href="#">Abrir versión HTTPS</a>
+        <span class="small muted" style="display:block;margin-top:6px">Aquí también puedes usar <b>Abrir video…</b>, que no pide permisos.</span>
       </div>
       <div class="grid-2 live">
         <div class="card">
@@ -216,10 +217,10 @@
   </main>
 
   <footer class="wrap foot">
-    <span>Modelos: <code>eggs_v2_fp32.tflite</code> + <code>eggs_dano_v1_fp16.tflite</code> · Inferencia con LiteRT en CPU (AWS EC2)</span>
+    <span>Modelos: <code id="footDet">…</code> + <code id="footSeg">…</code> · Inferencia con LiteRT en CPU (AWS EC2)</span>
     <a href="https://github.com/dportilla219/eggs-detector" target="_blank" rel="noopener">Repositorio</a>
   </footer>
 
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
