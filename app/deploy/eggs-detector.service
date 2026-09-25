@@ -1,16 +1,17 @@
 [Unit]
-Description=Detector de huevos con daños (FastAPI + LiteRT: YOLOv8n v2 + U-Net dano_v1)
+Description=Detector de huevos con daños (FastAPI + LiteRT: YOLOv8n + U-Net dano_v1)
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/eggs-detector/app/server
+Environment=EGGS_DET_FILE=eggs_v2_fp32.tflite
 Environment=EGGS_SAMPLES_DIR=/home/ubuntu/eggs-data/test
 Environment=EGGS_EVAL_JSON=/home/ubuntu/eggs-data/eval_test.json
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/home/ubuntu/eggs-detector/.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000 --workers 1 --no-access-log
-Restart=on-failure
+ExecStart=/home/ubuntu/eggs-detector/.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000 --workers 1 --no-access-log --timeout-keep-alive 30
+Restart=always
 RestartSec=3
 # la instancia tiene poca RAM y comparte con otros servicios
 MemoryHigh=450M

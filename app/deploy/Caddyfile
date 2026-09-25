@@ -1,0 +1,11 @@
+# HTTPS para la app (necesario para usar la cámara en vivo desde el celular).
+# sslip.io resuelve 34-225-169-137.sslip.io -> 34.225.169.137, así que no hace falta comprar dominio.
+# Caddy obtiene y renueva solo el certificado de Let's Encrypt (requiere los puertos 80 y 443 abiertos).
+# Si cambia la IP pública de la instancia, hay que cambiar el nombre aquí y ejecutar: sudo systemctl reload caddy
+34-225-169-137.sslip.io {
+	encode gzip
+	request_body {
+		max_size 20MB
+	}
+	reverse_proxy 127.0.0.1:8000
+}

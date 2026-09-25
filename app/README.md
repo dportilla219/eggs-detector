@@ -7,6 +7,12 @@ Despliegue de los modelos de este repositorio como aplicación web, con inferenc
 
 La app sigue al pie de la letra la entrada y la salida descritas en [`MODELO_IO.md`](../MODELO_IO.md). Solo cambia el preprocesado del detector: por defecto usa *letterbox* (la imagen completa con bandas grises, como en el entrenamiento de Ultralytics) en lugar del cuadrado centrado de la app móvil, para no recortar las fotos. El modo de cuadrado centrado se puede elegir en la interfaz.
 
+**Desplegada en AWS EC2:**
+- **https://34-225-169-137.sslip.io** (HTTPS: funciona en cualquier celular o PC, incluida la cámara en vivo)
+- http://34.225.169.137:8000 (HTTP directo; la cámara en vivo no funciona por HTTP, pero "Tomar foto" sí)
+
+No hace falta Expo Go ni instalar nada: se abre en el navegador. Si la instancia cambia de IP pública (por ejemplo, al reiniciar un laboratorio de AWS Academy sin IP elástica), la dirección HTTPS pasa a ser `https://<ip-con-guiones>.sslip.io` automáticamente.
+
 ## Qué incluye
 
 | pestaña | qué hace |
@@ -53,9 +59,25 @@ app/
 ├── web/               interfaz (HTML + CSS + JS, sin compilación)
 ├── deploy/
 │   ├── eggs-detector.service   servicio systemd (puerto 8000)
+│   ├── Caddyfile               HTTPS con certificado automático (Let's Encrypt + sslip.io)
+│   ├── caddy-host.sh           ajusta el nombre HTTPS si cambia la IP pública
 │   └── install.sh              instalación en Ubuntu
 └── requirements.txt
 ```
+
+## Robustez
+
+Probado contra la app desplegada (`/api/predict`):
+
+| caso | resultado |
+|---|---|
+| JPG, PNG, WEBP, GIF, **HEIC de iPhone**, CMYK, escala de grises, PNG de 16 bits o con transparencia | se analizan (todo se convierte a RGB y se endereza según el EXIF) |
+| foto de 8000×6000 px | se decodifica ya reducida (2048 px) sin agotar la RAM |
+| archivo que no es imagen, vacío, de más de 15 MB, de menos de 32 px o con más de 80 MP | mensaje de error claro en español, sin caerse |
+| 16 peticiones a la vez | 16/16 correctas; como mucho 3 imágenes en proceso a la vez y el resto espera turno |
+| reinicio del servicio | `systemd` lo levanta solo; la página reintenta la conexión y avisa si el servidor no responde |
+
+En el celular, "Tomar foto" reduce la imagen a 1600 px antes de subirla.
 
 ## API
 
@@ -82,7 +104,7 @@ cd app/server
 EGGS_SAMPLES_DIR=/ruta/a/eggs_v2/test uvicorn main:app --port 8000
 ```
 
-`ai-edge-litert` (el runtime oficial de TFLite) publica ruedas para Linux y macOS. En Windows se puede usar WSL o Docker.
+`ai-edge-litert` (el runtime oficial de TFLite) publica ruedas para Linux, macOS y Windows.
 
 ## Despliegue en EC2 (Ubuntu 24.04)
 
@@ -92,8 +114,10 @@ git clone https://github.com/dportilla219/eggs-detector.git ~/eggs-detector
 bash ~/eggs-detector/app/deploy/install.sh
 ```
 
-Después hay que abrir el puerto **8000/TCP** en el grupo de seguridad. El servicio arranca solo al reiniciar la instancia (`systemctl status eggs-detector`).
+Después hay que abrir en el grupo de seguridad los puertos **8000** (HTTP directo), **80** y **443** (HTTPS con Caddy). Los dos servicios arrancan solos al reiniciar la instancia (`systemctl status eggs-detector caddy`).
 
 El dataset no se sube al repositorio, igual que en el resto del proyecto. Sin `EGGS_SAMPLES_DIR`, la app funciona igual, pero la banda y la galería quedan vacías.
 
-**Cámara:** los navegadores solo dan acceso a la cámara en HTTPS o `localhost`. Por HTTP con la IP pública se puede usar la opción de video, o un túnel: `ssh -i llave.pem -L 8000:localhost:8000 ubuntu@<ip>` y abrir `http://localhost:8000`.
+Para cambiar de detector (por ejemplo a `v3`) basta con cambiar `EGGS_DET_FILE` en `deploy/eggs-detector.service`: todos tienen la misma entrada y salida.
+
+**Cámara:** los navegadores solo dan acceso a la cámara en páginas HTTPS. Por eso la app se sirve también por HTTPS; desde la dirección HTTP, la pestaña de cámara ofrece un botón para abrir la versión segura.

@@ -12,6 +12,10 @@ Modelo de detección para clasificar huevos en **video en vivo** (frame a frame)
 
 **Extra: `dano_v1`.** Es un segundo modelo, opcional, que recibe el recorte de cada huevo rajado y devuelve la **zona dañada**. Con ella la app pinta dónde está el daño y calcula la **gravedad** (leve / media / grave). En test, con las cajas de `v2`, el IoU de la zona es 0.64 y el error de la gravedad ±9,6 puntos; marca daño en 35/35 rajados y en 0/30 sanos.
 
+**App web desplegada: https://34-225-169-137.sslip.io.** Los dos modelos corren en un servidor (AWS EC2) con una **simulación de banda transportadora**: cada huevo pasa por la cámara, `v2` lo clasifica, `dano_v1` mide el daño de los rajados y un desviador lo manda a empaque, industria o descarte según la gravedad. Se abre desde cualquier navegador, también en el celular. Código y detalles en [`app/`](app/README.md).
+
+**En curso: `v3`.** En fotos reales de otras fuentes, `v2` marca como rajados casi todos los huevos sanos: de 105 fotos de huevos sanos de Wikimedia Commons no reconoce ninguna. [`eggs_v3.ipynb`](eggs_v3.ipynb) lo reentrena añadiendo fotos reales de huevos sanos y rajados (dataset público con cajas de YOLO-World y fotos de Commons elegidas a mano) y solo reemplaza a `v2` si no empeora el test original.
+
 ## Entregable
 | archivo | tamaño | uso |
 |---|---|---|
@@ -265,6 +269,8 @@ Las filas "sintético" miden el acierto por imagen con conf 0.5. `.tflite` frent
 - `eggs_dano.ipynb`: modelo de zona dañada, ejecutado de arriba abajo en Colab con GPU. Genera el dataset de recortes con SAM y las anotaciones, lo revisa visualmente, entrena `dano_v1`, exporta a TFLite (FP32 + FP16) y evalúa la tubería completa `v2` → recorte → `dano_v1`.
 - `dano/`: scripts que usa ese notebook y las anotaciones (`dano/anotaciones/`). Cada línea de `ann_*.txt` indica las celdas dañadas de un huevo, por ejemplo `12: B3-5 C4`.
 - `resultados/`: métricas por época de `v1` (`v1/results.csv`), verificación del modelo entregado (`v2/resumen.json`) y evaluación del modelo de zona dañada (`dano_v1/resumen.json`, `dano_v1/ejemplos_test.jpg`).
+- `eggs_v3.ipynb`: reentrenamiento del detector con fotos reales de huevos fuera del montaje (Colab con GPU, *Ejecutar todo*). Compara `v2` y `v3` en el test original, en fotos reales públicas y en un test independiente de Wikimedia Commons.
+- `app/`: app web desplegada (FastAPI + LiteRT) con la simulación de la banda transportadora. Ver [`app/README.md`](app/README.md).
 
 ## Datos y resultados en Drive
 No se suben al repo:
