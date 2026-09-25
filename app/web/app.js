@@ -626,14 +626,15 @@ const Live = {
     while (this.active) {
       const t = performance.now();
       if (this.video.readyState >= 2 && this.video.videoWidth) {
-        const v = this.video, k = Math.min(1, 800 / Math.max(v.videoWidth, v.videoHeight));
+        // 640 px: el detector trabaja a 640, así que más resolución solo alarga la subida
+        const v = this.video, k = Math.min(1, 640 / Math.max(v.videoWidth, v.videoHeight));
         this.grab.width = Math.round(v.videoWidth * k); this.grab.height = Math.round(v.videoHeight * k);
         this.grab.getContext('2d').drawImage(v, 0, 0, this.grab.width, this.grab.height);
         try {
           let res;
           if (App.local) res = Local.predict(this.grab, { conf: 0.5 });
           else {
-            const blob = await new Promise((r) => this.grab.toBlob(r, 'image/jpeg', 0.85));
+            const blob = await new Promise((r) => this.grab.toBlob(r, 'image/jpeg', 0.8));
             const fd = new FormData(); fd.append('file', blob, 'frame.jpg'); fd.append('conf', '0.5');
             res = await api('/api/predict', { method: 'POST', body: fd });
           }
