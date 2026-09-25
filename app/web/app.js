@@ -129,8 +129,12 @@ function drawResult(canvas, img, res, o = {}) {
       const col = e.cls === 0 ? COL.bad : COL.ok;
       ctx.lineWidth = 2.5; ctx.strokeStyle = col;
       ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x1, y1, x2 - x1, y2 - y1, 6) : ctx.rect(x1, y1, x2 - x1, y2 - y1); ctx.stroke();
-      const label = `${res.eggs.length > 1 ? `${i + 1} · ` : ''}${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %${e.damage ? (noLoc(e.damage) ? ' · grieta no localizada' : ` · daño ${pct(e.damage.severity)}`) : ''}`;
-      const tw = ctx.measureText(label).width + 12;
+      let label = `${res.eggs.length > 1 ? `${i + 1} · ` : ''}${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %${e.damage ? (noLoc(e.damage) ? ' · grieta no localizada' : ` · daño ${pct(e.damage.severity)}`) : ''}`;
+      // en imágenes angostas la etiqueta no debe salirse: letra más pequeña y, si aún no cabe, texto corto
+      ctx.font = '600 12px Inter, system-ui, sans-serif';
+      if (ctx.measureText(label).width + 12 > W) ctx.font = '600 10px Inter, system-ui, sans-serif';
+      if (ctx.measureText(label).width + 12 > W) label = e.damage && !noLoc(e.damage) ? `${CLS_ES[e.label]} · ${pct(e.damage.severity)}` : CLS_ES[e.label];
+      const tw = Math.min(W, ctx.measureText(label).width + 12);
       const ty = y1 - 21 < 0 ? y1 + 3 : y1 - 21;
       const tx = Math.min(Math.max(0, x1 - 1), W - tw);
       ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(tx, ty, tw, 19, 5) : ctx.rect(tx, ty, tw, 19); ctx.fill();
