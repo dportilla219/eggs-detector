@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
   <header class="top">
@@ -154,6 +154,10 @@
         <label class="check"><input type="checkbox" id="liveMask" checked> Zona dañada</label>
         <span class="muted small" id="liveStats"></span>
       </div>
+      <div class="notice" id="localNotice" hidden>
+        <b>Versión sin servidor:</b> los modelos corren en este dispositivo. Si el visor no deja usar la cámara, graba un video corto de los huevos y ábrelo con <b>Abrir video…</b>, o usa la cámara en vivo de la versión con servidor:
+        <a class="btn primary small-btn" id="serverLink" href="https://34-225-169-137.sslip.io/#vivo" target="_blank" rel="noopener">Abrir versión con servidor</a>
+      </div>
       <div class="notice" id="secureNotice" hidden>
         <b>La cámara en vivo necesita HTTPS.</b> Los navegadores solo permiten la cámara en páginas seguras. Abre la versión segura de esta misma app:
         <a class="btn primary small-btn" id="httpsLink" href="#">Abrir versión HTTPS</a>
@@ -163,7 +167,7 @@
         <div class="card">
           <div class="canvas-box big dark"><canvas id="liveCanvas" width="10" height="10"></canvas>
             <div class="live-badge" id="liveBadge" hidden></div>
-            <div class="placeholder" id="livePlaceholder">Enciende la cámara o abre un video con huevos. Cada fotograma se envía al servidor, unas 3–5 veces por segundo.</div>
+            <div class="placeholder" id="livePlaceholder">Enciende la cámara o abre un video con huevos. Cada fotograma se analiza unas 3–5 veces por segundo.</div>
           </div>
           <video id="liveVideo" playsinline muted loop hidden></video>
         </div>
@@ -218,10 +222,10 @@
   </main>
 
   <footer class="wrap foot">
-    <span>Modelos: <code id="footDet">…</code> + <code id="footSeg">…</code> · Inferencia con LiteRT en CPU (AWS EC2)</span>
+    <span>Modelos: <code id="footDet">…</code> + <code id="footSeg">…</code> · <span id="footEngine">Inferencia con LiteRT en CPU (AWS EC2)</span></span>
     <a href="https://github.com/dportilla219/eggs-detector" target="_blank" rel="noopener">Repositorio</a>
   </footer>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
