@@ -133,4 +133,16 @@ Las sesiones del laboratorio duran unas horas; al terminar, AWS **apaga la insta
    ```
    Al final imprime la dirección HTTPS. Si cambió el detector configurado, vuelve a evaluar el test antes de reiniciar (~1 min).
 
+## Versión sin servidor (respaldo)
+
+Si la instancia está apagada, la misma interfaz puede correr **sin servidor**: `web/local.js` ejecuta los mismos `.tflite` en el navegador con TFLite WebAssembly (`tfjs-tflite`) y responde a las mismas rutas `/api/*` con la misma tubería (letterbox, NMS agnóstica, recorte +10 %, gravedad y reglas de la banda).
+
+```bash
+python app/deploy/build_static.py --split ~/eggs-data/test --out dist_sin_servidor
+```
+
+La carpeta resultante (~35 MB: interfaz, modelos, runtime WebAssembly y 80 imágenes de test para la banda) se puede publicar en cualquier hosting estático. Comparada con la versión del servidor en esas 80 imágenes da la misma clase en todas; la gravedad cambia unas centésimas porque el navegador reescala la imagen con otro filtro. En un PC tarda ~0,3–0,5 s por foto; en un celular, algo más.
+
+Limitaciones: no abre fotos HEIC (el navegador no las decodifica) y, si se abre dentro de un visor que bloquea la cámara, el modo en vivo solo acepta videos grabados.
+
 **Cámara:** los navegadores solo dan acceso a la cámara en páginas HTTPS. Por eso la app se sirve también por HTTPS; desde la dirección HTTP, la pestaña de cámara ofrece un botón para abrir la versión segura.

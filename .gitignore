@@ -20,3 +20,7 @@ venv/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Versión sin servidor de la app (se arma con app/deploy/build_static.py)
+app/web/sin_servidor/
+dist_sin_servidor/

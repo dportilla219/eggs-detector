@@ -19,9 +19,18 @@ const ROUTE_ICON = { empaque: '✓', industria: '↻', descarte: '✕', revision
 const CLS_ES = { Crack: 'Rajado', Intact: 'Sano' };
 const LEVEL_ES = { leve: 'leve', media: 'media', grave: 'grave' };
 
-const App = { info: null, samples: [], routes: {} };
+// Sin servidor (window.EGGS_LOCAL): los modelos corren en el navegador con local.js.
+const App = { info: null, samples: [], routes: {}, local: !!window.EGGS_LOCAL };
+const SERVER_URL = 'https://34-225-169-137.sslip.io';
 
 async function api(path, opts = {}, timeoutMs = 45000) {
+  if (App.local) return Local.handle(path, opts);
+  return apiServer(path, opts, timeoutMs);
+}
+
+const sampleUrl = (id) => (App.local ? Local.sampleUrl(id) : `/api/samples/${id}/image`);
+
+async function apiServer(path, opts, timeoutMs) {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), timeoutMs);
   let r;
@@ -233,7 +242,7 @@ const Belt = {
   },
 
   start() {
-    if (!App.samples.length) { alert('El servidor no tiene imágenes de prueba configuradas (EGGS_SAMPLES_DIR).'); return; }
+    if (!App.samples.length) { $('#stageHint').textContent = 'No hay imágenes de prueba configuradas (EGGS_SAMPLES_DIR).'; return; }
     this.layout();
     this.running = true;
     $('#stageHint').hidden = true;
@@ -267,7 +276,7 @@ const Belt = {
     el.className = 'egg';
     const [cx, cy, bw, bh] = sample.box;
     const k = Math.max(EGG_W / (bw * sample.w), EGG_H / (bh * sample.h)) * 0.97;
-    el.style.backgroundImage = `url(/api/samples/${sample.id}/image)`;
+    el.style.backgroundImage = `url(${sampleUrl(sample.id)})`;
     el.style.backgroundSize = `${sample.w * k}px ${sample.h * k}px`;
     el.style.backgroundPosition = `${EGG_W / 2 - cx * sample.w * k}px ${EGG_H / 2 - cy * sample.h * k}px`;
     el.innerHTML = `<span class="gt">real: ${CLS_ES[sample.gt_label]}</span>`;
@@ -278,7 +287,7 @@ const Belt = {
     this.pending++;
     api(`/api/samples/${sample.id}/predict`, { method: 'POST' })
       .then(withMasks)
-      .then(async (res) => { egg.img = await loadImage(`/api/samples/${sample.id}/image`); egg.rt = performance.now() - egg.t0; egg.res = res; })
+      .then(async (res) => { egg.img = await loadImage(sampleUrl(sample.id)); egg.rt = performance.now() - egg.t0; egg.res = res; })
       .catch((err) => { egg.res = { error: String(err.message || err), eggs: [], route: 'revision', summary: { n_eggs: 0, n_crack: 0 }, timing_ms: { total: 0 } }; })
       .finally(() => { this.pending--; });
   },
@@ -398,7 +407,7 @@ const Belt = {
       const w = worstEgg(x.r);
       const sev = w?.damage ? `<span class="bar"><b style="width:${Math.min(100, w.damage.severity * 100)}%"></b></span>${pct(w.damage.severity)}` : '<span class="muted">—</span>';
       return `<tr>
-        <td><div class="thumb" style="background-image:url(/api/samples/${x.s.id}/image)"></div></td>
+        <td><div class="thumb" style="background-image:url(${sampleUrl(x.s.id)})"></div></td>
         <td class="num">${x.id}</td>
         <td>${CLS_ES[x.s.gt_label]}</td>
         <td class="${x.ok ? 'ok-txt' : 'bad-txt'}">${x.pred === 'Ninguno' ? 'Ninguno' : `${CLS_ES[x.pred]} ${Math.round((w?.conf || 0) * 100)} %`}</td>
@@ -441,7 +450,7 @@ const Analyze = {
     const list = App.samples.filter((s) => this.filter === 'all' || s.gt === +this.filter);
     if (!list.length) { g.innerHTML = '<p class="muted small">No hay imágenes de prueba en el servidor.</p>'; $('#galMore').hidden = true; return; }
     g.innerHTML = shuffle(list.slice()).slice(0, 20).map((s) => `
-      <button data-id="${s.id}" title="${esc(s.file)} · real: ${CLS_ES[s.gt_label]}" style="background-image:url(/api/samples/${s.id}/image)">
+      <button data-id="${s.id}" title="${esc(s.file)} · real: ${CLS_ES[s.gt_label]}" style="background-image:url(${sampleUrl(s.id)})">
         <span style="--c:${s.gt === 0 ? 'var(--bad)' : 'var(--ok)'}"></span></button>`).join('');
     $$('button', g).forEach((b) => b.onclick = () => { $$('button', g).forEach((x) => x.classList.toggle('sel', x === b)); this.runSample(+b.dataset.id); });
   },
@@ -484,7 +493,7 @@ const Analyze = {
   async runSample(id) {
     const { conf, mode } = this.params();
     const seq = ++this.seq;
-    await this.show(api(`/api/samples/${id}/predict?conf=${conf}&mode=${mode}`, { method: 'POST' }), loadImage(`/api/samples/${id}/image`), { kind: 'sample', id }, seq);
+    await this.show(api(`/api/samples/${id}/predict?conf=${conf}&mode=${mode}`, { method: 'POST' }), loadImage(sampleUrl(id)), { kind: 'sample', id }, seq);
   },
 
   rerun() {
@@ -556,7 +565,7 @@ const Live = {
     $('#camStart').onclick = () => this.startCamera();
     $('#videoInput').onchange = (e) => { const f = e.target.files[0]; if (f) this.startVideo(f); e.target.value = ''; };
     $('#liveStop').onclick = () => this.stop();
-    $('#httpsLink').href = httpsUrl();
+    $('#httpsLink').href = App.local ? `${SERVER_URL}/#vivo` : httpsUrl();
     this.secure = window.isSecureContext && !!navigator.mediaDevices?.getUserMedia;
     if (!this.secure) $('#secureNotice').hidden = false;
   },
@@ -576,7 +585,8 @@ const Live = {
       const why = err.name === 'NotAllowedError' ? 'no se dio permiso para usar la cámara'
         : err.name === 'NotFoundError' ? 'este dispositivo no tiene cámara'
           : err.name === 'NotReadableError' ? 'otra aplicación está usando la cámara' : (err.message || err);
-      $('#liveStats').textContent = `No se pudo abrir la cámara: ${why}.`;
+      $('#liveStats').textContent = `No se pudo abrir la cámara: ${why}.`
+        + (App.local ? ` En la versión sin servidor el visor puede bloquear la cámara: sube un video grabado o abre ${SERVER_URL}.` : '');
       this.stop();
       return;
     }
@@ -617,10 +627,15 @@ const Live = {
         const v = this.video, k = Math.min(1, 800 / Math.max(v.videoWidth, v.videoHeight));
         this.grab.width = Math.round(v.videoWidth * k); this.grab.height = Math.round(v.videoHeight * k);
         this.grab.getContext('2d').drawImage(v, 0, 0, this.grab.width, this.grab.height);
-        const blob = await new Promise((r) => this.grab.toBlob(r, 'image/jpeg', 0.85));
-        const fd = new FormData(); fd.append('file', blob, 'frame.jpg'); fd.append('conf', '0.5');
         try {
-          const res = await withMasks(await api('/api/predict', { method: 'POST', body: fd }));
+          let res;
+          if (App.local) res = Local.predict(this.grab, { conf: 0.5 });
+          else {
+            const blob = await new Promise((r) => this.grab.toBlob(r, 'image/jpeg', 0.85));
+            const fd = new FormData(); fd.append('file', blob, 'frame.jpg'); fd.append('conf', '0.5');
+            res = await api('/api/predict', { method: 'POST', body: fd });
+          }
+          res = await withMasks(res);
           if (!this.active) break;
           this.res = res; this.n++; this.latSum += performance.now() - t;
           this.update(res);
@@ -628,7 +643,8 @@ const Live = {
           $('#liveStats').textContent = `Error: ${err.message || err}`;
         }
       }
-      const wait = 220 - (performance.now() - t); // máx. ~4-5 inferencias por segundo
+      // máx. ~4-5 inferencias por segundo; en el navegador deja siempre un respiro para pintar el video
+      const wait = App.local ? Math.max(80, 220 - (performance.now() - t)) : 220 - (performance.now() - t);
       if (wait > 0) await new Promise((r) => setTimeout(r, wait));
     }
   },
@@ -644,7 +660,7 @@ const Live = {
     const sev = sevs.length ? sevs.reduce((a, b) => a + b, 0) / sevs.length : 0;
     const route = cls == null ? 'revision' : cls === 1 ? 'empaque' : sev < 0.15 ? 'industria' : 'descarte';
     const secs = (performance.now() - this.t0) / 1000;
-    $('#liveStats').textContent = `${(this.n / secs).toFixed(1)} inferencias/s · ${Math.round(this.latSum / this.n)} ms ida y vuelta · modelo ${res.timing_ms.total} ms`;
+    $('#liveStats').textContent = `${(this.n / secs).toFixed(1)} inferencias/s · ${Math.round(this.latSum / this.n)} ms ${App.local ? 'por fotograma (en este dispositivo)' : 'ida y vuelta'} · modelo ${res.timing_ms.total} ms`;
     const badge = $('#liveBadge');
     badge.hidden = false;
     badge.style.setProperty('--c', ROUTE_CSS[route]);
@@ -742,7 +758,7 @@ function renderModelTab() {
   if (ev) {
     const c = ev.confusion;
     $('#metServer').innerHTML = `
-      <p class="small muted">Esta misma app (<code>evaluate.py</code>) recorrió las ${ev.n_imagenes} imágenes del split <b>${esc(ev.split)}</b> en esta instancia de AWS, con conf ${ev.conf} (${esc(ev.fecha)}). Reproduce las cifras del equipo, lo que confirma que el preprocesado y la decodificación del servidor son correctos.</p>
+      <p class="small muted">Esta misma tubería (<code>evaluate.py</code>) recorrió las ${ev.n_imagenes} imágenes del split <b>${esc(ev.split)}</b> ${App.local ? 'en CPU con LiteRT' : 'en esta instancia de AWS'}, con conf ${ev.conf} (${esc(ev.fecha)}). Reproduce las cifras del equipo, lo que confirma que el preprocesado y la decodificación del servidor son correctos.</p>
       <div class="grid-2">
         <div><table><thead><tr><th>Grupo</th><th class="num">n</th><th class="num">Acierto</th></tr></thead><tbody>
           ${ev.grupos.map((g) => `<tr><td>${esc(g.grupo.replace('Crack', 'Rajado').replace('Intact', 'Sano'))}</td><td class="num">${g.n}</td><td class="num">${g.acierto == null ? '—' : g.acierto.toFixed(3)}</td></tr>`).join('')}
@@ -750,7 +766,7 @@ function renderModelTab() {
         <div><table class="confusion"><thead><tr><th>Real \\ Modelo</th><th>Rajado</th><th>Sano</th><th>Ninguno</th></tr></thead><tbody>
           <tr><th>Rajado</th><td class="hit">${c.Crack.Crack}</td><td class="${c.Crack.Intact ? 'miss' : ''}">${c.Crack.Intact}</td><td class="${c.Crack.Ninguno ? 'miss' : ''}">${c.Crack.Ninguno}</td></tr>
           <tr><th>Sano</th><td class="${c.Intact.Crack ? 'miss' : ''}">${c.Intact.Crack}</td><td class="hit">${c.Intact.Intact}</td><td class="${c.Intact.Ninguno ? 'miss' : ''}">${c.Intact.Ninguno}</td></tr></tbody></table>
-          <dl class="kv"><dt>Latencia (CPU de la instancia)</dt><dd>p50 ${ev.latencia_ms.p50} ms · p90 ${ev.latencia_ms.p90} ms</dd>
+          <dl class="kv"><dt>Latencia (${App.local ? 'CPU donde se evaluó' : 'CPU de la instancia'})</dt><dd>p50 ${ev.latencia_ms.p50} ms · p90 ${ev.latencia_ms.p90} ms</dd>
           <dt>Rutas asignadas</dt><dd>${ROUTE_KEYS.filter((k) => ev.rutas[k]).map((k) => `${esc(App.routes[k].name)}: ${ev.rutas[k]}`).join(' · ')}</dd>
           <dt>Gravedad media (rajados)</dt><dd>${pct(ev.gravedad_media_crack, 1)}</dd></dl></div>
       </div>`;
@@ -770,6 +786,18 @@ async function boot() {
   $$('.host').forEach((e) => { e.textContent = location.hostname; });
   $$('.origin').forEach((e) => { e.textContent = location.origin; });
   initTabs();
+  if (App.local) {
+    document.body.classList.add('local');
+    $('#localNotice').hidden = false;
+    $('#footEngine').textContent = 'Inferencia en este navegador (TFLite WebAssembly), sin servidor';
+    setStatus(false, 'Cargando los modelos en el navegador…');
+    try {
+      await Local.init(window.EGGS_LOCAL);
+    } catch (err) {
+      setStatus(false, `No se pudieron cargar los modelos en este navegador: ${err.message || err}`);
+      return;
+    }
+  }
   // Si el servidor no responde al abrir la página (p. ej. se está reiniciando), reintenta solo.
   for (;;) {
     try {
@@ -789,13 +817,13 @@ async function boot() {
   Analyze.renderGallery();
   Live.init();
   renderModelTab();
-  setInterval(() => api('/api/health', {}, 10000).then(() => setStatus(true)).catch(() => setStatus(false, 'Sin conexión con el servidor')), 30000);
+  if (!App.local) setInterval(() => api('/api/health', {}, 10000).then(() => setStatus(true)).catch(() => setStatus(false, 'Sin conexión con el servidor')), 30000);
 }
 
 function setStatus(ok, msg) {
   $('#status').classList.toggle('ok', ok);
   $('#status').classList.toggle('err', !ok);
-  $('#statusText').textContent = ok ? `Modelos cargados · ${App.samples.length} imágenes de test` : msg;
+  $('#statusText').textContent = ok ? `Modelos cargados${App.local ? ' en este navegador (sin servidor)' : ''} · ${App.samples.length} imágenes de test` : msg;
 }
 
 boot();
