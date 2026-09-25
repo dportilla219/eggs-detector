@@ -237,6 +237,12 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .notice { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; font-size: .9rem; }
 .notice pre { margin: 8px 0 0; background: var(--surface); padding: 8px 10px; border-radius: 8px; overflow-x: auto; }
 .live-decision .big { font: 800 1.6rem/1.2 Montserrat, Inter, sans-serif; margin: 8px 0; }
+.live-badge {
+  position: absolute; left: 10px; top: 10px; z-index: 2; color: #fff; background: var(--c, var(--neutral));
+  font: 800 1.15rem/1.2 Montserrat, Inter, sans-serif; padding: 8px 14px; border-radius: 12px; box-shadow: 0 2px 10px #0006;
+}
+.live-badge small { display: block; font: 600 .78rem Inter, sans-serif; opacity: .95; }
+.tabs .short { display: none; }
 
 /* ---------- modelo ---------- */
 .flow { list-style: none; padding: 0; margin: 8px 0; display: flex; flex-wrap: wrap; gap: 8px; counter-reset: s; }
@@ -258,6 +264,14 @@ pre.code { background: var(--surface-2); padding: 10px 12px; border-radius: 8px;
 }
 @media (max-width: 600px) {
   .wrap { padding: 0 16px; }
+  .top-inner { padding-top: 12px; }
+  h1 { font-size: 1.45rem; margin: 2px 0 4px; }
+  .sub { display: none; }
+  .tabs { margin-top: 6px; gap: 0; }
+  .tabs button { padding: 9px 10px; font-size: .88rem; }
+  .tabs .full { display: none; }
+  .tabs .short { display: inline; }
+  main { padding-top: 12px; }
   .stage { height: 300px; }
   .bin .rule { display: none; }
   .kpis { grid-template-columns: 1fr 1fr; }

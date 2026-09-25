@@ -5,8 +5,13 @@
 set -u
 CADDYFILE=/etc/caddy/Caddyfile
 MD=http://169.254.169.254/latest
-TOKEN=$(curl -s -m 5 -X PUT "$MD/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 60" || true)
-IP=$(curl -s -m 5 -H "X-aws-ec2-metadata-token: $TOKEN" "$MD/meta-data/public-ipv4" || true)
+IP=""
+for intento in $(seq 1 10); do  # al encender, los metadatos pueden tardar unos segundos
+  TOKEN=$(curl -s -m 5 -X PUT "$MD/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 60" || true)
+  IP=$(curl -s -m 5 -H "X-aws-ec2-metadata-token: $TOKEN" "$MD/meta-data/public-ipv4" || true)
+  [[ "$IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && break
+  sleep 3
+done
 if [[ ! "$IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 0  # sin IP pública o sin metadatos: deja el Caddyfile como está
 fi

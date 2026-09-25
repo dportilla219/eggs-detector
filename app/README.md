@@ -120,4 +120,17 @@ El dataset no se sube al repositorio, igual que en el resto del proyecto. Sin `E
 
 Para cambiar de detector (por ejemplo a `v3`) basta con cambiar `EGGS_DET_FILE` en `deploy/eggs-detector.service`: todos tienen la misma entrada y salida.
 
+### Después de reiniciar el laboratorio de AWS Academy
+
+Las sesiones del laboratorio duran unas horas; al terminar, AWS **apaga la instancia** y al encenderla cambia su IP pública.
+
+1. *Start Lab* y esperar a que la instancia esté en *running*. La app y Caddy arrancan solos.
+2. La app queda en `https://<ip-con-guiones>.sslip.io` (por ejemplo, `https://3-91-20-7.sslip.io` si la IP es 3.91.20.7) y en `http://<ip>:8000`. Caddy pide el certificado de la IP nueva solo, en menos de un minuto.
+3. **Para que la dirección no cambie**: EC2 → *Direcciones IP elásticas* → *Asignar* → *Asociar* a la instancia. Luego se abre `https://<ip-elástica-con-guiones>.sslip.io` siempre.
+4. Para pasar a la última versión del repositorio, en la terminal de la instancia (EC2 → *Conectar*):
+   ```bash
+   cd ~/eggs-detector && git pull && bash app/deploy/install.sh
+   ```
+   Al final imprime la dirección HTTPS. Si cambió el detector configurado, vuelve a evaluar el test antes de reiniciar (~1 min).
+
 **Cámara:** los navegadores solo dan acceso a la cámara en páginas HTTPS. Por eso la app se sirve también por HTTPS; desde la dirección HTTP, la pestaña de cámara ofrece un botón para abrir la versión segura.

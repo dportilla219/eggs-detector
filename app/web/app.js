@@ -367,7 +367,7 @@ const Belt = {
       ${routePill(r.route, true)}
       <p class="small muted" style="margin-top:6px">${esc(App.routes[r.route]?.desc || '')}</p>
       <dl class="kv">
-        <dt>Modelo (v2)</dt><dd>${pred === 'Ninguno' ? 'sin huevo detectado' : `${CLS_ES[pred]} · ${Math.round((w?.conf || 0) * 100)} %`}${r.eggs.length > 1 ? ` (${r.eggs.length} huevos)` : ''}</dd>
+        <dt>Modelo (${esc(App.det)})</dt><dd>${pred === 'Ninguno' ? 'sin huevo detectado' : `${CLS_ES[pred]} · ${Math.round((w?.conf || 0) * 100)} %`}${r.eggs.length > 1 ? ` (${r.eggs.length} huevos)` : ''}</dd>
         <dt>Etiqueta real</dt><dd>${CLS_ES[s.gt_label]} <span class="${ok ? 'ok-txt' : 'bad-txt'}">${ok ? '✓ acierto' : '✗ error'}</span></dd>
         <dt>Zona dañada</dt><dd>${w?.damage ? `${pct(w.damage.severity, 1)} · ${LEVEL_ES[w.damage.level]}` : pred === 'Intact' ? 'no aplica (huevo sano)' : '—'}</dd>
         <dt>Tiempo</dt><dd>${r.timing_ms.detector} ms detector + ${r.timing_ms.damage} ms daño</dd>
@@ -645,6 +645,11 @@ const Live = {
     const route = cls == null ? 'revision' : cls === 1 ? 'empaque' : sev < 0.15 ? 'industria' : 'descarte';
     const secs = (performance.now() - this.t0) / 1000;
     $('#liveStats').textContent = `${(this.n / secs).toFixed(1)} inferencias/s · ${Math.round(this.latSum / this.n)} ms ida y vuelta · modelo ${res.timing_ms.total} ms`;
+    const badge = $('#liveBadge');
+    badge.hidden = false;
+    badge.style.setProperty('--c', ROUTE_CSS[route]);
+    badge.innerHTML = `${cls == null ? 'Sin huevo' : cls === 0 ? `Rajado${sevs.length ? ` · ${pct(sev)}` : ''}` : 'Sano'}
+      <small>${ROUTE_ICON[route]} ${esc(App.routes[route]?.name || route)}</small>`;
     $('#liveDecision').innerHTML = `
       <div class="big">${cls == null ? 'Sin huevo' : cls === 0 ? 'Rajado' : 'Sano'}</div>
       ${routePill(route, true)}
@@ -656,6 +661,8 @@ const Live = {
 
   stop() {
     this.active = false;
+    const badge = document.querySelector('#liveBadge');
+    if (badge) badge.hidden = true;
     if (this.stream) { this.stream.getTracks().forEach((t) => t.stop()); this.stream = null; }
     if (this.video) { this.video.pause(); this.video.srcObject = null; }
     if (this.url) { URL.revokeObjectURL(this.url); this.url = null; }
@@ -670,9 +677,12 @@ function renderModelTab() {
   const mb = (b) => `${(b / 1e6).toFixed(1)} MB`;
   const d = i.models.detector, g = i.models.damage;
   $('#footDet').textContent = d.file; $('#footSeg').textContent = g.file;
+  const esNuevo = App.det !== 'v2' && i.results_det;
   $('#modelCards').innerHTML = `
-    <div class="card model-card"><h3>1 · Detector <code>v2</code> (obligatorio)</h3>
-      <p class="small muted">YOLOv8n, fine-tune con ~2.600 imágenes sintéticas para que no aprenda el fondo. Encuentra cada huevo y lo clasifica.</p>
+    <div class="card model-card"><h3>1 · Detector <code>${esc(App.det)}</code> (obligatorio)</h3>
+      <p class="small muted">${esNuevo
+        ? 'YOLOv8n, fine-tune de v2 con fotos reales de huevos sanos y rajados de otras fuentes (dataset público y Wikimedia Commons, cajas puestas con Grounding DINO). Encuentra cada huevo y lo clasifica.'
+        : 'YOLOv8n, fine-tune con ~2.600 imágenes sintéticas para que no aprenda el fondo. Encuentra cada huevo y lo clasifica.'}</p>
       <dl class="kv"><dt>Archivo</dt><dd><code>${esc(d.file)}</code> · ${mb(d.bytes)}</dd>
       <dt>Entrada</dt><dd>[${d.input}] float32 · RGB 0–1</dd><dt>Salida</dt><dd>[${d.output}] · cx, cy, w, h, score Crack, score Intact</dd>
       <dt>Clases</dt><dd>0 = Crack (rajado) · 1 = Intact (sano)</dd><dt>Decodificación</dt><dd>conf ≥ ${d.conf} · NMS agnóstica IoU ${d.iou_nms}</dd></dl></div>
@@ -683,12 +693,23 @@ function renderModelTab() {
       <dt>Gravedad</dt><dd>leve ${g.levels.leve} · media ${g.levels.media} · grave ${g.levels.grave}</dd>
       <dt>Anotaciones</dt><dd>420 huevos rajados marcados a mano (rejilla 10×10) + silueta con SAM 2.1</dd></dl></div>`;
 
-  const v2 = i.results_v2;
-  if (v2) {
-    const t = v2.test_original_por_clase;
+  const R = esNuevo ? i.results_det : i.results_v2;
+  if (R) {
+    const t = R.test_original_por_clase;
     const f = (x) => (x == null ? '—' : x.toFixed(3));
-    const grp = Object.entries(v2.acierto_por_grupo || {}).map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num">${f(v)}</td></tr>`).join('');
-    const ver = v2.verificacion || {};
+    const grp = Object.entries(R.acierto_por_grupo || {}).map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num">${f(v)}</td></tr>`).join('');
+    const ver = R.verificacion || {};
+    let cmp = '';
+    if (esNuevo && R.comparacion_v2) {
+      const g2 = R.comparacion_v2.acierto_por_grupo_v2 || {}, g3 = R.acierto_por_grupo || {};
+      const filas = [...new Set([...Object.keys(g2), ...Object.keys(g3)])].sort()
+        .map((k) => `<tr><td>${esc(k)}</td><td class="num">${f(g2[k])}</td><td class="num"><b>${f(g3[k])}</b></td></tr>`).join('');
+      const c = R.commons || {};
+      const com = ['Intact', 'Crack'].map((k) => `<tr><td>Commons · ${CLS_ES[k]}</td><td class="num">${f(c.v2?.por_clase?.[k])}</td><td class="num"><b>${f(c[App.det]?.por_clase?.[k])}</b></td></tr>`).join('');
+      cmp = `<h4>${esc(App.det)} frente a v2 (acierto por foto, conf 0.5)</h4>
+        <table><thead><tr><th>Grupo</th><th class="num">v2</th><th class="num">${esc(App.det)}</th></tr></thead><tbody>${filas}${com}</tbody></table>
+        <p class="small muted">"real:" son fotos de celular de otra fuente que el modelo no vio al entrenar. "Commons" es un test independiente de ${c[App.det]?.n ?? c.v2?.n ?? '—'} fotos de Wikimedia Commons, de autores distintos a los de entrenamiento.</p>`;
+    }
     $('#metV2').innerHTML = `
       <p class="small muted">Test original: 382 fotos que el modelo no vio al entrenar.</p>
       <table><thead><tr><th>Clase</th><th class="num">Precisión</th><th class="num">Recall</th><th class="num">mAP50</th><th class="num">mAP50-95</th></tr></thead><tbody>
@@ -698,8 +719,8 @@ function renderModelTab() {
       <h4>.tflite frente al modelo original</h4>
       <table><thead><tr><th>Modelo</th><th class="num">mAP50</th><th class="num">mAP50-95</th></tr></thead><tbody>
       ${[['.pt original', ver.pt], ['fp32 .tflite (este)', ver.fp32], ['int8 .tflite', ver.int8]].filter(([, x]) => x).map(([n, x]) => `<tr><td>${n}</td><td class="num">${f(x.mAP50)}</td><td class="num">${f(x['mAP50-95'])}</td></tr>`).join('')}
-      </tbody></table>`;
-  } else $('#metV2').innerHTML = '<p class="muted">No se encontró resultados/v2/resumen.json.</p>';
+      </tbody></table>${cmp}`;
+  } else $('#metV2').innerHTML = `<p class="muted">No se encontró resultados/${esc(App.det)}/resumen.json.</p>`;
 
   const dn = i.results_dano_v1;
   if (dn) {
@@ -754,6 +775,8 @@ async function boot() {
     try {
       const [info, samples] = await Promise.all([api('/api/info', {}, 15000), api('/api/samples', {}, 15000)]);
       App.info = info; App.samples = samples; App.routes = info.routes;
+      App.det = (info.models.detector.file.match(/eggs_(v\d+)/) || [])[1] || 'v2';
+      $$('.detname').forEach((e) => { e.textContent = App.det; });
       break;
     } catch (err) {
       setStatus(false, 'Sin conexión con el servidor, reintentando…');

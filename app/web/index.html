@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
   <header class="top">
@@ -22,10 +22,10 @@
       <div class="status" id="status"><span class="dot"></span><span id="statusText">Conectando…</span></div>
     </div>
     <nav class="wrap tabs" role="tablist">
-      <button role="tab" data-tab="banda" class="active">Banda transportadora</button>
-      <button role="tab" data-tab="analizar">Analizar imagen</button>
-      <button role="tab" data-tab="vivo">Cámara / video</button>
-      <button role="tab" data-tab="modelo">Modelo y métricas</button>
+      <button role="tab" data-tab="banda" class="active"><span class="full">Banda transportadora</span><span class="short">Banda</span></button>
+      <button role="tab" data-tab="analizar"><span class="full">Analizar imagen</span><span class="short">Foto</span></button>
+      <button role="tab" data-tab="vivo"><span class="full">Cámara / video</span><span class="short">📷 En vivo</span></button>
+      <button role="tab" data-tab="modelo"><span class="full">Modelo y métricas</span><span class="short">Modelo</span></button>
     </nav>
   </header>
 
@@ -162,6 +162,7 @@
       <div class="grid-2 live">
         <div class="card">
           <div class="canvas-box big dark"><canvas id="liveCanvas" width="10" height="10"></canvas>
+            <div class="live-badge" id="liveBadge" hidden></div>
             <div class="placeholder" id="livePlaceholder">Enciende la cámara o abre un video con huevos. Cada fotograma se envía al servidor, unas 3–5 veces por segundo.</div>
           </div>
           <video id="liveVideo" playsinline muted loop hidden></video>
@@ -180,7 +181,7 @@
         <h3>Tubería de inferencia</h3>
         <ol class="flow">
           <li><b>Imagen / fotograma</b><span>RGB, tamaño libre</span></li>
-          <li><b>Detector v2</b><span>YOLOv8n · 640×640 → cajas + Crack/Intact</span></li>
+          <li><b>Detector <span class="detname">v2</span></b><span>YOLOv8n · 640×640 → cajas + Crack/Intact</span></li>
           <li><b>NMS</b><span>agnóstica a la clase, IoU 0.5, conf ≥ 0.5</span></li>
           <li class="hl"><b>Recorte del huevo rajado</b><span>caja +10 % en la imagen original → 192×192</span></li>
           <li class="hl"><b>dano_v1</b><span>U-Net MobileNetV2 → silueta + zona dañada</span></li>
@@ -191,7 +192,7 @@
       </div>
       <div class="grid-2" id="modelCards"></div>
       <div class="grid-2">
-        <div class="card"><h3>Métricas del detector (v2)</h3><div id="metV2"></div></div>
+        <div class="card"><h3>Métricas del detector (<span class="detname">v2</span>)</h3><div id="metV2"></div></div>
         <div class="card"><h3>Métricas de la zona dañada (dano_v1)</h3><div id="metDano"></div></div>
       </div>
       <div class="card"><h3>Evaluación en este servidor</h3><div id="metServer"></div></div>
@@ -200,11 +201,11 @@
         <div class="card why">
           <h3>¿Por qué dos modelos y no uno?</h3>
           <ul>
-            <li><b>Responden preguntas distintas.</b> v2 dice <i>dónde</i> hay huevos y cuál está rajado (cajas); dano_v1 dice <i>qué parte</i> del huevo está dañada (máscara por píxel).</li>
+            <li><b>Responden preguntas distintas.</b> El detector (<span class="detname">v2</span>) dice <i>dónde</i> hay huevos y cuál está rajado (cajas); dano_v1 dice <i>qué parte</i> del huevo está dañada (máscara por píxel).</li>
             <li><b>Los datos no alcanzan para un modelo único.</b> Un YOLOv8-seg necesitaría la zona dañada marcada en los 2110 rajados de train; se anotaron a mano unos 420. Los que quedaran sin marcar le enseñarían lo contrario.</li>
             <li><b>No se arriesga lo que ya funciona.</b> v2 (mAP50-95 0.97 en test) queda intacto; el extra se añade o se quita sin reentrenarlo.</li>
             <li><b>El segundo modelo ve mejor la grieta.</b> Recibe el huevo recortado de la imagen original, siempre a 192×192 y con toda la resolución disponible.</li>
-            <li><b>Coste bajo.</b> dano_v1 pesa 4,9 MB y solo se ejecuta sobre los huevos que v2 marcó como rajados.</li>
+            <li><b>Coste bajo.</b> dano_v1 pesa 4,9 MB y solo se ejecuta sobre los huevos que el detector marcó como rajados.</li>
           </ul>
         </div>
       </div>
@@ -221,6 +222,6 @@
     <a href="https://github.com/dportilla219/eggs-detector" target="_blank" rel="noopener">Repositorio</a>
   </footer>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

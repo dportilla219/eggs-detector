@@ -31,9 +31,10 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--models", default=os.path.join(HERE, "..", "..", "modelo"))
     ap.add_argument("--conf", type=float, default=0.5)
+    ap.add_argument("--det", default=os.environ.get("EGGS_DET_FILE", "eggs_v2_fp32.tflite"))
     a = ap.parse_args()
 
-    pipe = EggPipeline(a.models)
+    pipe = EggPipeline(a.models, det_file=a.det)
     items = load_samples(a.split)
     rows = []
     t0 = time.time()

@@ -16,6 +16,7 @@ import io
 import json
 import logging
 import os
+import re
 import threading
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
@@ -131,7 +132,9 @@ def health() -> dict:
 @app.get("/api/info")
 def info() -> dict:
     v2 = _read_json(os.path.join(RESULTS_DIR, "v2", "resumen.json"))
-    v3 = _read_json(os.path.join(RESULTS_DIR, "v3", "resumen.json"))
+    m = re.search(r"eggs_(v\d+)", pipe.det_file)
+    det_name = m.group(1) if m else "v2"
+    det_res = _read_json(os.path.join(RESULTS_DIR, det_name, "resumen.json")) if det_name != "v2" else None
     dano = _read_json(os.path.join(RESULTS_DIR, "dano_v1", "resumen.json"))
     if dano:  # el detalle por huevo es largo y no hace falta en la interfaz
         dano = {k: v for k, v in dano.items() if k != "pipeline_detalle"}
@@ -148,7 +151,8 @@ def info() -> dict:
         },
         "routes": ROUTES,
         "results_v2": v2,
-        "results_v3": v3,
+        "detector_name": det_name,
+        "results_det": det_res,
         "results_dano_v1": dano,
         "server_eval": ev,
         "samples": len(SAMPLES),
