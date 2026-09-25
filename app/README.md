@@ -19,7 +19,7 @@ No hace falta Expo Go ni instalar nada: se abre en el navegador. Si la instancia
 |---|---|
 | **Banda transportadora** | Simula una línea de clasificación en tiempo real. Cada huevo (imagen del test real) pasa por la cámara, el detector (`v4`) lo clasifica y, si está rajado, `dano_v1` mide el daño. Un desviador lo manda a su salida. Muestra el acierto frente a la etiqueta real, la matriz de confusión, la latencia y los huevos por minuto. |
 | **Analizar imagen** | Subir una foto o elegir una del test. Dibuja las cajas y la zona dañada, y muestra los scores, la gravedad y el recorte de 192×192 que ve `dano_v1`. |
-| **Cámara / video** | Envía fotogramas de la cámara o de un archivo de video (~4 por segundo) y suaviza la decisión por mayoría en los últimos 7. |
+| **Cámara / video** | Envía fotogramas de 640 px de la cámara o de un archivo de video, dos a la vez (~5–6 por segundo en la instancia), y suaviza la decisión por mayoría en los últimos 7. Muestra el fotograma analizado con su caja y su zona dañada, para que la mancha quede sobre la grieta aunque el huevo o la mano se muevan. |
 | **Modelo y métricas** | Arquitectura, métricas del equipo (`resultados/`), evaluación hecha por la propia app en el servidor y reglas de la banda. |
 
 ### Reglas de la banda (el diferencial en acción)

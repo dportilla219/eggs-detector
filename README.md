@@ -250,7 +250,10 @@ Lo que necesito ahora es: <describir la tarea>
 
 Acierto por imagen con conf 0.5 salvo las filas de mAP. Las cuatro últimas filas son fotos que ningún modelo vio al entrenar: el test del dataset público [Egg-Defect-Detection](https://github.com/dakshkathuria346-gif/Egg-Defect-Detection) (fotos de celular) y un test independiente de 112 fotos de Wikimedia Commons elegidas a mano, de autores distintos a los de entrenamiento. Las fotos reales se midieron con la tubería de la app (`.tflite` en CPU): [`resultados/v4/verificacion_tflite_app.json`](resultados/v4/verificacion_tflite_app.json). `.tflite` FP32 de `v4` frente a su `.pt` (test + sintéticas): mAP50 0.991 contra 0.992. Detalle en `resultados/v2/`, `resultados/v3/` y `resultados/v4/`.
 
-Límite conocido: solo hay 7 fotos de huevos rajados en Commons, así que esa fila tiene mucha incertidumbre; las grietas finas o de espaldas a la cámara se pueden pasar por sanas.
+Límites conocidos (medidos el 25/09/2026 contra la app desplegada):
+- Solo hay 7 fotos de huevos rajados en Commons, así que esa fila tiene mucha incertidumbre; las grietas finas o de espaldas a la cámara se pueden pasar por sanas.
+- **Zona dañada (`dano_v1`) en fotos del montaje del dataset (224 px, fondo gris):** no marca ninguna grieta (0 de 40 rajados detectados). Se entrenó sin rajados del montaje y con todos sus negativos del montaje, y a esa resolución las grietas casi no se ven, así que no se pudieron anotar. La app lo indica como "grieta no localizada" y trata el huevo como leve. En fotos de celular sí la ubica: 250 de 251 rajados de otras fuentes del test y 34 de 36 del dataset público. Con las cajas de `v4`, IoU de la zona 0.643 y 0 de 30 sanos con daño falso (igual que con `v2`).
+- El detector solo vio huevos: otros objetos redondos (limones, cebollas, pelotas) pueden salir como huevo.
 
 ## Historial de modelos
 | run | resumen |
