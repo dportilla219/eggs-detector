@@ -563,7 +563,7 @@ const Live = {
 
   init() {
     this.video = $('#liveVideo'); this.canvas = $('#liveCanvas');
-    this.grab = document.createElement('canvas');
+    this.grabs = []; // un canvas por cada fotograma en vuelo
     $('#camStart').onclick = () => this.startCamera();
     $('#videoInput').onchange = (e) => { const f = e.target.files[0]; if (f) this.startVideo(f); e.target.value = ''; };
     $('#liveStop').onclick = () => this.stop();
@@ -619,35 +619,41 @@ const Live = {
       requestAnimationFrame(draw);
     };
     requestAnimationFrame(draw);
-    this.loop();
+    // Con servidor van dos fotogramas en paralelo: mientras uno viaja por la red, el otro se analiza,
+    // y la decisión se actualiza casi el doble de seguido. `gen` evita bucles viejos tras detener y volver a empezar.
+    const gen = this.gen = (this.gen || 0) + 1;
+    this.seq = 0; this.shown = 0;
+    for (let i = 0; i < (App.local ? 1 : 2); i++) setTimeout(() => this.loop(gen, i), i * 150);
   },
 
-  async loop() {
-    while (this.active) {
+  async loop(gen, i) {
+    const grab = this.grabs[i] || (this.grabs[i] = document.createElement('canvas'));
+    while (this.active && this.gen === gen) {
       const t = performance.now();
       if (this.video.readyState >= 2 && this.video.videoWidth) {
         // 640 px: el detector trabaja a 640, así que más resolución solo alarga la subida
         const v = this.video, k = Math.min(1, 640 / Math.max(v.videoWidth, v.videoHeight));
-        this.grab.width = Math.round(v.videoWidth * k); this.grab.height = Math.round(v.videoHeight * k);
-        this.grab.getContext('2d').drawImage(v, 0, 0, this.grab.width, this.grab.height);
+        grab.width = Math.round(v.videoWidth * k); grab.height = Math.round(v.videoHeight * k);
+        grab.getContext('2d').drawImage(v, 0, 0, grab.width, grab.height);
+        const seq = ++this.seq;
         try {
           let res;
-          if (App.local) res = Local.predict(this.grab, { conf: 0.5 });
+          if (App.local) res = Local.predict(grab, { conf: 0.5 });
           else {
-            const blob = await new Promise((r) => this.grab.toBlob(r, 'image/jpeg', 0.8));
+            const blob = await new Promise((r) => grab.toBlob(r, 'image/jpeg', 0.8));
             const fd = new FormData(); fd.append('file', blob, 'frame.jpg'); fd.append('conf', '0.5');
             res = await api('/api/predict', { method: 'POST', body: fd });
           }
           res = await withMasks(res);
-          if (!this.active) break;
-          this.res = res; this.n++; this.latSum += performance.now() - t;
-          this.update(res);
+          if (!this.active || this.gen !== gen) break;
+          this.n++; this.latSum += performance.now() - t;
+          if (seq > this.shown) { this.shown = seq; this.res = res; this.update(res); } // descarta respuestas atrasadas
         } catch (err) {
           $('#liveStats').textContent = `Error: ${err.message || err}`;
         }
       }
-      // máx. ~4-5 inferencias por segundo; en el navegador deja siempre un respiro para pintar el video
-      const wait = App.local ? Math.max(80, 220 - (performance.now() - t)) : 220 - (performance.now() - t);
+      // cada bucle, como mucho ~3 por segundo; en el navegador deja siempre un respiro para pintar el video
+      const wait = App.local ? Math.max(80, 220 - (performance.now() - t)) : 300 - (performance.now() - t);
       if (wait > 0) await new Promise((r) => setTimeout(r, wait));
     }
   },
