@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Detector de huevos con daños</title>
+  <meta name="description" content="Clasificación de huevos rajados con CNN (YOLOv8n + U-Net) y simulación de banda transportadora.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cellipse cx='32' cy='35' rx='20' ry='25' fill='%23f3e7d3' stroke='%237b1fe0' stroke-width='4'/%3E%3Cpath d='M22 30l6 5 5-6 6 6' fill='none' stroke='%23ec40c8' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div>
+        <div class="eyebrow">Ciencia de Datos · Trabajo final · Tema 1</div>
+        <h1>Detección de huevos con daños</h1>
+        <p class="sub">CNN de extremo a extremo: <b>YOLOv8n</b> encuentra cada huevo y dice si está rajado; una <b>U-Net</b> marca la <b>zona dañada</b> y su gravedad, y con eso la banda decide la ruta.</p>
+      </div>
+      <div class="status" id="status"><span class="dot"></span><span id="statusText">Conectando…</span></div>
+    </div>
+    <nav class="wrap tabs" role="tablist">
+      <button role="tab" data-tab="banda" class="active">Banda transportadora</button>
+      <button role="tab" data-tab="analizar">Analizar imagen</button>
+      <button role="tab" data-tab="vivo">Cámara / video</button>
+      <button role="tab" data-tab="modelo">Modelo y métricas</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <!-- ============================== BANDA ============================== -->
+    <section id="tab-banda" class="tab active">
+      <div class="card controls">
+        <div class="btns">
+          <button id="beltStart" class="btn primary">▶ Iniciar</button>
+          <button id="beltPause" class="btn">❚❚ Pausar</button>
+          <button id="beltReset" class="btn ghost">Reiniciar</button>
+        </div>
+        <label class="field">Velocidad
+          <input type="range" id="beltSpeed" min="1" max="5" step="1" value="3">
+        </label>
+        <label class="field">Lote
+          <select id="beltMix">
+            <option value="balanced">Test real · mitad sanos, mitad rajados</option>
+            <option value="natural">Test real · proporción original</option>
+            <option value="montaje">Solo fotos del montaje</option>
+            <option value="crack">Solo rajados</option>
+            <option value="intact">Solo sanos</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="beltGt" checked> Mostrar etiqueta real</label>
+      </div>
+
+      <div class="card stage-card">
+        <div class="stage" id="stage">
+          <div class="belt" id="belt"><div class="roller l"></div><div class="roller r"></div></div>
+          <div class="camera" id="camera">
+            <div class="cam-body"><div class="lens"></div><span>CNN</span></div>
+            <div class="beam" id="beam"></div>
+          </div>
+          <div id="bins"></div>
+          <div id="eggLayer"></div>
+          <div class="stage-hint" id="stageHint">Pulsa <b>Iniciar</b>: cada huevo pasa por la cámara, el modelo lo analiza y un desviador lo manda a su salida.</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>Estación de inspección</h3><span class="muted small" id="inspMeta"></span></div>
+          <div class="inspect">
+            <div class="canvas-box"><canvas id="inspCanvas" width="10" height="10"></canvas></div>
+            <div class="inspect-info" id="inspInfo"><p class="muted">Todavía no ha pasado ningún huevo por la cámara.</p></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Indicadores en vivo</h3></div>
+          <div class="kpis" id="kpis"></div>
+          <h4>Etiqueta real frente a predicción</h4>
+          <table class="confusion" id="confusion"></table>
+          <p class="muted small">Cada imagen del test trae su etiqueta real (anotada en el dataset). "Ninguno" = el detector no encontró huevo con confianza ≥ 0.5.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Registro de la banda</h3><span class="muted small">Últimos 15 huevos</span></div>
+        <div class="table-scroll">
+          <table class="log">
+            <thead><tr><th></th><th>#</th><th>Real</th><th>Modelo</th><th>Gravedad</th><th>Ruta</th><th>Tiempo</th></tr></thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== ANALIZAR ============================== -->
+    <section id="tab-analizar" class="tab">
+      <div class="grid-side">
+        <div class="card">
+          <h3>Imagen de entrada</h3>
+          <label class="drop" id="drop">
+            <input type="file" id="fileInput" accept="image/*" hidden>
+            <span class="drop-icon">⤒</span>
+            <span><b>Arrastra una foto</b> o haz clic para elegirla</span>
+            <span class="muted small">JPG / PNG, máx. 12 MB</span>
+          </label>
+          <div class="card-head mt"><h4>… o elige una del test</h4>
+            <div class="seg" id="galFilter">
+              <button data-f="all" class="active">Todas</button><button data-f="0">Rajados</button><button data-f="1">Sanos</button>
+            </div>
+          </div>
+          <div class="gallery" id="gallery"></div>
+          <button class="btn ghost small-btn" id="galMore">Mostrar otras</button>
+
+          <h4 class="mt">Ajustes</h4>
+          <label class="field col">Umbral de confianza: <b id="confVal">0.50</b>
+            <input type="range" id="conf" min="0.1" max="0.9" step="0.05" value="0.5">
+          </label>
+          <label class="field col">Preprocesado del detector
+            <select id="mode">
+              <option value="letterbox">Imagen completa con bandas (letterbox)</option>
+              <option value="center">Cuadrado centrado (como la app móvil)</option>
+            </select>
+          </label>
+          <label class="check"><input type="checkbox" id="showBoxes" checked> Cajas del detector</label>
+          <label class="check"><input type="checkbox" id="showMask" checked> Zona dañada</label>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Resultado</h3><span class="muted small" id="anaMeta"></span></div>
+          <div class="canvas-box big"><canvas id="anaCanvas" width="10" height="10"></canvas>
+            <div class="placeholder" id="anaPlaceholder">Sube una imagen o elige una del test para ver la detección y la zona dañada.</div>
+          </div>
+          <div id="anaSummary"></div>
+          <div class="eggs" id="anaEggs"></div>
+          <details class="raw"><summary>Respuesta JSON de la API</summary><pre id="anaRaw"></pre></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== VIVO ============================== -->
+    <section id="tab-vivo" class="tab">
+      <div class="card controls">
+        <div class="btns">
+          <button class="btn primary" id="camStart">Usar cámara</button>
+          <label class="btn" for="videoInput">Abrir video…</label>
+          <input type="file" id="videoInput" accept="video/*" hidden>
+          <button class="btn ghost" id="liveStop">Detener</button>
+        </div>
+        <label class="check"><input type="checkbox" id="liveMask" checked> Zona dañada</label>
+        <span class="muted small" id="liveStats"></span>
+      </div>
+      <div class="notice" id="secureNotice" hidden>
+        <b>La cámara necesita HTTPS.</b> Los navegadores solo permiten la cámara en páginas seguras (HTTPS o <code>localhost</code>). Puedes usar <b>Abrir video…</b>, que funciona sin permisos, o abrir un túnel y entrar por <code>http://localhost:8000</code>:
+        <pre>ssh -i llave.pem -L 8000:localhost:8000 ubuntu@<span class="host"></span></pre>
+      </div>
+      <div class="grid-2 live">
+        <div class="card">
+          <div class="canvas-box big dark"><canvas id="liveCanvas" width="10" height="10"></canvas>
+            <div class="placeholder" id="livePlaceholder">Enciende la cámara o abre un video con huevos. Cada fotograma se envía al servidor, unas 3–5 veces por segundo.</div>
+          </div>
+          <video id="liveVideo" playsinline muted loop hidden></video>
+        </div>
+        <div class="card">
+          <h3>Decisión suavizada</h3>
+          <p class="muted small">Como recomienda la documentación del modelo, la clase se decide por mayoría en los últimos 7 fotogramas y la gravedad es la media móvil. Así la etiqueta no parpadea.</p>
+          <div id="liveDecision" class="live-decision"><p class="muted">Sin datos todavía.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== MODELO ============================== -->
+    <section id="tab-modelo" class="tab">
+      <div class="card">
+        <h3>Tubería de inferencia</h3>
+        <ol class="flow">
+          <li><b>Imagen / fotograma</b><span>RGB, tamaño libre</span></li>
+          <li><b>Detector v2</b><span>YOLOv8n · 640×640 → cajas + Crack/Intact</span></li>
+          <li><b>NMS</b><span>agnóstica a la clase, IoU 0.5, conf ≥ 0.5</span></li>
+          <li class="hl"><b>Recorte del huevo rajado</b><span>caja +10 % en la imagen original → 192×192</span></li>
+          <li class="hl"><b>dano_v1</b><span>U-Net MobileNetV2 → silueta + zona dañada</span></li>
+          <li class="hl"><b>Gravedad</b><span>daño / huevo → leve · media · grave</span></li>
+          <li><b>Ruta de la banda</b><span>empaque · industria · descarte</span></li>
+        </ol>
+        <p class="muted small">En morado, el diferencial: lo que agrega el segundo modelo a un detector binario.</p>
+      </div>
+      <div class="grid-2" id="modelCards"></div>
+      <div class="grid-2">
+        <div class="card"><h3>Métricas del detector (v2)</h3><div id="metV2"></div></div>
+        <div class="card"><h3>Métricas de la zona dañada (dano_v1)</h3><div id="metDano"></div></div>
+      </div>
+      <div class="card"><h3>Evaluación en este servidor</h3><div id="metServer"></div></div>
+      <div class="grid-2">
+        <div class="card"><h3>Reglas de la banda</h3><div id="routesTable"></div></div>
+        <div class="card why">
+          <h3>¿Por qué dos modelos y no uno?</h3>
+          <ul>
+            <li><b>Responden preguntas distintas.</b> v2 dice <i>dónde</i> hay huevos y cuál está rajado (cajas); dano_v1 dice <i>qué parte</i> del huevo está dañada (máscara por píxel).</li>
+            <li><b>Los datos no alcanzan para un modelo único.</b> Un YOLOv8-seg necesitaría la zona dañada marcada en los 2110 rajados de train; se anotaron a mano unos 420. Los que quedaran sin marcar le enseñarían lo contrario.</li>
+            <li><b>No se arriesga lo que ya funciona.</b> v2 (mAP50-95 0.97 en test) queda intacto; el extra se añade o se quita sin reentrenarlo.</li>
+            <li><b>El segundo modelo ve mejor la grieta.</b> Recibe el huevo recortado de la imagen original, siempre a 192×192 y con toda la resolución disponible.</li>
+            <li><b>Coste bajo.</b> dano_v1 pesa 4,9 MB y solo se ejecuta sobre los huevos que v2 marcó como rajados.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <h3>API</h3>
+        <p>La app es una API REST (FastAPI). La documentación interactiva está en <a href="docs" target="_blank" rel="noopener">/docs</a>.</p>
+        <pre class="code">curl -F "file=@huevo.jpg" <span class="origin"></span>/api/predict</pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <span>Modelos: <code>eggs_v2_fp32.tflite</code> + <code>eggs_dano_v1_fp16.tflite</code> · Inferencia con LiteRT en CPU (AWS EC2)</span>
+    <a href="https://github.com/dportilla219/eggs-detector" target="_blank" rel="noopener">Repositorio</a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
