@@ -85,6 +85,11 @@ function sevBar(sev) {
     <div class="sev-scale"><span>0 %</span><span>leve &lt; 15 % · media &lt; 35 % · grave</span><span>100 %</span></div>`;
 }
 
+/* dano_v1 no siempre ubica la grieta: en fotos de baja resolución (p. ej. el montaje del dataset, 224 px)
+   puede no marcar nada. Entonces se dice así, en lugar de mostrar "0 %" como si no hubiera daño. */
+const noLoc = (d) => !!d && (d.damage_px === 0 || d.severity < 0.005);
+const NOLOC_TXT = 'no localizada: la grieta es muy fina para la resolución de la foto; se trata como leve';
+
 function worstEgg(res) {
   const cr = res.eggs.filter((e) => e.damage);
   if (cr.length) return cr.reduce((a, b) => (b.damage.severity > a.damage.severity ? b : a));
@@ -124,7 +129,7 @@ function drawResult(canvas, img, res, o = {}) {
       const col = e.cls === 0 ? COL.bad : COL.ok;
       ctx.lineWidth = 2.5; ctx.strokeStyle = col;
       ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x1, y1, x2 - x1, y2 - y1, 6) : ctx.rect(x1, y1, x2 - x1, y2 - y1); ctx.stroke();
-      const label = `${res.eggs.length > 1 ? `${i + 1} · ` : ''}${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %${e.damage ? ` · daño ${pct(e.damage.severity)}` : ''}`;
+      const label = `${res.eggs.length > 1 ? `${i + 1} · ` : ''}${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %${e.damage ? (noLoc(e.damage) ? ' · grieta no localizada' : ` · daño ${pct(e.damage.severity)}`) : ''}`;
       const tw = ctx.measureText(label).width + 12;
       const ty = y1 - 21 < 0 ? y1 + 3 : y1 - 21;
       const tx = Math.min(Math.max(0, x1 - 1), W - tw);
@@ -336,7 +341,7 @@ const Belt = {
     const tag = document.createElement('span');
     tag.className = 'tag';
     tag.style.setProperty('--c', ROUTE_CSS[r.route]);
-    tag.textContent = pred === 'Intact' ? '✓ Sano' : pred === 'Crack' ? `✕ ${pct(r.summary.max_severity)}` : '? sin huevo';
+    tag.textContent = pred === 'Intact' ? '✓ Sano' : pred === 'Crack' ? (r.summary.max_severity < 0.005 ? '✕ Rajado' : `✕ ${pct(r.summary.max_severity)}`) : '? sin huevo';
     e.el.appendChild(tag);
     st.log.unshift({ id: e.id, s, pred, ok, r, rt: e.rt });
     st.log.length = Math.min(st.log.length, 15);
@@ -380,10 +385,10 @@ const Belt = {
       <dl class="kv">
         <dt>Modelo (${esc(App.det)})</dt><dd>${pred === 'Ninguno' ? 'sin huevo detectado' : `${CLS_ES[pred]} · ${Math.round((w?.conf || 0) * 100)} %`}${r.eggs.length > 1 ? ` (${r.eggs.length} huevos)` : ''}</dd>
         <dt>Etiqueta real</dt><dd>${CLS_ES[s.gt_label]} <span class="${ok ? 'ok-txt' : 'bad-txt'}">${ok ? '✓ acierto' : '✗ error'}</span></dd>
-        <dt>Zona dañada</dt><dd>${w?.damage ? `${pct(w.damage.severity, 1)} · ${LEVEL_ES[w.damage.level]}` : pred === 'Intact' ? 'no aplica (huevo sano)' : '—'}</dd>
+        <dt>Zona dañada</dt><dd>${w?.damage ? (noLoc(w.damage) ? NOLOC_TXT : `${pct(w.damage.severity, 1)} · ${LEVEL_ES[w.damage.level]}`) : pred === 'Intact' ? 'no aplica (huevo sano)' : '—'}</dd>
         <dt>Tiempo</dt><dd>${r.timing_ms.detector} ms detector + ${r.timing_ms.damage} ms daño</dd>
       </dl>
-      ${w?.damage ? sevBar(w.damage.severity) : ''}`;
+      ${w?.damage && !noLoc(w.damage) ? sevBar(w.damage.severity) : ''}`;
     if (w?.damage) info.appendChild(cropPair(w));
   },
 
@@ -407,7 +412,7 @@ const Belt = {
       </tbody>`;
     $('#logBody').innerHTML = st.log.map((x) => {
       const w = worstEgg(x.r);
-      const sev = w?.damage ? `<span class="bar"><b style="width:${Math.min(100, w.damage.severity * 100)}%"></b></span>${pct(w.damage.severity)}` : '<span class="muted">—</span>';
+      const sev = w?.damage && noLoc(w.damage) ? '<span class="muted">no localizada</span>' : w?.damage ? `<span class="bar"><b style="width:${Math.min(100, w.damage.severity * 100)}%"></b></span>${pct(w.damage.severity)}` : '<span class="muted">—</span>';
       return `<tr>
         <td><div class="thumb" style="background-image:url(${sampleUrl(x.s.id)})"></div></td>
         <td class="num">${x.id}</td>
@@ -545,7 +550,8 @@ const Analyze = {
           <span>Rajado</span><span class="track"><b style="width:${e.scores.Crack * 100}%;background:var(--bad)"></b></span><span class="num">${e.scores.Crack.toFixed(2)}</span>
           <span>Sano</span><span class="track"><b style="width:${e.scores.Intact * 100}%;background:var(--ok)"></b></span><span class="num">${e.scores.Intact.toFixed(2)}</span>
         </div>
-        ${e.damage ? `<div class="small">Zona dañada: <b>${pct(e.damage.severity, 1)}</b> de la cáscara visible · gravedad <b>${LEVEL_ES[e.damage.level]}</b></div>${sevBar(e.damage.severity)}`
+        ${e.damage && noLoc(e.damage) ? `<div class="small">Zona dañada: ${NOLOC_TXT}.</div>`
+          : e.damage ? `<div class="small">Zona dañada: <b>${pct(e.damage.severity, 1)}</b> de la cáscara visible · gravedad <b>${LEVEL_ES[e.damage.level]}</b></div>${sevBar(e.damage.severity)}`
           : '<p class="small muted">Huevo sano: dano_v1 no se ejecuta.</p>'}`;
       if (e.damage) card.appendChild(cropPair(e));
       box.appendChild(card);
@@ -673,15 +679,15 @@ const Live = {
     const badge = $('#liveBadge');
     badge.hidden = false;
     badge.style.setProperty('--c', ROUTE_CSS[route]);
-    badge.innerHTML = `${cls == null ? 'Sin huevo' : cls === 0 ? `Rajado${sevs.length ? ` · ${pct(sev)}` : ''}` : 'Sano'}
+    badge.innerHTML = `${cls == null ? 'Sin huevo' : cls === 0 ? `Rajado${sevs.length && sev >= 0.005 ? ` · ${pct(sev)}` : ''}` : 'Sano'}
       <small>${ROUTE_ICON[route]} ${esc(App.routes[route]?.name || route)}</small>`;
     $('#liveDecision').innerHTML = `
       <div class="big">${cls == null ? 'Sin huevo' : cls === 0 ? 'Rajado' : 'Sano'}</div>
       ${routePill(route, true)}
       <dl class="kv"><dt>Votos (7 fotogramas)</dt><dd>rajado ${votes[0]} · sano ${votes[1]} · sin huevo ${votes.none}</dd>
-      <dt>Gravedad media</dt><dd>${cls === 0 ? pct(sev, 1) : '—'}</dd>
+      <dt>Gravedad media</dt><dd>${cls !== 0 ? '—' : sev < 0.005 ? 'grieta no localizada (se trata como leve)' : pct(sev, 1)}</dd>
       <dt>Huevos en el fotograma</dt><dd>${res.eggs.length}</dd></dl>
-      ${cls === 0 ? sevBar(sev) : ''}`;
+      ${cls === 0 && sev >= 0.005 ? sevBar(sev) : ''}`;
   },
 
   stop() {
