@@ -170,7 +170,7 @@ Comprobar:
 
 ### Prompt de contexto para su asistente de IA
 
-Copien esto al inicio de la conversación con la IA que usen (Claude, ChatGPT, Copilot…) para que tenga el contexto correcto:
+Copien esto al inicio de la conversación con la IA que usen para que tenga el contexto correcto:
 
 ```text
 Estoy integrando un modelo de visión por computadora en una app React Native con Expo (Android e iOS).
