@@ -400,6 +400,7 @@ const Analyze = {
   init() {
     const input = $('#fileInput'), drop = $('#drop');
     input.onchange = () => input.files[0] && this.runFile(input.files[0]);
+    $('#camInput').onchange = (e) => { if (e.target.files[0]) this.runFile(e.target.files[0]); e.target.value = ''; };
     ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
     ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
     drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f) this.runFile(f); });
@@ -427,12 +428,32 @@ const Analyze = {
 
   params() { return { conf: (+$('#conf').value).toFixed(2), mode: $('#mode').value }; },
 
+  /* Las fotos del celular pesan varios MB: se reducen a 1600 px en el navegador antes de subirlas.
+     El navegador ya aplica la orientación EXIF al dibujar, así que la imagen enviada sale derecha. */
+  async prepare(file) {
+    const url = URL.createObjectURL(file);
+    const img = await loadImage(url);
+    const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+    if (k === 1 && file.size < 2.5e6) return { blob: file, img, url };
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    const blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.9));
+    return { blob, img, url };
+  },
+
   async runFile(file) {
     const { conf, mode } = this.params();
-    const fd = new FormData(); fd.append('file', file); fd.append('conf', conf); fd.append('mode', mode);
     if (this.last?.url) URL.revokeObjectURL(this.last.url);
-    const url = URL.createObjectURL(file);
-    await this.show(api('/api/predict', { method: 'POST', body: fd }), loadImage(url), { kind: 'file', file, url });
+    $('#anaMeta').textContent = 'Subiendo…';
+    let prep;
+    try { prep = await this.prepare(file); } catch {
+      $('#anaSummary').innerHTML = '<p class="bad-txt">El navegador no pudo abrir esa imagen (¿formato HEIC?). Prueba con JPG o PNG.</p>';
+      $('#anaMeta').textContent = '';
+      return;
+    }
+    const fd = new FormData(); fd.append('file', prep.blob, 'foto.jpg'); fd.append('conf', conf); fd.append('mode', mode);
+    await this.show(api('/api/predict', { method: 'POST', body: fd }), Promise.resolve(prep.img), { kind: 'file', file, url: prep.url });
   },
 
   async runSample(id) {
@@ -453,6 +474,7 @@ const Analyze = {
       $('#anaPlaceholder').hidden = true;
       this.redraw();
       this.renderDetails();
+      if (window.innerWidth < 900) $('#anaCanvas').closest('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       $('#anaMeta').textContent = '';
       $('#anaSummary').innerHTML = `<p class="bad-txt">No se pudo analizar: ${esc(err.message || err)}</p>`;

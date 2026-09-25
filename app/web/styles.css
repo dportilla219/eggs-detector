@@ -217,6 +217,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 .drop:hover, .drop.over { border-color: var(--brand); background: var(--brand-soft); }
 .drop-icon { font-size: 1.6rem; color: var(--brand); }
+.block-btn { display: flex; justify-content: center; width: 100%; margin-top: 10px; padding: 11px 14px; }
+.hint { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-left: 3px solid var(--accent); border-radius: 8px; padding: 8px 10px; margin: 10px 0 0; }
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 6px; }
 .gallery button { position: relative; aspect-ratio: 1; border: 2px solid transparent; border-radius: 8px; padding: 0; cursor: pointer; background-size: cover; background-position: center; background-color: var(--surface-2); }
 .gallery button:hover, .gallery button.sel { border-color: var(--brand); }
