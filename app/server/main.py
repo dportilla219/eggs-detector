@@ -42,6 +42,7 @@ ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 MODEL_DIR = os.environ.get("EGGS_MODEL_DIR", os.path.join(ROOT, "modelo"))
 DET_FILE = os.environ.get("EGGS_DET_FILE", "eggs_v2_fp32.tflite")
 SEG_FILE = os.environ.get("EGGS_SEG_FILE", "eggs_dano_v1_fp16.tflite")
+SEG_FALLBACK = os.environ.get("EGGS_SEG_FALLBACK")  # opcional: se consulta si SEG_FILE no marca ninguna zona
 RESULTS_DIR = os.environ.get("EGGS_RESULTS_DIR", os.path.join(ROOT, "resultados"))
 SAMPLES_DIR = os.environ.get("EGGS_SAMPLES_DIR")
 EVAL_JSON = os.environ.get("EGGS_EVAL_JSON")
@@ -55,7 +56,7 @@ Image.MAX_IMAGE_PIXELS = 80_000_000  # protege la RAM (911 MB en la instancia) d
 # cuando varias personas usan la app al mismo tiempo.
 SLOTS = threading.BoundedSemaphore(3)
 
-pipe = EggPipeline(MODEL_DIR, det_file=DET_FILE, seg_file=SEG_FILE)
+pipe = EggPipeline(MODEL_DIR, det_file=DET_FILE, seg_file=SEG_FILE, seg_fallback=SEG_FALLBACK)
 SAMPLES = load_samples(SAMPLES_DIR)
 
 app = FastAPI(
@@ -135,7 +136,9 @@ def info() -> dict:
     m = re.search(r"eggs_(v\d+)", pipe.det_file)
     det_name = m.group(1) if m else "v2"
     det_res = _read_json(os.path.join(RESULTS_DIR, det_name, "resumen.json")) if det_name != "v2" else None
-    dano = _read_json(os.path.join(RESULTS_DIR, "dano_v1", "resumen.json"))
+    m = re.search(r"dano_v\d+", pipe.seg_file)
+    dano_name = m.group(0) if m else "dano_v1"
+    dano = _read_json(os.path.join(RESULTS_DIR, dano_name, "resumen.json"))
     if dano:  # el detalle por huevo es largo y no hace falta en la interfaz
         dano = {k: v for k, v in dano.items() if k != "pipeline_detalle"}
     ev = _read_json(EVAL_JSON) if EVAL_JSON else None
@@ -154,6 +157,8 @@ def info() -> dict:
         "detector_name": det_name,
         "results_det": det_res,
         "results_dano_v1": dano,
+        "damage_name": dano_name,
+        "damage_fallback": pipe.seg_fallback,
         "server_eval": ev,
         "samples": len(SAMPLES),
     }

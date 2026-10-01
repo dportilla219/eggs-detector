@@ -188,7 +188,7 @@
           <li><b>Detector <span class="detname">v2</span></b><span>YOLOv8n · 640×640 → cajas + Crack/Intact</span></li>
           <li><b>NMS</b><span>agnóstica a la clase, IoU 0.5, conf ≥ 0.5</span></li>
           <li class="hl"><b>Recorte del huevo rajado</b><span>caja +10 % en la imagen original → 192×192</span></li>
-          <li class="hl"><b>dano_v1</b><span>U-Net MobileNetV2 → silueta + zona dañada</span></li>
+          <li class="hl"><b><span class="danoname">dano_v1</span></b><span>U-Net MobileNetV2 → silueta + zona dañada</span></li>
           <li class="hl"><b>Gravedad</b><span>daño / huevo → leve · media · grave</span></li>
           <li><b>Ruta de la banda</b><span>empaque · industria · descarte</span></li>
         </ol>
@@ -197,7 +197,7 @@
       <div class="grid-2" id="modelCards"></div>
       <div class="grid-2">
         <div class="card"><h3>Métricas del detector (<span class="detname">v2</span>)</h3><div id="metV2"></div></div>
-        <div class="card"><h3>Métricas de la zona dañada (dano_v1)</h3><div id="metDano"></div></div>
+        <div class="card"><h3>Métricas de la zona dañada (<span class="danoname">dano_v1</span>)</h3><div id="metDano"></div></div>
       </div>
       <div class="card"><h3>Evaluación en este servidor</h3><div id="metServer"></div></div>
       <div class="grid-2">
@@ -205,11 +205,11 @@
         <div class="card why">
           <h3>¿Por qué dos modelos y no uno?</h3>
           <ul>
-            <li><b>Responden preguntas distintas.</b> El detector (<span class="detname">v2</span>) dice <i>dónde</i> hay huevos y cuál está rajado (cajas); dano_v1 dice <i>qué parte</i> del huevo está dañada (máscara por píxel).</li>
+            <li><b>Responden preguntas distintas.</b> El detector (<span class="detname">v2</span>) dice <i>dónde</i> hay huevos y cuál está rajado (cajas); <span class="danoname">dano_v1</span> dice <i>qué parte</i> del huevo está dañada (máscara por píxel).</li>
             <li><b>Los datos no alcanzan para un modelo único.</b> Un YOLOv8-seg necesitaría la zona dañada marcada en los 2110 rajados de train; se anotaron a mano unos 420. Los que quedaran sin marcar le enseñarían lo contrario.</li>
             <li><b>No se arriesga lo que ya funciona.</b> El detector (mAP50-95 ≈ 0.96–0.97 en test) queda intacto; el extra se añade o se quita sin reentrenarlo.</li>
             <li><b>El segundo modelo ve mejor la grieta.</b> Recibe el huevo recortado de la imagen original, siempre a 192×192 y con toda la resolución disponible.</li>
-            <li><b>Coste bajo.</b> dano_v1 pesa 4,9 MB y solo se ejecuta sobre los huevos que el detector marcó como rajados.</li>
+            <li><b>Coste bajo.</b> <span class="danoname">dano_v1</span> pesa 4,9 MB y solo se ejecuta sobre los huevos que el detector marcó como rajados.</li>
           </ul>
         </div>
       </div>
@@ -226,6 +226,6 @@
     <a href="https://github.com/dportilla219/eggs-detector" target="_blank" rel="noopener">Repositorio</a>
   </footer>
 
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>

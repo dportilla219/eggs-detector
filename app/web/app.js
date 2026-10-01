@@ -556,7 +556,7 @@ const Analyze = {
         </div>
         ${e.damage && noLoc(e.damage) ? `<div class="small">Zona dañada: ${NOLOC_TXT}.</div>`
           : e.damage ? `<div class="small">Zona dañada: <b>${pct(e.damage.severity, 1)}</b> de la cáscara visible · gravedad <b>${LEVEL_ES[e.damage.level]}</b></div>${sevBar(e.damage.severity)}`
-          : '<p class="small muted">Huevo sano: dano_v1 no se ejecuta.</p>'}`;
+          : `<p class="small muted">Huevo sano: ${esc(App.dano)} no se ejecuta.</p>`}`;
       if (e.damage) card.appendChild(cropPair(e));
       box.appendChild(card);
     });
@@ -749,12 +749,12 @@ function renderModelTab() {
       <dl class="kv"><dt>Archivo</dt><dd><code>${esc(d.file)}</code> · ${mb(d.bytes)}</dd>
       <dt>Entrada</dt><dd>[${d.input}] float32 · RGB 0–1</dd><dt>Salida</dt><dd>[${d.output}] · cx, cy, w, h, score Crack, score Intact</dd>
       <dt>Clases</dt><dd>0 = Crack (rajado) · 1 = Intact (sano)</dd><dt>Decodificación</dt><dd>conf ≥ ${d.conf} · NMS agnóstica IoU ${d.iou_nms}</dd></dl></div>
-    <div class="card model-card"><h3>2 · Zona dañada <code>dano_v1</code> (diferencial)</h3>
-      <p class="small muted">U-Net con codificador MobileNetV2-0.5. Recibe el recorte de cada huevo rajado y devuelve dos máscaras.</p>
+    <div class="card model-card"><h3>2 · Zona dañada <code>${esc(App.dano)}</code> (diferencial)</h3>
+      <p class="small muted">U-Net con codificador MobileNetV2-0.5. Recibe el recorte de cada huevo con daño y devuelve dos máscaras.${i.damage_fallback ? ` Si no marca ninguna zona, se consulta el modelo anterior (<code>${esc(i.damage_fallback)}</code>).` : ''}</p>
       <dl class="kv"><dt>Archivo</dt><dd><code>${esc(g.file)}</code> · ${mb(g.bytes)}</dd>
       <dt>Entrada</dt><dd>[${g.input}] float32 · caja +10 % estirada</dd><dt>Salida</dt><dd>[${g.output}] · silueta del huevo, zona dañada</dd>
       <dt>Gravedad</dt><dd>leve ${g.levels.leve} · media ${g.levels.media} · grave ${g.levels.grave}</dd>
-      <dt>Anotaciones</dt><dd>420 huevos rajados marcados a mano (rejilla 10×10) + silueta con SAM 2.1</dd></dl></div>`;
+      <dt>Anotaciones</dt><dd>420 huevos rajados marcados a mano (rejilla 10×10) + silueta con SAM 2.1${App.dano !== 'dano_v1' ? '; más 146 huevos con daños variados (roturas, hundidos, manchas) con su zona marcada' : ''}</dd></dl></div>`;
 
   const R = esNuevo ? i.results_det : i.results_v2;
   if (R) {
@@ -792,7 +792,7 @@ function renderModelTab() {
     const t = dn.test?.tflite_fp16 || {}, p = dn.pipeline_test || {};
     $('#metDano').innerHTML = `
       <p class="small muted">Test: 35 huevos rajados y 30 sanos que el modelo no vio al entrenar.</p>
-      <table><thead><tr><th>Métrica</th><th class="num">Recorte ideal</th><th class="num">Tubería v2 → dano_v1</th></tr></thead><tbody>
+      <table><thead><tr><th>Métrica</th><th class="num">Recorte ideal</th><th class="num">Tubería v2 → ${esc(App.dano)}</th></tr></thead><tbody>
         <tr><td>IoU de la silueta del huevo</td><td class="num">${t.egg_iou?.toFixed(3) ?? '—'}</td><td class="num">—</td></tr>
         <tr><td>IoU de la zona dañada (rajados)</td><td class="num">${t.dmg_iou_pos?.toFixed(3) ?? '—'}</td><td class="num">${p.dmg_iou_pos?.toFixed(3) ?? '—'}</td></tr>
         <tr><td>Error medio de la gravedad</td><td class="num">±${((t.sev_mae_pos || 0) * 100).toFixed(1)} pts</td><td class="num">±${((p.sev_mae_pos || 0) * 100).toFixed(1)} pts</td></tr>
@@ -801,7 +801,7 @@ function renderModelTab() {
         <tr><td>IoU medio de la caja de v2</td><td class="num">—</td><td class="num">${p.box_iou_medio?.toFixed(3) ?? '—'}</td></tr>
       </tbody></table>
       <p class="small muted">FP16 (el que usa esta app) da las mismas métricas que FP32 con la mitad de tamaño. La gravedad predicha suele quedar algo por debajo de la anotada, porque las zonas se marcaron sobre una rejilla gruesa.</p>`;
-  } else $('#metDano').innerHTML = '<p class="muted">No se encontró resultados/dano_v1/resumen.json.</p>';
+  } else $('#metDano').innerHTML = `<p class="muted">No se encontró resultados/${esc(App.dano)}/resumen.json.</p>`;
 
   const ev = i.server_eval;
   if (ev) {
@@ -853,7 +853,9 @@ async function boot() {
       const [info, samples] = await Promise.all([api('/api/info', {}, 15000), api('/api/samples', {}, 15000)]);
       App.info = info; App.samples = samples; App.routes = info.routes;
       App.det = (info.models.detector.file.match(/eggs_(v\d+)/) || [])[1] || 'v2';
+      App.dano = info.damage_name || 'dano_v1';
       $$('.detname').forEach((e) => { e.textContent = App.det; });
+      $$('.danoname').forEach((e) => { e.textContent = App.dano; });
       break;
     } catch (err) {
       setStatus(false, 'Sin conexión con el servidor, reintentando…');

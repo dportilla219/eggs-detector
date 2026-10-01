@@ -82,11 +82,15 @@ def severity_level(sev: float) -> str:
 
 class EggPipeline:
     def __init__(self, model_dir: str, det_file: str = "eggs_v2_fp32.tflite",
-                 seg_file: str = "eggs_dano_v1_fp16.tflite", threads: int | None = None):
+                 seg_file: str = "eggs_dano_v1_fp16.tflite", threads: int | None = None,
+                 seg_fallback: str | None = None):
         threads = threads or max(1, min(4, os.cpu_count() or 1))
         self.det_file, self.seg_file = det_file, seg_file
         self.det = _load(os.path.join(model_dir, det_file), threads)
         self.seg = _load(os.path.join(model_dir, seg_file), threads)
+        # Segundo modelo de zona dañada, opcional: solo se consulta si el primero no marca nada.
+        self.seg_fallback = seg_fallback if seg_fallback and seg_fallback != seg_file else None
+        self.seg2 = _load(os.path.join(model_dir, self.seg_fallback), threads) if self.seg_fallback else None
         self._lock = threading.Lock()  # los intérpretes TFLite no son thread-safe
         self._check_io()
         self._warmup()
@@ -95,8 +99,10 @@ class EggPipeline:
         """Una inferencia en vacío al arrancar: así la primera petición real no paga la inicialización."""
         self.det.set_tensor(self._det_in, np.zeros((1, DET_SIZE, DET_SIZE, 3), np.float32))
         self.det.invoke()
-        self.seg.set_tensor(self._seg_in, np.zeros((1, SEG_SIZE, SEG_SIZE, 3), np.float32))
-        self.seg.invoke()
+        for seg in (self.seg, self.seg2):
+            if seg is not None:
+                seg.set_tensor(self._seg_in, np.zeros((1, SEG_SIZE, SEG_SIZE, 3), np.float32))
+                seg.invoke()
 
     def _check_io(self) -> None:
         di, do = self.det.get_input_details()[0], self.det.get_output_details()[0]
@@ -161,13 +167,18 @@ class EggPipeline:
         rw, rh = rx2 - rx, ry2 - ry
         crop = img.crop((rx, ry, rx2, ry2)).resize((SEG_SIZE, SEG_SIZE), Image.BILINEAR)  # estirado
         arr = np.asarray(crop, dtype=np.float32)[None] / 255.0
-        self.seg.set_tensor(self._seg_in, arr)
-        self.seg.invoke()
-        out = self.seg.get_tensor(self._seg_out)[0]  # [192,192,2]
-        egg_p, dmg_p = out[..., 0], out[..., 1]
-        egg = egg_p > 0.5
-        dmg = (dmg_p > 0.5) & egg  # solo daño dentro de la silueta
-        egg_px, dmg_px = int(egg.sum()), int(dmg.sum())
+        for seg in (self.seg, self.seg2):
+            if seg is None:
+                break
+            seg.set_tensor(self._seg_in, arr)
+            seg.invoke()
+            out = seg.get_tensor(self._seg_out)[0]  # [192,192,2]
+            egg_p, dmg_p = out[..., 0], out[..., 1]
+            egg = egg_p > 0.5
+            dmg = (dmg_p > 0.5) & egg  # solo daño dentro de la silueta
+            egg_px, dmg_px = int(egg.sum()), int(dmg.sum())
+            if egg_px and dmg_px / egg_px >= 0.005:
+                break  # el primer modelo localizó el daño: no hace falta el de respaldo
         sev = dmg_px / egg_px if egg_px else 0.0
         return {
             "rect": [round(rx, 1), round(ry, 1), round(rw, 1), round(rh, 1)],
