@@ -1,12 +1,17 @@
 [Unit]
-Description=Detector de huevos con daños (FastAPI + LiteRT: YOLOv8n + U-Net dano_v1)
+Description=Detector de huevos con daños (FastAPI + LiteRT: YOLOv8n + U-Net de zona dañada)
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/eggs-detector/app/server
-Environment=EGGS_DET_FILE=eggs_v4_fp32.tflite
+# Para volver a la versión anterior: EGGS_DET_FILE=eggs_v4_fp32.tflite, EGGS_SEG_FILE=eggs_dano_v1_fp16.tflite,
+# quitar EGGS_SEG_FALLBACK y EGGS_CRACK_RATIO, y volver a ejecutar install.sh.
+Environment=EGGS_DET_FILE=eggs_v5_fp32.tflite
+Environment=EGGS_SEG_FILE=eggs_dano_v2_fp16.tflite
+Environment=EGGS_SEG_FALLBACK=eggs_dano_v1_fp16.tflite
+Environment=EGGS_CRACK_RATIO=0.3
 Environment=EGGS_SAMPLES_DIR=/home/ubuntu/eggs-data/test
 Environment=EGGS_EVAL_JSON=/home/ubuntu/eggs-data/eval_test.json
 Environment=PYTHONUNBUFFERED=1

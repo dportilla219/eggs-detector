@@ -743,12 +743,14 @@ function renderModelTab() {
   const esNuevo = App.det !== 'v2' && i.results_det;
   $('#modelCards').innerHTML = `
     <div class="card model-card"><h3>1 · Detector <code>${esc(App.det)}</code> (obligatorio)</h3>
-      <p class="small muted">${esNuevo
+      <p class="small muted">${App.det === 'v5'
+        ? `YOLOv8n. Parte de v4 y aprende daños de todo tipo (grietas, roturas, agujeros, hundidos, suciedad, moho) con una colección de 147 huevos, en imágenes de uno o varios huevos. Un huevo se da por dañado solo si el puntaje de sano es menor que ${i.crack_ratio ?? 1} × el de daño.`
+        : esNuevo
         ? 'YOLOv8n. Además del dataset original y las sintéticas de v2, se entrenó con fotos reales de huevos sanos y rajados de otras fuentes (dataset público y Wikimedia Commons, cajas puestas con Grounding DINO). Encuentra cada huevo y lo clasifica.'
         : 'YOLOv8n, fine-tune con ~2.600 imágenes sintéticas para que no aprenda el fondo. Encuentra cada huevo y lo clasifica.'}</p>
       <dl class="kv"><dt>Archivo</dt><dd><code>${esc(d.file)}</code> · ${mb(d.bytes)}</dd>
       <dt>Entrada</dt><dd>[${d.input}] float32 · RGB 0–1</dd><dt>Salida</dt><dd>[${d.output}] · cx, cy, w, h, score Crack, score Intact</dd>
-      <dt>Clases</dt><dd>0 = Crack (rajado) · 1 = Intact (sano)</dd><dt>Decodificación</dt><dd>conf ≥ ${d.conf} · NMS agnóstica IoU ${d.iou_nms}</dd></dl></div>
+      <dt>Clases</dt><dd>0 = Crack (con daño) · 1 = Intact (sano)</dd><dt>Decodificación</dt><dd>conf ≥ ${d.conf} · NMS agnóstica IoU ${d.iou_nms}</dd></dl></div>
     <div class="card model-card"><h3>2 · Zona dañada <code>${esc(App.dano)}</code> (diferencial)</h3>
       <p class="small muted">U-Net con codificador MobileNetV2-0.5. Recibe el recorte de cada huevo con daño y devuelve dos máscaras.${i.damage_fallback ? ` Si no marca ninguna zona, se consulta el modelo anterior (<code>${esc(i.damage_fallback)}</code>).` : ''}</p>
       <dl class="kv"><dt>Archivo</dt><dd><code>${esc(g.file)}</code> · ${mb(g.bytes)}</dd>
@@ -775,16 +777,21 @@ function renderModelTab() {
         <table><thead><tr><th>Grupo</th><th class="num">v2</th><th class="num">${esc(App.det)}</th></tr></thead><tbody>${filas}${com}</tbody></table>
         <p class="small muted">"real:" son fotos de celular de otra fuente que el modelo no vio al entrenar. "Commons" es un test independiente de ${c[App.det]?.n ?? c.v2?.n ?? '—'} fotos de Wikimedia Commons, de autores distintos a los de entrenamiento.</p>`;
     }
+    // tablas extra que traiga el resumen del modelo: [{titulo, columnas, filas, nota}]
+    const tablas = (R.tablas || []).map((tb) => `<h4>${esc(tb.titulo)}</h4>
+      <table><thead><tr>${tb.columnas.map((c, k) => `<th${k ? ' class="num"' : ''}>${esc(c)}</th>`).join('')}</tr></thead><tbody>
+      ${tb.filas.map((fl) => `<tr>${fl.map((c, k) => `<td${k ? ' class="num"' : ''}>${k === fl.length - 1 && k ? `<b>${esc(String(c))}</b>` : esc(String(c))}</td>`).join('')}</tr>`).join('')}
+      </tbody></table>${tb.nota ? `<p class="small muted">${esc(tb.nota)}</p>` : ''}`).join('');
     $('#metV2').innerHTML = `
       <p class="small muted">Test original: 382 fotos que el modelo no vio al entrenar.</p>
       <table><thead><tr><th>Clase</th><th class="num">Precisión</th><th class="num">Recall</th><th class="num">mAP50</th><th class="num">mAP50-95</th></tr></thead><tbody>
       ${['Crack', 'Intact'].map((c) => `<tr><td>${CLS_ES[c]}</td><td class="num">${f(t.P[c])}</td><td class="num">${f(t.R[c])}</td><td class="num">${f(t.mAP50[c])}</td><td class="num">${f(t['mAP50-95'][c])}</td></tr>`).join('')}
       </tbody></table>
-      <h4>Acierto por grupo (conf 0.5)</h4><table><tbody>${grp}</tbody></table>
-      <h4>.tflite frente al modelo original</h4>
+      ${grp ? `<h4>Acierto por grupo (conf 0.5)</h4><table><tbody>${grp}</tbody></table>` : ''}
+      ${Object.keys(ver).length ? `<h4>.tflite frente al modelo original</h4>
       <table><thead><tr><th>Modelo</th><th class="num">mAP50</th><th class="num">mAP50-95</th></tr></thead><tbody>
       ${[['.pt original', ver.pt], ['fp32 .tflite (este)', ver.fp32], ['int8 .tflite', ver.int8]].filter(([, x]) => x).map(([n, x]) => `<tr><td>${n}</td><td class="num">${f(x.mAP50)}</td><td class="num">${f(x['mAP50-95'])}</td></tr>`).join('')}
-      </tbody></table>${cmp}`;
+      </tbody></table>` : ''}${cmp}${tablas}`;
   } else $('#metV2').innerHTML = `<p class="muted">No se encontró resultados/${esc(App.det)}/resumen.json.</p>`;
 
   const dn = i.results_dano_v1;

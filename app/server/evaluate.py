@@ -34,7 +34,9 @@ def main() -> None:
     ap.add_argument("--det", default=os.environ.get("EGGS_DET_FILE", "eggs_v2_fp32.tflite"))
     a = ap.parse_args()
 
-    pipe = EggPipeline(a.models, det_file=a.det)
+    # mismo modelo de zona dañada, respaldo y regla de decisión que el servicio (variables EGGS_*)
+    pipe = EggPipeline(a.models, det_file=a.det, seg_file=os.environ.get("EGGS_SEG_FILE", "eggs_dano_v1_fp16.tflite"),
+                       seg_fallback=os.environ.get("EGGS_SEG_FALLBACK"))
     items = load_samples(a.split)
     rows = []
     t0 = time.time()

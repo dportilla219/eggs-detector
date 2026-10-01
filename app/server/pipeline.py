@@ -83,9 +83,10 @@ def severity_level(sev: float) -> str:
 class EggPipeline:
     def __init__(self, model_dir: str, det_file: str = "eggs_v2_fp32.tflite",
                  seg_file: str = "eggs_dano_v1_fp16.tflite", threads: int | None = None,
-                 seg_fallback: str | None = None):
+                 seg_fallback: str | None = None, crack_ratio: float | None = None):
         threads = threads or max(1, min(4, os.cpu_count() or 1))
         self.det_file, self.seg_file = det_file, seg_file
+        self.crack_ratio = float(os.environ.get("EGGS_CRACK_RATIO", "1")) if crack_ratio is None else crack_ratio
         self.det = _load(os.path.join(model_dir, det_file), threads)
         self.seg = _load(os.path.join(model_dir, seg_file), threads)
         # Segundo modelo de zona dañada, opcional: solo se consulta si el primero no marca nada.
@@ -154,7 +155,9 @@ class EggPipeline:
         for i in range(len(boxes)):
             if not chosen or (_iou(boxes[i], boxes[chosen]) < IOU).all():
                 chosen.append(i)
-        return [(boxes[i], float(conf[i]), 0 if sc[i] >= si[i] else 1, float(sc[i]), float(si[i])) for i in chosen]
+        # Con crack_ratio < 1, un huevo solo se da por dañado si el puntaje de sano es menor que esa fracción
+        # del puntaje de daño (1 = gana el puntaje más alto). Reduce los sanos marcados como dañados.
+        return [(boxes[i], float(conf[i]), 0 if si[i] <= self.crack_ratio * sc[i] else 1, float(sc[i]), float(si[i])) for i in chosen]
 
     # ------------------------------------------------------------- dano_v1
     def _segment(self, img: Image.Image, box: tuple[float, float, float, float]) -> dict:

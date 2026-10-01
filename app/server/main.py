@@ -3,6 +3,8 @@
 Variables de entorno (todas opcionales):
     EGGS_MODEL_DIR    carpeta con los .tflite            (por defecto: ../../modelo)
     EGGS_DET_FILE     detector a usar                    (por defecto: eggs_v2_fp32.tflite)
+    EGGS_SEG_FALLBACK segundo modelo de zona dañada, solo si el primero no marca nada (opcional)
+    EGGS_CRACK_RATIO  un huevo es 'con daño' solo si puntaje_sano <= ratio x puntaje_daño (por defecto 1)
     EGGS_SEG_FILE     modelo de zona dañada              (por defecto: eggs_dano_v1_fp16.tflite)
     EGGS_RESULTS_DIR  carpeta resultados/ del repo       (por defecto: ../../resultados)
     EGGS_SAMPLES_DIR  split YOLO para la banda (images/ + labels/), p. ej. el test
@@ -158,6 +160,7 @@ def info() -> dict:
         "results_det": det_res,
         "results_dano_v1": dano,
         "damage_name": dano_name,
+        "crack_ratio": pipe.crack_ratio,
         "damage_fallback": pipe.seg_fallback,
         "server_eval": ev,
         "samples": len(SAMPLES),

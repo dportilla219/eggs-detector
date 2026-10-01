@@ -1,0 +1,206 @@
+{
+ "modelo": "v5",
+ "clases": {
+  "0": "Crack (huevo con daño)",
+  "1": "Intact (sano)"
+ },
+ "conf_recomendado": 0.5,
+ "crack_ratio": 0.3,
+ "regla": "Un huevo se da por dañado solo si score_Intact <= 0.3 x score_Crack; si no, sano.",
+ "entrada": {
+  "shape": [
+   1,
+   640,
+   640,
+   3
+  ],
+  "dtype": "float32",
+  "layout": "NHWC RGB 0..1"
+ },
+ "salida": {
+  "shape": [
+   1,
+   6,
+   8400
+  ],
+  "dtype": "float32",
+  "filas": [
+   "cx",
+   "cy",
+   "w",
+   "h",
+   "score_Crack",
+   "score_Intact"
+  ]
+ },
+ "archivos_MB": {
+  "fp32": 12.27
+ },
+ "pesos": "promedio de pesos de best.pt y last.pt del run v5b (que parte de v5/best.pt, que parte de v4/last.pt)",
+ "test_original_por_clase": {
+  "P": {
+   "Crack": 0.9704,
+   "Intact": 0.9219
+  },
+  "R": {
+   "Crack": 0.9734,
+   "Intact": 0.9835
+  },
+  "mAP50": {
+   "Crack": 0.9835,
+   "Intact": 0.9896
+  },
+  "mAP50-95": {
+   "Crack": 0.9757,
+   "Intact": 0.9759
+  }
+ },
+ "entrenamiento": {
+  "ronda_1_v5": "20 épocas desde v4/last.pt: + colección del profesor (147 huevos) y ~3.000 composiciones",
+  "ronda_2_v5b": "10 épocas desde v5/best.pt (parada por patience): + sellos y logotipos sobre huevos sanos, pelotas de ping-pong como sanas, menos manchas sintéticas",
+  "final": "promedio de pesos de best.pt y last.pt de v5b; regla de decisión 0.3"
+ },
+ "tablas": [
+  {
+   "titulo": "v5 frente a v4 en imágenes que ninguno vio al entrenar (acierto por foto, conf 0.5)",
+   "columnas": [
+    "Grupo",
+    "v4",
+    "v5"
+   ],
+   "filas": [
+    [
+     "Wikimedia Commons · con daño",
+     "3/7",
+     "4/7"
+    ],
+    [
+     "Wikimedia Commons · sanos",
+     "97/105",
+     "97/105"
+    ],
+    [
+     "Fotos nuevas (Commons) · con daño",
+     "6/10",
+     "6/10"
+    ],
+    [
+     "Fotos nuevas (Commons) · sanos",
+     "27/31",
+     "26/31"
+    ],
+    [
+     "Dataset original · montaje · con daño",
+     "99/147",
+     "123/147"
+    ],
+    [
+     "Dataset original · montaje · sanos",
+     "253/262",
+     "256/262"
+    ],
+    [
+     "Dataset original · otras fuentes · con daño",
+     "750/756",
+     "748/756"
+    ],
+    [
+     "Fotos de celular (dataset público) · con daño",
+     "212/226",
+     "207/226"
+    ],
+    [
+     "Fotos de celular (dataset público) · sanos",
+     "39/43",
+     "36/43"
+    ],
+    [
+     "TOTAL con daño",
+     "1070/1146 (93.4%)",
+     "1088/1146 (94.9%)"
+    ],
+    [
+     "TOTAL sanos",
+     "416/441 (94.3%)",
+     "415/441 (94.1%)"
+    ]
+   ],
+   "nota": "Con la tubería de la app. La regla 0.3 de v5 se eligió mirando estas mismas fotos, así que su ventaja está algo favorecida."
+  },
+  {
+   "titulo": "Colección de daños del profesor (acierto por huevo)",
+   "columnas": [
+    "Prueba",
+    "v4",
+    "v5"
+   ],
+   "filas": [
+    [
+     "29 imágenes sueltas (28 con daño, 1 sana)",
+     "14/29",
+     "29/29"
+    ],
+    [
+     "12 láminas de ~10 huevos",
+     "6/118",
+     "118/118"
+    ],
+    [
+     "Sueltas, simulando cámara apuntando a pantalla (4 variantes)",
+     "68/116",
+     "113/116"
+    ],
+    [
+     "Láminas, simulando cámara (4 variantes)",
+     "9/472",
+     "471/472"
+    ]
+   ],
+   "nota": "v5 se entrenó con estos mismos huevos (en otras composiciones): mide que ya no falla en ellos, no cómo generaliza."
+  },
+  {
+   "titulo": "Fotos nuevas de Wikimedia Commons (no usadas para entrenar)",
+   "columnas": [
+    "Prueba",
+    "v4",
+    "v5"
+   ],
+   "filas": [
+    [
+     "Huevos sanos en hueveras, cartones y fondos lisos (22 fotos)",
+     "17/22",
+     "18/22"
+    ],
+    [
+     "Huevos rotos (3 fotos)",
+     "2/3",
+     "3/3"
+    ],
+    [
+     "Pelotas de ping-pong enteras: fotos sin ninguna marcada con daño (19)",
+     "13/19",
+     "16/19"
+    ]
+   ],
+   "nota": ""
+  }
+ ],
+ "test_original_por_clase_v2": {
+  "P": {
+   "Crack": 0.9897,
+   "Intact": 0.9318
+  },
+  "R": {
+   "Crack": 0.9584,
+   "Intact": 0.9762
+  },
+  "mAP50": {
+   "Crack": 0.981,
+   "Intact": 0.9878
+  },
+  "mAP50-95": {
+   "Crack": 0.9702,
+   "Intact": 0.9697
+  }
+ }
+}

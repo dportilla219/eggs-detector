@@ -120,7 +120,9 @@ const Local = (() => {
     cand.sort((a, b) => b.conf - a.conf);
     const chosen = [];
     for (const c of cand) if (chosen.every((k) => iou(c.box, k.box) < IOU)) chosen.push(c);
-    return chosen.map((c) => ({ ...c, cls: c.sc >= c.si ? 0 : 1 }));
+    // con daño solo si el puntaje de sano es <= crackRatio x el de daño (1 = gana el más alto), igual que el servidor
+    const k = (window.EGGS_LOCAL && window.EGGS_LOCAL.crackRatio) || 1;
+    return chosen.map((c) => ({ ...c, cls: c.si <= k * c.sc ? 0 : 1 }));
   }
 
   /* Máscara RGBA del daño, reescalada al tamaño del recorte (máx. 384 px), como EggPipeline._mask_png */

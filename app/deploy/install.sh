@@ -21,7 +21,9 @@ sudo apt-get install -y -qq python3-venv caddy >/dev/null
 # Se repite si cambia el detector configurado en el servicio (p. ej. al pasar de v2 a v3).
 DET=$(sed -n 's/^Environment=EGGS_DET_FILE=//p' "$DEPLOY/eggs-detector.service")
 if [ -d "$DATA/test/images" ] && ! grep -qs "\"$DET\"" "$DATA/eval_test.json"; then
-  (cd "$REPO/app/server" && "$REPO/.venv/bin/python" evaluate.py --split "$DATA/test" --out "$DATA/eval_test.json" --det "$DET")
+  # con las mismas variables EGGS_* del servicio (zona dañada, respaldo, regla de decisión)
+  VARS=$(grep -oE '^Environment=EGGS_[A-Z_]+=[^ ]+$' "$DEPLOY/eggs-detector.service" | cut -d= -f2- | grep -v -E 'SAMPLES|EVAL' | xargs)
+  (cd "$REPO/app/server" && env $VARS "$REPO/.venv/bin/python" evaluate.py --split "$DATA/test" --out "$DATA/eval_test.json" --det "$DET")
 fi
 
 # App (puerto 8000)
