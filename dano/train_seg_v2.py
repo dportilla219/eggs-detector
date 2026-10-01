@@ -73,7 +73,14 @@ def evaluate(model, x, y, pos):
                 pos_detected=float((frac_p[pos] > .03).mean()))
 
 
-model = tf.keras.models.load_model(INIT, compile=False) if INIT else build()
+model = None
+if INIT:
+    try:
+        model = tf.keras.models.load_model(INIT, compile=False)
+    except Exception as e:   # .keras de otra versión de Keras: se entrena desde ImageNet
+        print('No se pudo cargar', INIT, '->', repr(e)[:200], flush=True); INIT = None
+if model is None:
+    model = build()
 if INIT:
     print('antes de reentrenar:', json.dumps({'orig': evaluate(model, va_x, va_y, va_pos), 'v5': evaluate(model, v5_x, v5_y, v5_pos)}), flush=True)
 steps = 3 * len(tr) // 16
