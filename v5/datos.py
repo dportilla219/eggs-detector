@@ -204,6 +204,37 @@ def ensuciar(e, rng):
             "sucio": True, "curable": False}
 
 
+MARCAS = ["0-ES-4521", "1ES29015", "C1", "L 12.03", "3 STAR 40+", "*** PREMIUM", "MADE IN CHINA", "ITTF", "2-DE-0351", "BIO", "A", "XL",
+          "CAT. A", "06 OCT", "40", "TOP", "FRESH", "0 UK 1234", "N 7", "DHS", "EGG", "M", "01"]
+
+
+def marcar(e, rng):
+    """Sello, fecha o logotipo impreso sobre el huevo (o pelota): NO es daño. La clase y la máscara no cambian."""
+    h, w = e["sil"].shape
+    capa = np.zeros((h, w), np.uint8)   # se dibuja en 8 bits (putText no admite float)
+    t = rng.random()
+    esc = w / 260 * rng.uniform(0.6, 1.5)
+    gro = max(1, int(round(esc * rng.uniform(1.0, 2.2))))
+    cx, cy = int(w * rng.uniform(0.3, 0.6)), int(h * rng.uniform(0.35, 0.65))
+    fuente = [cv2.FONT_HERSHEY_SIMPLEX, cv2.FONT_HERSHEY_DUPLEX, cv2.FONT_HERSHEY_TRIPLEX, cv2.FONT_HERSHEY_COMPLEX_SMALL][rng.integers(0, 4)]
+    for k in range(rng.integers(1, 4)):   # una a tres líneas de texto
+        txt = MARCAS[rng.integers(0, len(MARCAS))]
+        (tw, th), _ = cv2.getTextSize(txt, fuente, esc, gro)
+        cv2.putText(capa, txt, (int(cx - tw / 2), int(cy + k * th * 1.6)), fuente, esc, 255, gro, cv2.LINE_AA)
+    if t < 0.45:   # logotipo: círculo, óvalo o estrellas alrededor
+        r = int(w * rng.uniform(0.12, 0.24))
+        if rng.random() < 0.6:
+            cv2.ellipse(capa, (cx, cy), (r, int(r * rng.uniform(0.6, 1.0))), 0, 0, 360, 255, gro, cv2.LINE_AA)
+        for i in range(rng.integers(0, 4)):
+            cv2.drawMarker(capa, (int(cx - r / 2 + i * r / 2), int(cy - r * 0.7)), 255, cv2.MARKER_STAR, max(6, int(r * 0.3)), gro, cv2.LINE_AA)
+    M = cv2.getRotationMatrix2D((cx, cy), rng.uniform(-40, 40) if rng.random() < 0.8 else rng.uniform(-180, 180), 1.0)
+    capa = cv2.warpAffine(capa, M, (w, h), flags=cv2.INTER_LINEAR).astype(np.float32) / 255
+    capa *= cv2.erode(e["sil"].astype(np.uint8), np.ones((7, 7), np.uint8)) * rng.uniform(0.55, 0.95)
+    color = np.array([[200, 30, 40], [30, 60, 170], [25, 25, 25], [150, 20, 90], [20, 110, 60], [230, 120, 20]][rng.integers(0, 6)], np.float32)
+    rgb = e["rgb"].astype(np.float32) * (1 - capa[..., None]) + color * capa[..., None]
+    return {**e, "rgb": np.clip(rgb, 0, 255).astype(np.uint8)}
+
+
 def armar_banco(profe_dir, anot_dir, reales, tflite, rng, max_reales=260, ver=print):
     profe, originales = cargar_profe(profe_dir, anot_dir)
     sanos_ia = [e for e in profe if e["clase"] == 1]
@@ -315,12 +346,20 @@ TEXTOS = ["Fine crack", "Mold patch", "Dirty", "Stain", "Hole", "Dent", "Normal"
 
 
 def elegir(banco, rng, p_dano=0.5):
-    """Mitad con daño, mitad sanos; dentro de cada mitad se mezclan los de la colección del profesor, los reales y los sintéticos."""
+    """Mitad con daño, mitad sanos; dentro de cada mitad se mezclan los de la colección del profesor, los reales y los sintéticos.
+    Un tercio de los sanos (y algunos con daño) lleva un sello o logotipo impreso, para que una marca no cuente como daño."""
+    e = _elegir(banco, rng, p_dano)
+    if rng.random() < (0.35 if e["clase"] == 1 else 0.12):
+        e = marcar(e, rng)
+    return e
+
+
+def _elegir(banco, rng, p_dano=0.5):
     if rng.random() < p_dano:
         t = rng.random()
         if t < 0.66 or not (banco["sano_ia"] or banco["sano_real"]):
             return banco["dano_profe"][rng.integers(0, len(banco["dano_profe"]))]
-        if t < 0.90 and banco["dano_real"]:
+        if t < 0.94 and banco["dano_real"]:
             return banco["dano_real"][rng.integers(0, len(banco["dano_real"]))]
         for _ in range(5):
             b = banco["sano_ia"] if (rng.random() < 0.5 or not banco["sano_real"]) else banco["sano_real"]
@@ -472,6 +511,8 @@ def generar_seg(banco, out, n, seed):
             else:
                 b = banco["sano_ia"] if (rng.random() < 0.5 or not banco["sano_real"]) else banco["sano_real"]
                 e = b[rng.integers(0, len(b))]
+            if rng.random() < (0.35 if e["clase"] == 1 else 0.12):
+                e = marcar(e, rng)   # sello o logotipo: no es daño
             img, S, D = recorte_seg(e, rng)
             X.append(img)
             Y.append(np.stack([S, D], -1))
