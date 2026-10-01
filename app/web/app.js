@@ -130,6 +130,7 @@ function drawResult(canvas, img, res, o = {}) {
       ctx.lineWidth = 2.5; ctx.strokeStyle = col;
       ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x1, y1, x2 - x1, y2 - y1, 6) : ctx.rect(x1, y1, x2 - x1, y2 - y1); ctx.stroke();
       let label = `${res.eggs.length > 1 ? `${i + 1} · ` : ''}${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %${e.damage ? (noLoc(e.damage) ? ' · zona no localizada' : ` · zona ${pct(e.damage.severity)}`) : ''}`;
+      if (o.compact) label = `${i + 1}`; // muchos huevos en vivo: solo el número (el detalle va en el panel)
       // en imágenes angostas la etiqueta no debe salirse: letra más pequeña y, si aún no cabe, texto corto
       ctx.font = '600 12px Inter, system-ui, sans-serif';
       if (ctx.measureText(label).width + 12 > W) ctx.font = '600 10px Inter, system-ui, sans-serif';
@@ -632,7 +633,7 @@ const Live = {
       if (!this.active) return;
       if (this.video.readyState >= 2) {
         const fresh = this.res && performance.now() - this.resAt < 1200;
-        drawResult(this.canvas, this.video, fresh ? this.res : null, { maxH: 480, mask: $('#liveMask').checked });
+        drawResult(this.canvas, this.video, fresh ? this.res : null, { maxH: 480, mask: $('#liveMask').checked, compact: fresh && this.res.eggs.length > 3 });
       }
       requestAnimationFrame(draw);
     };
