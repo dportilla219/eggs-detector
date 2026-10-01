@@ -148,7 +148,8 @@ def ensuciar(e, rng):
     """Mancha, moho, suciedad o salpicado sintético sobre un huevo sano. Devuelve el huevo con daño y su máscara exacta."""
     rgb, sil = e["rgb"].astype(np.float32), e["sil"]
     h, w = sil.shape
-    tipo = rng.choice(["mancha", "moho", "barro", "pecas", "tinta", "polvo", "oxido"])
+    # sin borrones de tinta ni pecas: un sello impreso o el moteado natural de la cáscara no son daño
+    tipo = rng.choice(["mancha", "moho", "barro", "polvo", "oxido"])
     dentro = cv2.erode(sil.astype(np.uint8), np.ones((5, 5), np.uint8)).astype(np.float32)
     yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
 
@@ -317,9 +318,9 @@ def elegir(banco, rng, p_dano=0.5):
     """Mitad con daño, mitad sanos; dentro de cada mitad se mezclan los de la colección del profesor, los reales y los sintéticos."""
     if rng.random() < p_dano:
         t = rng.random()
-        if t < 0.62 or not (banco["sano_ia"] or banco["sano_real"]):
+        if t < 0.66 or not (banco["sano_ia"] or banco["sano_real"]):
             return banco["dano_profe"][rng.integers(0, len(banco["dano_profe"]))]
-        if t < 0.80 and banco["dano_real"]:
+        if t < 0.90 and banco["dano_real"]:
             return banco["dano_real"][rng.integers(0, len(banco["dano_real"]))]
         for _ in range(5):
             b = banco["sano_ia"] if (rng.random() < 0.5 or not banco["sano_real"]) else banco["sano_real"]
