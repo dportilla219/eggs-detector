@@ -7,6 +7,8 @@ Modelo de detección para clasificar huevos en **video en vivo** (frame a frame)
 | 0 | `Crack` | huevo con daño (rajado, roto, hundido; desde `v5` también sucio o con moho) |
 | 1 | `Intact` | huevo sano |
 
+**Documentación completa del proyecto** (datos, entrenamiento, evaluación, app y despliegue): [`DOCUMENTACION.md`](DOCUMENTACION.md).
+
 ## Estado
 **Modelo entregado: `v5` + `dano_v2`** (01/10; `v4` y `dano_v1` siguen en el repo y se vuelve a ellos cambiando cuatro líneas en `app/deploy/eggs-detector.service`).
 
