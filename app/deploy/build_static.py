@@ -69,13 +69,13 @@ def bajar(url: str, destino: str) -> None:
             fh.write(r.read())
 
 
-def html_estatico(det, seg) -> str:
+def html_estatico(det, seg, ratio=1.0) -> str:
     with open(os.path.join(APP, "web", "index.html"), encoding="utf-8") as fh:
         html = fh.read()
     cabeza = re.search(r"<head>(.*?)</head>", html, re.S).group(1)
     cuerpo = re.search(r"<body>(.*?)</body>", html, re.S).group(1)
     cabeza = cabeza.replace('initial-scale=1"', 'initial-scale=1, viewport-fit=cover"')
-    cfg = {"modelos": "modelo/", "det": det, "seg": seg, "wasm": "wasm/", "datos": "datos/"}
+    cfg = {"modelos": "modelo/", "det": det, "seg": seg, "wasm": "wasm/", "datos": "datos/", "crackRatio": ratio}
     scripts = "\n".join([
         f'  <script src="{TFJS_CORE}"></script>',
         f'  <script src="{TFJS_CPU}"></script>',
@@ -93,6 +93,7 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--det", default=det_del_servicio())
     ap.add_argument("--seg", default="eggs_dano_v1_fp16.tflite")
+    ap.add_argument("--ratio", type=float, default=1.0, help="regla de decisión (EGGS_CRACK_RATIO del servicio)")
     ap.add_argument("--por-clase", type=int, default=40, help="imágenes de test por clase para la banda")
     ap.add_argument("--eval", help="JSON de evaluate.py ya calculado (si no, se calcula)")
     ap.add_argument("--artifact", action="store_true",
@@ -104,6 +105,7 @@ def main() -> None:
         os.makedirs(os.path.join(out, sub), exist_ok=True)
 
     # métricas: las mismas que devuelve /api/info en el servidor, más la evaluación del test completo
+    os.environ.update(EGGS_SEG_FILE=a.seg, EGGS_CRACK_RATIO=str(a.ratio))
     eval_json = a.eval or os.path.join(out, "datos", "eval_test.json")
     if not a.eval and not os.path.exists(eval_json):
         subprocess.run([sys.executable, os.path.join(APP, "server", "evaluate.py"), "--split", a.split,
@@ -141,7 +143,7 @@ def main() -> None:
     for f in ("styles.css", "app.js", "local.js"):
         shutil.copy2(os.path.join(APP, "web", f), os.path.join(out, f))
     with open(os.path.join(out, "index.html"), "w", encoding="utf-8") as fh:
-        fh.write(html_estatico(*cfg_modelos))
+        fh.write(html_estatico(*cfg_modelos, ratio=a.ratio))
 
     tam = sum(os.path.getsize(os.path.join(d, f)) for d, _, fs in os.walk(out) for f in fs)
     print(f"Listo: {out} ({tam / 1e6:.1f} MB, {len(muestras)} imágenes de test, detector {a.det})")

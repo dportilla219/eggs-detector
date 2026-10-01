@@ -4,11 +4,30 @@ Modelo de detección para clasificar huevos en **video en vivo** (frame a frame)
 
 | id | clase | significado |
 |----|-------|-------------|
-| 0 | `Crack` | huevo rajado |
+| 0 | `Crack` | huevo con daño (rajado, roto, hundido; desde `v5` también sucio o con moho) |
 | 1 | `Intact` | huevo sano |
 
 ## Estado
-**Modelo entregado: `v4`** (reemplaza a `v2`, con la misma entrada y salida: solo cambia el nombre del archivo). `v2` acertaba el test original, pero en fotos reales de otras fuentes marcaba como rajados casi todos los huevos sanos. `v4` se reentrenó añadiendo fotos reales y ahora acierta en fotos que no vio al entrenar: 36/39 huevos rajados y 18/20 sanos del dataset público, 97/105 huevos sanos de Wikimedia Commons, sin empeorar el test original (acierto por imagen 0.982 frente a 0.976 de `v2`). Detalle en [Resultados](#resultados).
+**Modelo entregado: `v5` + `dano_v2`** (01/10; `v4` y `dano_v1` siguen en el repo y se vuelve a ellos cambiando cuatro líneas en `app/deploy/eggs-detector.service`).
+
+- **Por qué.** `v4` solo conocía grietas y roturas "limpias". Con la colección de daños del profesor ([adiacla/huevos](https://github.com/adiacla/huevos): agujeros, hundidos, cáscara rota, suciedad, moho, sueltos y en láminas de ~10 huevos) acertaba 20 de 147 huevos.
+- **Qué es `v5`.** Mismo YOLOv8n, misma entrada y salida. Parte de `v4` y se reentrenó en dos rondas con esos 147 huevos (cajas en `v5/profe_huevos.json`) y ~3.000 composiciones generadas con [`v5/datos.py`](v5/datos.py): uno o varios huevos por imagen, mezclando dañados y sanos, con sellos y logotipos impresos sobre los sanos para que una marca no cuente como daño. El archivo final es el promedio de pesos de los dos checkpoints de la segunda ronda.
+- **Regla de decisión nueva.** Un huevo es `Crack` solo si `score_Intact <= 0.3 × score_Crack`; si no, `Intact`. En la app es `EGGS_CRACK_RATIO=0.3`.
+- **Resultados** (tubería de la app, conf 0.5; detalle en [`resultados/v5/resumen.json`](resultados/v5/resumen.json)):
+
+| prueba | `v4` | `v5` |
+|---|---|---|
+| Colección del profesor, por huevo (vista al entrenar `v5`) | 20/147 | **147/147** |
+| La misma, simulando la cámara apuntando a una pantalla | 77/588 | **584/588** |
+| Imágenes no vistas · con daño | 1070/1146 (93,4 %) | **1088/1146 (94,9 %)** |
+| Imágenes no vistas · sanos | 416/441 (94,3 %) | 415/441 (94,1 %) |
+| Test original, mAP50-95 (Crack / Intact) | — | 0.976 / 0.976 (`v2`: 0.970 / 0.970) |
+
+- **Límites.** En fotos de celular de otra fuente baja un poco frente a `v4` (rajados 207/226 frente a 212; sanos 36/43 frente a 39). La regla 0.3 se eligió con esas mismas fotos no vistas. Huevos sanos con sello impreso todavía fallan a veces (4 de 22 fotos nuevas de Commons).
+- **`dano_v2`** (zona dañada): misma arquitectura que `dano_v1`, reentrenada con los recortes originales más los 146 huevos con daño del profesor. En el test original queda igual (IoU 0.63 frente a 0.64; error de gravedad ±7,5 puntos frente a ±9,6) y ahora marca manchas, moho y hundidos. En fotos de celular localiza menos grietas que `dano_v1` (81 % frente a 98 %), así que la app consulta `dano_v1` cuando `dano_v2` no marca nada (`EGGS_SEG_FALLBACK`).
+- **Cómo se entrenó.** `eggs_v5.ipynb` (ronda 1), `v5/notebooks/eggs_v5b.ipynb` (ronda 2), `v5/notebooks/eggs_v5_mezclas.ipynb` (promedio de pesos) y `eggs_dano_v2.ipynb`. Los tres últimos leen el dataset y los pesos de una rama temporal (`v5-tmp`) que ya no existe: para repetirlos hay que volver a subir ahí los zips `eggs_v2_parte*.zip` y los `.pt`.
+
+**Versión anterior: `v4`** (reemplaza a `v2`, con la misma entrada y salida: solo cambia el nombre del archivo). `v2` acertaba el test original, pero en fotos reales de otras fuentes marcaba como rajados casi todos los huevos sanos. `v4` se reentrenó añadiendo fotos reales y ahora acierta en fotos que no vio al entrenar: 36/39 huevos rajados y 18/20 sanos del dataset público, 97/105 huevos sanos de Wikimedia Commons, sin empeorar el test original (acierto por imagen 0.982 frente a 0.976 de `v2`). Detalle en [Resultados](#resultados).
 
 **Extra: `dano_v1`.** Es un segundo modelo, opcional, que recibe el recorte de cada huevo rajado y devuelve la **zona dañada**. Con ella la app pinta dónde está el daño y calcula la **gravedad** (leve / media / grave). En test, con las cajas de `v2`, el IoU de la zona es 0.64 y el error de la gravedad ±9,6 puntos; marca daño en 35/35 rajados y en 0/30 sanos.
 
@@ -19,6 +38,8 @@ Hay también una **versión sin servidor** de la misma app, que ejecuta los mode
 ## Entregable
 | archivo | tamaño | uso |
 |---|---|---|
+| [`modelo/eggs_v5_fp32.tflite`](modelo/) | 12,3 MB | **Detector actual.** Misma entrada y salida que `v4`; usar con la regla `score_Intact <= 0.3 × score_Crack`. Sin versión INT8. |
+| [`modelo/eggs_dano_v2_fp16.tflite`](modelo/), [`eggs_dano_v2_fp32.tflite`](modelo/) | 4,9 / 9,6 MB | **Zona dañada actual.** Misma entrada y salida que `dano_v1`. |
 | [`modelo/eggs_v4_fp32.tflite`](modelo/) | 12,3 MB | **Recomendado.** Delegado GPU: `'android-gpu'` en Android, `'core-ml'` en iOS. |
 | [`modelo/eggs_v4_int8.tflite`](modelo/) | 3,3 MB | Alternativa si el delegado GPU falla o el modelo tiene que correr en CPU. Misma entrada y salida. |
 | [`modelo/eggs_v2_fp32.tflite`](modelo/), [`eggs_v2_int8.tflite`](modelo/) | 12,3 / 3,3 MB | Versión anterior del detector, misma entrada y salida. Solo acierta con huevos sanos del montaje del dataset. |

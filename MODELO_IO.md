@@ -47,6 +47,8 @@ El modelo corre **en el celular**. No hace falta un backend para la inferencia; 
 
 Ambos tienen **la misma entrada y salida**. Se pueden cambiar sin tocar el código de decodificación.
 
+> **Actualización (`v5`, 01/10).** `eggs_v5_fp32.tflite` tiene la misma entrada y salida que `v2`/`v4`. Cambian dos cosas: `Crack` significa "huevo con daño" (rajado, roto, hundido, sucio, con moho), y la clase se decide con una regla: **`Crack` solo si `score_Intact <= 0.3 × score_Crack`; si no, `Intact`** (antes ganaba el score más alto). La confianza de la detección sigue siendo `max(score_Crack, score_Intact) >= 0.5`. Para la zona dañada, `eggs_dano_v2_fp16.tflite` sustituye a `dano_v1` sin cambios de entrada ni salida; si no marca nada, se puede consultar `dano_v1` como respaldo.
+
 ## Clases
 
 | id | nombre | significado |

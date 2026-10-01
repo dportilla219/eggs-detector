@@ -2,6 +2,9 @@
 
 | archivo | tamaño | uso |
 |---|---|---|
+| `eggs_v5_fp32.tflite` | 12,3 MB | **Detector actual** (daños de todo tipo; regla `score_Intact <= 0.3 × score_Crack`) |
+| `eggs_dano_v2_fp16.tflite` | 4,9 MB | **Zona dañada actual** (misma entrada y salida que `dano_v1`) |
+| `eggs_dano_v2_fp32.tflite` | 9,6 MB | Lo mismo en FP32 |
 | `eggs_v4_fp32.tflite` | 12,3 MB | **Detector recomendado** (GPU en Android / Core ML en iOS) |
 | `eggs_v4_int8.tflite` | 3,3 MB | Alternativa ligera para CPU |
 | `eggs_v2_fp32.tflite` | 12,3 MB | Detector anterior (misma entrada y salida que `v4`) |

@@ -2,6 +2,7 @@
 
 Despliegue de los modelos de este repositorio como aplicación web, con inferencia en el servidor.
 
+- **Desde el 01/10 la app usa `v5` + `dano_v2`** (`EGGS_DET_FILE=eggs_v5_fp32.tflite`, `EGGS_SEG_FILE=eggs_dano_v2_fp16.tflite`, `EGGS_SEG_FALLBACK=eggs_dano_v1_fp16.tflite`, `EGGS_CRACK_RATIO=0.3`). `v5` reconoce daños de todo tipo y varios huevos por imagen; un huevo se da por dañado solo si el puntaje de sano es menor que 0.3 × el de daño. `dano_v1` solo se consulta si `dano_v2` no marca ninguna zona. Lo que sigue describe `v4` + `dano_v1`, que funcionan igual y siguen disponibles.
 - **`v4`** (`modelo/eggs_v4_fp32.tflite`, YOLOv8n): encuentra cada huevo y lo clasifica como `Crack` o `Intact`. Es el detector que usa la app desde el 25/09/2026. A diferencia de `v2`, también acierta en fotos reales de otras fuentes: ver [Resultados](../README.md#resultados). `v2` sigue en `modelo/` y tiene la misma entrada y salida.
 - **`dano_v1`** (`modelo/eggs_dano_v1_fp16.tflite`, U-Net MobileNetV2): solo sobre los huevos `Crack`, marca la **zona dañada** y calcula la gravedad. Es el diferencial del proyecto.
 
