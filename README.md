@@ -194,21 +194,21 @@ Comprobar:
 | La zona dañada aparece desplazada o deformada | El recorte de `dano_v1` no se hizo sobre el frame completo, falta el 5 % por lado o se mantuvo la proporción en lugar de estirar a 192×192. |
 | `dano_v1` marca manchas fuera del huevo | Se está dibujando el canal 0 (silueta) o el daño fuera de la silueta. Dibujar solo el canal 1 donde el canal 0 > 0.5. |
 
-### Prompt de contexto para su asistente de IA
+### Ficha de integración
 
-Copien esto al inicio de la conversación con la IA que usen para que tenga el contexto correcto:
+Resumen de lo que necesita quien integre el modelo en la app:
 
 ```text
-Estoy integrando un modelo de visión por computadora en una app React Native con Expo (Android e iOS).
+Integración de un modelo de visión por computadora en una app React Native con Expo (Android e iOS).
 
 OBJETIVO
 - Detectar huevos en VIDEO EN VIVO desde la cámara (frame a frame, sin tomar fotos) y
   clasificarlos como 0 = Crack (rajado) o 1 = Intact (sano).
 - La inferencia corre EN EL CELULAR. No hay backend para la detección.
 
-RESTRICCIONES (no las cambies)
+RESTRICCIONES
 - NO se usa Expo Go: usamos un Expo development build (expo-dev-client), porque las
-  librerías son nativas. No me propongas soluciones que requieran Expo Go ni expo-camera
+  librerías son nativas. No sirven las soluciones que requieran Expo Go ni expo-camera
   para la detección.
 - Librerías: react-native-vision-camera (frame processors), react-native-worklets-core,
   vision-camera-resize-plugin y react-native-fast-tflite.
@@ -233,7 +233,7 @@ MODELO (YOLOv8n exportado a TFLite)
 
 MODELO 2 OPCIONAL: ZONA DAÑADA (dano_v1, eggs_dano_v1_fp16.tflite)
 - Son DOS modelos que trabajan juntos: v2 es obligatorio y detecta/clasifica; dano_v1 es un
-  extra que va DESPUÉS de v2 y NO lo reemplaza. Primero haz funcionar v2 solo; luego añade dano_v1.
+  extra que va DESPUÉS de v2 y NO lo reemplaza. Primero se integra v2 solo; luego dano_v1.
 - Solo para huevos clasificados Crack. Entrada float32 [1, 192, 192, 3] NHWC RGB 0..1:
   la caja del huevo en píxeles del FRAME COMPLETO, expandida 5 % por lado (ancho y alto),
   recortada al frame y ESTIRADA a 192x192 (resize-plugin: crop + scale, sin mantener proporción).
@@ -247,11 +247,9 @@ REFERENCIA
 - La documentación completa y un ejemplo de frame processor están en MODELO_IO.md del
   repositorio del modelo: https://github.com/dportilla219/eggs-detector
 
-Antes de escribir código, verifica en la documentación oficial las APIs exactas de las
-versiones que tengo instaladas (vision-camera v4+, fast-tflite, resize-plugin), porque
+Antes de escribir código conviene verificar en la documentación oficial las APIs exactas
+de las versiones instaladas (vision-camera v4+, fast-tflite, resize-plugin), porque
 cambian entre versiones.
-
-Lo que necesito ahora es: <describir la tarea>
 ```
 
 ## Resultados
@@ -288,6 +286,7 @@ Límites conocidos (medidos el 25/09/2026 contra la app desplegada):
 ## Contenido
 - `modelo/`: los `.tflite` entregados.
 - `MODELO_IO.md`: documentación para integrar el modelo en la app.
+- `NOTAS.md`: notas de trabajo del equipo (objetivo, dataset, decisiones y estado de cada versión).
 - `eggs_train.ipynb`: preparación del dataset, entrenamiento y evaluación de `v1`.
 - `eggs_v2.ipynb`: se ejecuta de arriba abajo con *Run All*, sin depender del anterior. Las celdas que ya hicieron su trabajo se saltan solas.
   1. Setup (ultralytics, Drive, dataset). Funciona con o sin GPU.

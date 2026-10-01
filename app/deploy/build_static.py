@@ -11,7 +11,7 @@ Contenido de la carpeta:
     datos/muestras/                            una selección equilibrada de imágenes de test
 
 Se puede servir con cualquier servidor de archivos estáticos (la cámara en vivo necesita HTTPS).
-Con --artifact, los .tflite van en base64 dentro de archivos .txt, para visores que solo sirven tipos web.
+Con --base64, los .tflite van en base64 dentro de archivos .txt, para visores que solo sirven tipos web.
 """
 
 from __future__ import annotations
@@ -96,7 +96,7 @@ def main() -> None:
     ap.add_argument("--ratio", type=float, default=1.0, help="regla de decisión (EGGS_CRACK_RATIO del servicio)")
     ap.add_argument("--por-clase", type=int, default=40, help="imágenes de test por clase para la banda")
     ap.add_argument("--eval", help="JSON de evaluate.py ya calculado (si no, se calcula)")
-    ap.add_argument("--artifact", action="store_true",
+    ap.add_argument("--base64", action="store_true",
                     help="para visores que no sirven .tflite: modelos en base64 (.txt) y runtime sin hilos")
     a = ap.parse_args()
 
@@ -126,7 +126,7 @@ def main() -> None:
 
     cfg_modelos = []
     for f in (a.det, a.seg):
-        if not a.artifact:
+        if not a.base64:
             shutil.copy2(os.path.join(servidor.MODEL_DIR, f), os.path.join(out, "modelo", f))
             cfg_modelos.append(f)
             continue
@@ -138,7 +138,7 @@ def main() -> None:
             with open(os.path.join(out, "modelo", partes[-1]), "w", encoding="ascii") as fh:
                 fh.write(b64[i:i + TROZO_B64])
         cfg_modelos.append({"archivo": f, "partes": partes})
-    for f in WASM_SIN_HILOS + ([] if a.artifact else WASM_HILOS):
+    for f in WASM_SIN_HILOS + ([] if a.base64 else WASM_HILOS):
         bajar(f"{TFLITE}/wasm/{f}", os.path.join(out, "wasm", f))
     for f in ("styles.css", "app.js", "local.js"):
         shutil.copy2(os.path.join(APP, "web", f), os.path.join(out, f))
