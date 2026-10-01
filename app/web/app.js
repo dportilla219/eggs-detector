@@ -16,7 +16,7 @@ const readColors = () => { COL = { ok: cssVar('--ok'), bad: cssVar('--bad'), war
 const ROUTE_KEYS = ['empaque', 'industria', 'descarte', 'revision'];
 const ROUTE_CSS = { empaque: 'var(--ok)', industria: 'var(--warn)', descarte: 'var(--bad)', revision: 'var(--neutral)' };
 const ROUTE_ICON = { empaque: '✓', industria: '↻', descarte: '✕', revision: '?' };
-const CLS_ES = { Crack: 'Rajado', Intact: 'Sano' };
+const CLS_ES = { Crack: 'Con daño', Intact: 'Sano' };
 const LEVEL_ES = { leve: 'leve', media: 'media', grave: 'grave' };
 
 // Sin servidor (window.EGGS_LOCAL): los modelos corren en el navegador con local.js.
@@ -129,7 +129,7 @@ function drawResult(canvas, img, res, o = {}) {
       const col = e.cls === 0 ? COL.bad : COL.ok;
       ctx.lineWidth = 2.5; ctx.strokeStyle = col;
       ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x1, y1, x2 - x1, y2 - y1, 6) : ctx.rect(x1, y1, x2 - x1, y2 - y1); ctx.stroke();
-      let label = `${res.eggs.length > 1 ? `${i + 1} · ` : ''}${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %${e.damage ? (noLoc(e.damage) ? ' · grieta no localizada' : ` · daño ${pct(e.damage.severity)}`) : ''}`;
+      let label = `${res.eggs.length > 1 ? `${i + 1} · ` : ''}${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %${e.damage ? (noLoc(e.damage) ? ' · zona no localizada' : ` · zona ${pct(e.damage.severity)}`) : ''}`;
       // en imágenes angostas la etiqueta no debe salirse: letra más pequeña y, si aún no cabe, texto corto
       ctx.font = '600 12px Inter, system-ui, sans-serif';
       if (ctx.measureText(label).width + 12 > W) ctx.font = '600 10px Inter, system-ui, sans-serif';
@@ -345,7 +345,7 @@ const Belt = {
     const tag = document.createElement('span');
     tag.className = 'tag';
     tag.style.setProperty('--c', ROUTE_CSS[r.route]);
-    tag.textContent = pred === 'Intact' ? '✓ Sano' : pred === 'Crack' ? (r.summary.max_severity < 0.005 ? '✕ Rajado' : `✕ ${pct(r.summary.max_severity)}`) : '? sin huevo';
+    tag.textContent = pred === 'Intact' ? '✓ Sano' : pred === 'Crack' ? (r.summary.max_severity < 0.005 ? '✕ Daño' : `✕ ${pct(r.summary.max_severity)}`) : '? sin huevo';
     e.el.appendChild(tag);
     st.log.unshift({ id: e.id, s, pred, ok, r, rt: e.rt });
     st.log.length = Math.min(st.log.length, 15);
@@ -539,7 +539,7 @@ const Analyze = {
     const gt = r.sample ? `<span>Etiqueta real: <b>${CLS_ES[r.sample.gt_label]}</b></span>` : '';
     $('#anaMeta').textContent = `${r.width}×${r.height} px · ${r.timing_ms.total} ms`;
     $('#anaSummary').innerHTML = `<div class="summary-line">${routePill(r.route, true)}
-      <span><b>${r.summary.n_eggs}</b> huevo(s): ${r.summary.n_crack} rajado(s), ${r.summary.n_intact} sano(s)</span>${gt}
+      <span><b>${r.summary.n_eggs}</b> huevo(s): ${r.summary.n_crack} con daño, ${r.summary.n_intact} sano(s)</span>${gt}
       <span class="muted">detector ${r.timing_ms.detector} ms · daño ${r.timing_ms.damage} ms</span></div>
       <p class="small muted">${esc(App.routes[r.route]?.desc || '')}</p>`;
     const box = $('#anaEggs');
@@ -551,7 +551,7 @@ const Analyze = {
       card.innerHTML = `
         <h5>Huevo ${i + 1} <span class="route-pill" style="--c:${e.cls === 0 ? 'var(--bad)' : 'var(--ok)'}">${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %</span></h5>
         <div class="scores">
-          <span>Rajado</span><span class="track"><b style="width:${e.scores.Crack * 100}%;background:var(--bad)"></b></span><span class="num">${e.scores.Crack.toFixed(2)}</span>
+          <span>Con daño</span><span class="track"><b style="width:${e.scores.Crack * 100}%;background:var(--bad)"></b></span><span class="num">${e.scores.Crack.toFixed(2)}</span>
           <span>Sano</span><span class="track"><b style="width:${e.scores.Intact * 100}%;background:var(--ok)"></b></span><span class="num">${e.scores.Intact.toFixed(2)}</span>
         </div>
         ${e.damage && noLoc(e.damage) ? `<div class="small">Zona dañada: ${NOLOC_TXT}.</div>`
@@ -680,6 +680,23 @@ const Live = {
   },
 
   update(res) {
+    const secs0 = (performance.now() - this.t0) / 1000;
+    if (res.eggs.length > 1) { // varios huevos a la vez: se informa de cada uno, sin votar entre fotogramas
+      this.hist = [];
+      $('#liveStats').textContent = `${(this.n / secs0).toFixed(1)} inferencias/s · ${Math.round(this.latSum / this.n)} ms ${App.local ? 'por fotograma (en este dispositivo)' : 'ida y vuelta'} · modelo ${res.timing_ms.total} ms`;
+      const bad = res.eggs.filter((e) => e.cls === 0), ok = res.eggs.length - bad.length;
+      const rutaDe = (e) => (e.cls === 1 ? 'empaque' : (e.damage ? e.damage.severity : 0) < 0.15 ? 'industria' : 'descarte');
+      const peor = ['descarte', 'industria', 'empaque'].find((r) => res.eggs.some((e) => rutaDe(e) === r));
+      const badge = $('#liveBadge');
+      badge.hidden = false;
+      badge.style.setProperty('--c', ROUTE_CSS[bad.length ? peor : 'empaque']);
+      badge.innerHTML = `${res.eggs.length} huevos<small>${bad.length} con daño · ${ok} sanos</small>`;
+      $('#liveDecision').innerHTML = `
+        <div class="big">${res.eggs.length} huevos</div>
+        <p><b class="bad-txt">${bad.length} con daño</b> · <b class="ok-txt">${ok} sanos</b></p>
+        <dl class="kv">${res.eggs.map((e, i) => `<dt>Huevo ${i + 1}</dt><dd>${CLS_ES[e.label]} ${Math.round(e.conf * 100)} %${e.damage && !noLoc(e.damage) ? ` · daño ${pct(e.damage.severity)}` : ''} → ${esc(App.routes[rutaDe(e)]?.name || rutaDe(e))}</dd>`).join('')}</dl>`;
+      return;
+    }
     const main = res.eggs.slice().sort((a, b) => (b.box[2] - b.box[0]) * (b.box[3] - b.box[1]) - (a.box[2] - a.box[0]) * (a.box[3] - a.box[1]))[0];
     this.hist.push(main ? { cls: main.cls, sev: main.damage ? main.damage.severity : null } : { cls: null, sev: null });
     if (this.hist.length > 7) this.hist.shift();
@@ -694,13 +711,13 @@ const Live = {
     const badge = $('#liveBadge');
     badge.hidden = false;
     badge.style.setProperty('--c', ROUTE_CSS[route]);
-    badge.innerHTML = `${cls == null ? 'Sin huevo' : cls === 0 ? `Rajado${sevs.length && sev >= 0.005 ? ` · ${pct(sev)}` : ''}` : 'Sano'}
+    badge.innerHTML = `${cls == null ? 'Sin huevo' : cls === 0 ? `Con daño${sevs.length && sev >= 0.005 ? ` · ${pct(sev)}` : ''}` : 'Sano'}
       <small>${ROUTE_ICON[route]} ${esc(App.routes[route]?.name || route)}</small>`;
     $('#liveDecision').innerHTML = `
-      <div class="big">${cls == null ? 'Sin huevo' : cls === 0 ? 'Rajado' : 'Sano'}</div>
+      <div class="big">${cls == null ? 'Sin huevo' : cls === 0 ? 'Con daño' : 'Sano'}</div>
       ${routePill(route, true)}
-      <dl class="kv"><dt>Votos (7 fotogramas)</dt><dd>rajado ${votes[0]} · sano ${votes[1]} · sin huevo ${votes.none}</dd>
-      <dt>Gravedad media</dt><dd>${cls !== 0 ? '—' : sev < 0.005 ? 'grieta no localizada (se trata como leve)' : pct(sev, 1)}</dd>
+      <dl class="kv"><dt>Votos (7 fotogramas)</dt><dd>con daño ${votes[0]} · sano ${votes[1]} · sin huevo ${votes.none}</dd>
+      <dt>Gravedad media</dt><dd>${cls !== 0 ? '—' : sev < 0.005 ? 'zona no localizada (se trata como leve)' : pct(sev, 1)}</dd>
       <dt>Huevos en el fotograma</dt><dd>${res.eggs.length}</dd></dl>
       ${cls === 0 && sev >= 0.005 ? sevBar(sev) : ''}`;
   },
