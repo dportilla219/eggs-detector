@@ -624,14 +624,16 @@ const Live = {
 
   begin() {
     this.active = true; this.res = null; this.hist = []; this.n = 0; this.latSum = 0; this.t0 = performance.now();
-    this.snap = this.snap || document.createElement('canvas'); this.hasSnap = false;
     $('#livePlaceholder').hidden = true;
-    // Se dibuja el fotograma que se analizó, con su caja y su zona dañada: la respuesta llega ~0,3 s después,
-    // y sobre el video actual la mancha quedaría corrida si el huevo o la mano se mueven.
+    // El video se pinta en cada cuadro de pantalla (fluido) y encima va el último resultado. La respuesta llega
+    // ~0,3 s después: si la cámara se mueve, la caja y la mancha la alcanzan en el siguiente resultado; un
+    // resultado con más de 1,2 s ya no se pinta, para no dejar una caja vieja sobre otra escena.
     const draw = () => {
       if (!this.active) return;
-      if (this.hasSnap) drawResult(this.canvas, this.snap, this.res, { maxH: 480, mask: $('#liveMask').checked });
-      else if (this.video.readyState >= 2) drawResult(this.canvas, this.video, null, { maxH: 480 });
+      if (this.video.readyState >= 2) {
+        const fresh = this.res && performance.now() - this.resAt < 1200;
+        drawResult(this.canvas, this.video, fresh ? this.res : null, { maxH: 480, mask: $('#liveMask').checked });
+      }
       requestAnimationFrame(draw);
     };
     requestAnimationFrame(draw);
@@ -665,9 +667,7 @@ const Live = {
           this.n++; this.latSum += performance.now() - t;
           if (seq > this.shown) { // descarta respuestas atrasadas
             this.shown = seq;
-            this.snap.width = grab.width; this.snap.height = grab.height; // copia del fotograma analizado
-            this.snap.getContext('2d').drawImage(grab, 0, 0);
-            this.hasSnap = true; this.res = res; this.update(res);
+            this.res = res; this.resAt = performance.now(); this.update(res);
           }
         } catch (err) {
           $('#liveStats').textContent = `Error: ${err.message || err}`;
