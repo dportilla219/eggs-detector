@@ -1,0 +1,2334 @@
+{
+"dago2.jpg": {
+"W": 428,
+"H": 487,
+"huevos": [
+{
+"id": 0,
+"caja": [
+41,
+63,
+375,
+430
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2087,
+"toca_borde": false
+}
+]
+},
+"daño1.jpg": {
+"W": 428,
+"H": 487,
+"huevos": [
+{
+"id": 1,
+"caja": [
+70,
+54,
+360,
+429
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9752,
+"toca_borde": true
+}
+]
+},
+"daño3.jpg": {
+"W": 428,
+"H": 487,
+"huevos": [
+{
+"id": 2,
+"caja": [
+46,
+58,
+380,
+428
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.4424,
+"toca_borde": false
+}
+]
+},
+"daño4.jpg": {
+"W": 428,
+"H": 487,
+"huevos": [
+{
+"id": 3,
+"caja": [
+44,
+68,
+393,
+432
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1462,
+"toca_borde": false
+}
+]
+},
+"daño5.jpg": {
+"W": 428,
+"H": 487,
+"huevos": [
+{
+"id": 4,
+"caja": [
+56,
+60,
+372,
+426
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1909,
+"toca_borde": false
+}
+]
+},
+"daño6.jpg": {
+"W": 428,
+"H": 487,
+"huevos": [
+{
+"id": 5,
+"caja": [
+62,
+74,
+359,
+410
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.1191,
+"toca_borde": false
+}
+]
+},
+"daño7.jpg": {
+"W": 428,
+"H": 487,
+"huevos": [
+{
+"id": 6,
+"caja": [
+93,
+96,
+354,
+408
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3482,
+"toca_borde": false
+}
+]
+},
+"daño8.jpg": {
+"W": 428,
+"H": 487,
+"huevos": [
+{
+"id": 7,
+"caja": [
+104,
+122,
+327,
+412
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2247,
+"toca_borde": false
+}
+]
+},
+"daño9.jpg": {
+"W": 640,
+"H": 360,
+"huevos": [
+{
+"id": 8,
+"caja": [
+171,
+25,
+404,
+339
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3865,
+"toca_borde": false
+}
+]
+},
+"daño10.jpg": {
+"W": 640,
+"H": 360,
+"huevos": [
+{
+"id": 9,
+"caja": [
+185,
+34,
+419,
+348
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1767,
+"toca_borde": false
+}
+]
+},
+"daño11.jpg": {
+"W": 640,
+"H": 395,
+"huevos": [
+{
+"id": 10,
+"caja": [
+191,
+44,
+425,
+359
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3239,
+"toca_borde": false
+}
+]
+},
+"daño12.jpg": {
+"W": 640,
+"H": 407,
+"huevos": [
+{
+"id": 11,
+"caja": [
+189,
+41,
+423,
+355
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.2973,
+"toca_borde": false
+}
+]
+},
+"daño13.jpg": {
+"W": 640,
+"H": 407,
+"huevos": [
+{
+"id": 12,
+"caja": [
+185,
+39,
+419,
+353
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2227,
+"toca_borde": false
+}
+]
+},
+"daño14.jpg": {
+"W": 640,
+"H": 407,
+"huevos": [
+{
+"id": 13,
+"caja": [
+187,
+37,
+421,
+352
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2153,
+"toca_borde": false
+}
+]
+},
+"daño15.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 14,
+"caja": [
+178,
+63,
+414,
+378
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.5452,
+"toca_borde": false
+}
+]
+},
+"daño16.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 15,
+"caja": [
+167,
+38,
+435,
+379
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9687,
+"toca_borde": true
+}
+]
+},
+"daño17.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 16,
+"caja": [
+185,
+61,
+425,
+385
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5356,
+"toca_borde": true
+}
+]
+},
+"daño18.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 17,
+"caja": [
+182,
+54,
+443,
+362
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3341,
+"toca_borde": false
+}
+]
+},
+"daño19.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 18,
+"caja": [
+183,
+39,
+414,
+348
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1317,
+"toca_borde": false
+}
+]
+},
+"daño20.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 19,
+"caja": [
+200,
+44,
+429,
+352
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.2618,
+"toca_borde": true
+}
+]
+},
+"daño21.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 20,
+"caja": [
+199,
+53,
+422,
+346
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.427,
+"toca_borde": false
+}
+]
+},
+"daño22.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 21,
+"caja": [
+197,
+55,
+421,
+348
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5087,
+"toca_borde": false
+}
+]
+},
+"daño23.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 22,
+"caja": [
+190,
+68,
+414,
+362
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2251,
+"toca_borde": false
+}
+]
+},
+"daño24.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 23,
+"caja": [
+185,
+55,
+409,
+348
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5495,
+"toca_borde": false
+}
+]
+},
+"daño25.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 24,
+"caja": [
+182,
+61,
+407,
+353
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3417,
+"toca_borde": false
+}
+]
+},
+"daño26.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 25,
+"caja": [
+180,
+58,
+411,
+365
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9704,
+"toca_borde": true
+}
+]
+},
+"daño27.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 26,
+"caja": [
+175,
+60,
+407,
+369
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9699,
+"toca_borde": true
+}
+]
+},
+"daño28.jpg": {
+"W": 640,
+"H": 412,
+"huevos": [
+{
+"id": 27,
+"caja": [
+183,
+57,
+416,
+365
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.3173,
+"toca_borde": false
+}
+]
+},
+"sano1.png": {
+"W": 640,
+"H": 360,
+"huevos": [
+{
+"id": 28,
+"caja": [
+171,
+15,
+430,
+343
+],
+"clase": 1,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.0,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (1).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 29,
+"caja": [
+51,
+60,
+276,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.969,
+"toca_borde": true
+},
+{
+"id": 30,
+"caja": [
+314,
+59,
+539,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2057,
+"toca_borde": false
+},
+{
+"id": 31,
+"caja": [
+578,
+59,
+804,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.4314,
+"toca_borde": true
+},
+{
+"id": 32,
+"caja": [
+840,
+60,
+1062,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.165,
+"toca_borde": false
+},
+{
+"id": 33,
+"caja": [
+1089,
+123,
+1341,
+318
+],
+"clase": 0,
+"omitir": true,
+"sucio": false,
+"dano_frac": 0.1929,
+"toca_borde": false
+},
+{
+"id": 34,
+"caja": [
+51,
+414,
+274,
+701
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2928,
+"toca_borde": true
+},
+{
+"id": 35,
+"caja": [
+316,
+412,
+538,
+701
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1928,
+"toca_borde": false
+},
+{
+"id": 36,
+"caja": [
+580,
+412,
+803,
+702
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.1163,
+"toca_borde": false
+},
+{
+"id": 37,
+"caja": [
+840,
+413,
+1064,
+701
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3667,
+"toca_borde": false
+},
+{
+"id": 38,
+"caja": [
+1102,
+413,
+1325,
+701
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2334,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (2).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 39,
+"caja": [
+41,
+43,
+274,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.4065,
+"toca_borde": false
+},
+{
+"id": 40,
+"caja": [
+305,
+43,
+539,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1831,
+"toca_borde": false
+},
+{
+"id": 41,
+"caja": [
+571,
+43,
+805,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3006,
+"toca_borde": false
+},
+{
+"id": 42,
+"caja": [
+837,
+43,
+1071,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.2983,
+"toca_borde": false
+},
+{
+"id": 43,
+"caja": [
+1101,
+43,
+1335,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2273,
+"toca_borde": false
+},
+{
+"id": 44,
+"caja": [
+41,
+411,
+275,
+726
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2127,
+"toca_borde": false
+},
+{
+"id": 45,
+"caja": [
+305,
+412,
+540,
+726
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3288,
+"toca_borde": true
+},
+{
+"id": 46,
+"caja": [
+570,
+411,
+810,
+735
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5362,
+"toca_borde": true
+},
+{
+"id": 47,
+"caja": [
+836,
+411,
+1072,
+726
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.5488,
+"toca_borde": false
+},
+{
+"id": 48,
+"caja": [
+1088,
+400,
+1355,
+741
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9686,
+"toca_borde": true
+}
+]
+},
+"plantilla/descarga (3).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 49,
+"caja": [
+47,
+43,
+277,
+350
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3342,
+"toca_borde": false
+},
+{
+"id": 50,
+"caja": [
+308,
+43,
+547,
+364
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5043,
+"toca_borde": true
+},
+{
+"id": 51,
+"caja": [
+577,
+43,
+808,
+351
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1358,
+"toca_borde": false
+},
+{
+"id": 52,
+"caja": [
+842,
+43,
+1071,
+351
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.262,
+"toca_borde": true
+},
+{
+"id": 53,
+"caja": [
+1103,
+46,
+1331,
+350
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2651,
+"toca_borde": true
+},
+{
+"id": 54,
+"caja": [
+51,
+412,
+274,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.4281,
+"toca_borde": false
+},
+{
+"id": 55,
+"caja": [
+318,
+413,
+542,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5203,
+"toca_borde": false
+},
+{
+"id": 56,
+"caja": [
+582,
+412,
+806,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.226,
+"toca_borde": false
+},
+{
+"id": 57,
+"caja": [
+847,
+413,
+1071,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5509,
+"toca_borde": false
+},
+{
+"id": 58,
+"caja": [
+1112,
+413,
+1337,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3445,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (4).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 59,
+"caja": [
+47,
+41,
+278,
+348
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9704,
+"toca_borde": true
+},
+{
+"id": 60,
+"caja": [
+313,
+41,
+545,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9701,
+"toca_borde": true
+},
+{
+"id": 61,
+"caja": [
+577,
+41,
+810,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.3189,
+"toca_borde": false
+},
+{
+"id": 62,
+"caja": [
+845,
+41,
+1078,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2942,
+"toca_borde": false
+},
+{
+"id": 63,
+"caja": [
+1111,
+41,
+1343,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.2843,
+"toca_borde": false
+},
+{
+"id": 64,
+"caja": [
+53,
+413,
+276,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9697,
+"toca_borde": true
+},
+{
+"id": 65,
+"caja": [
+318,
+413,
+542,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2327,
+"toca_borde": false
+},
+{
+"id": 66,
+"caja": [
+591,
+412,
+790,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2157,
+"toca_borde": false
+},
+{
+"id": 67,
+"caja": [
+847,
+413,
+1073,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9692,
+"toca_borde": true
+},
+{
+"id": 68,
+"caja": [
+1112,
+413,
+1337,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5294,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (5).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 69,
+"caja": [
+47,
+40,
+279,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9696,
+"toca_borde": true
+},
+{
+"id": 70,
+"caja": [
+311,
+41,
+545,
+350
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9687,
+"toca_borde": true
+},
+{
+"id": 71,
+"caja": [
+577,
+40,
+812,
+350
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2697,
+"toca_borde": false
+},
+{
+"id": 72,
+"caja": [
+846,
+39,
+1080,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9696,
+"toca_borde": true
+},
+{
+"id": 73,
+"caja": [
+1107,
+40,
+1346,
+351
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.487,
+"toca_borde": false
+},
+{
+"id": 74,
+"caja": [
+52,
+413,
+277,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.6049,
+"toca_borde": false
+},
+{
+"id": 75,
+"caja": [
+338,
+413,
+521,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2217,
+"toca_borde": false
+},
+{
+"id": 76,
+"caja": [
+585,
+413,
+812,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5909,
+"toca_borde": false
+},
+{
+"id": 77,
+"caja": [
+847,
+413,
+1074,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.7869,
+"toca_borde": true
+},
+{
+"id": 78,
+"caja": [
+1112,
+413,
+1337,
+705
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3838,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (6).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 79,
+"caja": [
+47,
+40,
+279,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9701,
+"toca_borde": true
+},
+{
+"id": 80,
+"caja": [
+315,
+40,
+545,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1759,
+"toca_borde": false
+},
+{
+"id": 81,
+"caja": [
+580,
+39,
+812,
+350
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9693,
+"toca_borde": true
+},
+{
+"id": 82,
+"caja": [
+847,
+40,
+1079,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9695,
+"toca_borde": true
+},
+{
+"id": 83,
+"caja": [
+1115,
+40,
+1337,
+350
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.4676,
+"toca_borde": false
+},
+{
+"id": 84,
+"caja": [
+52,
+413,
+277,
+708
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.766,
+"toca_borde": false
+},
+{
+"id": 85,
+"caja": [
+319,
+413,
+547,
+708
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9693,
+"toca_borde": true
+},
+{
+"id": 86,
+"caja": [
+585,
+413,
+810,
+708
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.3919,
+"toca_borde": false
+},
+{
+"id": 87,
+"caja": [
+847,
+413,
+1074,
+707
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9692,
+"toca_borde": true
+},
+{
+"id": 88,
+"caja": [
+1113,
+413,
+1337,
+707
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2203,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (7).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 89,
+"caja": [
+47,
+40,
+280,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.969,
+"toca_borde": true
+},
+{
+"id": 90,
+"caja": [
+316,
+40,
+545,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.4125,
+"toca_borde": false
+},
+{
+"id": 91,
+"caja": [
+582,
+39,
+814,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.6266,
+"toca_borde": false
+},
+{
+"id": 92,
+"caja": [
+848,
+40,
+1080,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1855,
+"toca_borde": false
+},
+{
+"id": 93,
+"caja": [
+1113,
+40,
+1346,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.3081,
+"toca_borde": false
+},
+{
+"id": 94,
+"caja": [
+52,
+413,
+278,
+708
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9696,
+"toca_borde": true
+},
+{
+"id": 95,
+"caja": [
+319,
+413,
+547,
+708
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.348,
+"toca_borde": false
+},
+{
+"id": 96,
+"caja": [
+587,
+413,
+811,
+709
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.1991,
+"toca_borde": false
+},
+{
+"id": 97,
+"caja": [
+851,
+413,
+1080,
+708
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2647,
+"toca_borde": true
+},
+{
+"id": 98,
+"caja": [
+1116,
+413,
+1339,
+709
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.4607,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (8).png": {
+"W": 1408,
+"H": 768,
+"huevos": [
+{
+"id": 99,
+"caja": [
+40,
+40,
+282,
+366
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2143,
+"toca_borde": true
+},
+{
+"id": 100,
+"caja": [
+312,
+43,
+553,
+366
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.2138,
+"toca_borde": false
+},
+{
+"id": 101,
+"caja": [
+583,
+39,
+825,
+366
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9712,
+"toca_borde": true
+},
+{
+"id": 102,
+"caja": [
+855,
+41,
+1096,
+366
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.5258,
+"toca_borde": false
+},
+{
+"id": 103,
+"caja": [
+1126,
+40,
+1368,
+366
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.4791,
+"toca_borde": true
+},
+{
+"id": 104,
+"caja": [
+40,
+408,
+282,
+729
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1499,
+"toca_borde": false
+},
+{
+"id": 105,
+"caja": [
+312,
+403,
+553,
+729
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.298,
+"toca_borde": false
+},
+{
+"id": 106,
+"caja": [
+583,
+403,
+825,
+729
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.971,
+"toca_borde": true
+},
+{
+"id": 107,
+"caja": [
+855,
+403,
+1096,
+729
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.2573,
+"toca_borde": false
+},
+{
+"id": 108,
+"caja": [
+1126,
+402,
+1368,
+729
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1977,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (9).png": {
+"W": 1408,
+"H": 768,
+"huevos": [
+{
+"id": 109,
+"caja": [
+66,
+53,
+282,
+335
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.064,
+"toca_borde": true
+},
+{
+"id": 110,
+"caja": [
+330,
+53,
+548,
+335
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.2502,
+"toca_borde": false
+},
+{
+"id": 111,
+"caja": [
+590,
+45,
+813,
+340
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5959,
+"toca_borde": true
+},
+{
+"id": 112,
+"caja": [
+861,
+51,
+1078,
+335
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2663,
+"toca_borde": false
+},
+{
+"id": 113,
+"caja": [
+1126,
+45,
+1343,
+335
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9687,
+"toca_borde": true
+},
+{
+"id": 114,
+"caja": [
+68,
+409,
+281,
+690
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2605,
+"toca_borde": false
+},
+{
+"id": 115,
+"caja": [
+334,
+409,
+547,
+690
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.0573,
+"toca_borde": false
+},
+{
+"id": 116,
+"caja": [
+616,
+407,
+795,
+690
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2127,
+"toca_borde": false
+},
+{
+"id": 117,
+"caja": [
+861,
+403,
+1075,
+691
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9675,
+"toca_borde": true
+},
+{
+"id": 118,
+"caja": [
+1127,
+406,
+1341,
+690
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3176,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (10).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 119,
+"caja": [
+53,
+59,
+288,
+360
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.4623,
+"toca_borde": true
+},
+{
+"id": 120,
+"caja": [
+314,
+59,
+543,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2009,
+"toca_borde": false
+},
+{
+"id": 121,
+"caja": [
+575,
+57,
+806,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.6297,
+"toca_borde": true
+},
+{
+"id": 122,
+"caja": [
+838,
+59,
+1065,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9697,
+"toca_borde": true
+},
+{
+"id": 123,
+"caja": [
+1095,
+59,
+1320,
+357
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.5725,
+"toca_borde": false
+},
+{
+"id": 124,
+"caja": [
+56,
+411,
+283,
+710
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2369,
+"toca_borde": false
+},
+{
+"id": 125,
+"caja": [
+314,
+411,
+544,
+710
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.3715,
+"toca_borde": false
+},
+{
+"id": 126,
+"caja": [
+577,
+411,
+804,
+710
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9693,
+"toca_borde": true
+},
+{
+"id": 127,
+"caja": [
+838,
+410,
+1063,
+710
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2297,
+"toca_borde": false
+},
+{
+"id": 128,
+"caja": [
+1094,
+411,
+1320,
+710
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3196,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga (11).png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 129,
+"caja": [
+55,
+69,
+295,
+358
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1625,
+"toca_borde": false
+},
+{
+"id": 130,
+"caja": [
+316,
+67,
+541,
+358
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9683,
+"toca_borde": true
+},
+{
+"id": 131,
+"caja": [
+576,
+68,
+798,
+358
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.9691,
+"toca_borde": true
+},
+{
+"id": 132,
+"caja": [
+835,
+69,
+1058,
+358
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1592,
+"toca_borde": false
+},
+{
+"id": 133,
+"caja": [
+1098,
+68,
+1318,
+359
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.4823,
+"toca_borde": false
+},
+{
+"id": 134,
+"caja": [
+61,
+413,
+269,
+713
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1939,
+"toca_borde": false
+},
+{
+"id": 135,
+"caja": [
+316,
+414,
+536,
+713
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9698,
+"toca_borde": true
+},
+{
+"id": 136,
+"caja": [
+575,
+413,
+799,
+714
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.306,
+"toca_borde": false
+},
+{
+"id": 137,
+"caja": [
+817,
+411,
+1075,
+723
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.9694,
+"toca_borde": true
+},
+{
+"id": 138,
+"caja": [
+1096,
+414,
+1321,
+713
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.6959,
+"toca_borde": false
+}
+]
+},
+"plantilla/descarga.png": {
+"W": 1365,
+"H": 768,
+"huevos": [
+{
+"id": 139,
+"caja": [
+51,
+60,
+276,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.969,
+"toca_borde": true
+},
+{
+"id": 140,
+"caja": [
+314,
+59,
+539,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2057,
+"toca_borde": false
+},
+{
+"id": 141,
+"caja": [
+578,
+59,
+804,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.4314,
+"toca_borde": true
+},
+{
+"id": 142,
+"caja": [
+840,
+60,
+1062,
+349
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.165,
+"toca_borde": false
+},
+{
+"id": 143,
+"caja": [
+1089,
+123,
+1341,
+318
+],
+"clase": 0,
+"omitir": true,
+"sucio": false,
+"dano_frac": 0.1929,
+"toca_borde": false
+},
+{
+"id": 144,
+"caja": [
+51,
+414,
+274,
+701
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2928,
+"toca_borde": true
+},
+{
+"id": 145,
+"caja": [
+316,
+412,
+538,
+701
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.1928,
+"toca_borde": false
+},
+{
+"id": 146,
+"caja": [
+580,
+412,
+803,
+702
+],
+"clase": 0,
+"omitir": false,
+"sucio": true,
+"dano_frac": 0.1163,
+"toca_borde": false
+},
+{
+"id": 147,
+"caja": [
+840,
+413,
+1064,
+701
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.3667,
+"toca_borde": false
+},
+{
+"id": 148,
+"caja": [
+1102,
+413,
+1325,
+701
+],
+"clase": 0,
+"omitir": false,
+"sucio": false,
+"dano_frac": 0.2334,
+"toca_borde": false
+}
+]
+}
+}
